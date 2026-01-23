@@ -1,0 +1,42 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{indentfirst}
+
+%\usepackage[spanish, activeacute]{babel}
+%\usepackage[T1]{fontenc}
+%\usepackage{lettrine}
+%\usepackage{itemize}
+
+\title{TFG - XplicaVoz}
+\author{\parbox{.7\textwidth}{\centering Jorge Aured Zarzoso, Germán Bravo Quintián, Rafael López Rodríguez, Iván Pastor Sacristán}}
+\date{\today}
+
+\setlength{\parindent}{1.5em}
+\begin{document}
+
+\maketitle
+
+\section{Estado del arte}
+
+%\begin{figure}
+%	\includegraphics[width=\textwidth]{Enlace aquí}
+%	\caption{Best photo ever}
+%	\label{fig:x1}
+%\end{figure}
+
+
+\section{Metodología}
+
+En cuanto a la creación de nuestro propio dataset, lo primero es explicar las dos razones que nos llevaron a tomar esta decisión. La primera es por el tamaño del mismo; es más fácil hacer pruebas con un dataset más pequeño, y segundo porque así tenemos más controlados los audios que usamos para estas pruebas.
+
+La totalidad de los audios están sacados de un dataset llamado ODSS(https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech). Hemos usado este conjunto de audios por la principal razón que ya tiene creado un par para cada audio natural, lo que nos ahorraba tiempo de generar nuestros propios audios. A esta ventaja, se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son los objetivos como hemos explicado anteriormente.
+Con todo esto mencionado, hemos elegido un tamaño de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados.
+
+\addvspace{2\parskip}
+Para la transcripción de los audios usamos modelos de vosk(https://alphacephei.com/vosk/models). Esto se debe a que tiene modelos para ambos idiomas que vamos a usar y además, 2 modelos dentro de cada lenguaje. El que usamos para las pruebas es el small  ya que es más rápido y por lo tanto más útil para esta primera fase pero dejamos en consideración el modelo full para futuras fases ya que tiene mayor precisión. 
+Sobre esto, cabe mencionar que primero probamos el modelo whisper pero tras varias pruebas con errores y la incapacidad para hacer funcionar, lo descartamos y es cuando escogimos vosk para esta tarea.
+
+\end{document}
