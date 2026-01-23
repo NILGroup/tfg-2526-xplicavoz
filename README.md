@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # XPlicaVoz
 XPlicaVoz es un proyecto desarrollado para detectar voces generadas por Inteligencia Artificial y explicar, mediante técnicas de Inteligencia Artificial Explicable (XAI), qué características son las más determinantes para decidir si una voz es generada o no.<br>
 El interés reside en poder detectar voces falsas (spoofed) para poder evitar estafas de suplantación de identidad, que con el avance de la generación de voz sintética son cada vez más frecuentes.
@@ -8,4 +9,16 @@ El interés reside en poder detectar voces falsas (spoofed) para poder evitar es
 - Iván Pastor Sacristán
 # Tutores
 - Marta Caro Martínez
+=======
+# XPlicaVoz
+XPlicaVoz es un proyecto desarrollado para detectar voces generadas por Inteligencia Artificial y explicar, mediante técnicas de Inteligencia Artificial Explicable (XAI), qué características son las más determinantes para decidir si una voz es generada o no.<br>
+El interés reside en poder detectar voces falsas (spoofed) para poder evitar estafas de suplantación de identidad, que con el avance de la generación de voz sintética son cada vez más frecuentes.
+# Autores
+- Jorge Aured Zarzoso
+- Germán Bravo Quintián
+- Rafael López Rodríguez
+- Iván Pastor Sacristán
+# Tutores
+- Marta Caro Martínez
+>>>>>>> 1663f0560e41187caa0e579a0a57df060c8be9bd
 - Antonio F. G. Sevilla
