@@ -19,6 +19,13 @@
 
 \maketitle
 
+\section{Introducción}
+En los últimos años hemos visto un aumento considerable en el uso de la IA para suplantar la identidad de alguien de forma maliciosa. Estos son los conocidos \emph{deepfakes}, los cuales abarcan tanto el campo de imagen/vídeo como el de audio, aunque nos centraremos en este último. Por otro lado, las técnicas de detección de \emph{deepfakes} no han avanzado al mismo ritmo, y esto lo vemos en la gran cantidad de estafas que se producen de este tipo.
+
+	Paralelamente, las personas ya no somos capaces de diferenciar entre una voz real y una generada, como se ve en [1][2], por lo que no podemos depender únicamente de nuestras capacidades para esta tarea, sino que necesitamos de métodos de IA que nos faciliten esta tarea.
+	
+	En este texto se proponen varias técnicas que podrían ser útiles para la detección de audios generados por IA. Para esta tarea es fundamental sacar las características de la voz, así como gráficas, para poder entrenar los modelos con dichos datos. Entre los audios deben haber tanto reales como generados, para que los modelos aprendan las diferencias, y así sepan distinguir un audio que nunca han visto.
+
 \section{Estado del arte}
 
 %\begin{figure}
