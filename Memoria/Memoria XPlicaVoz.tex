@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{indentfirst}
+
+\usepackage[spanish, activeacute]{babel}
+% Para usar Times Roman
+\usepackage{newtxtext, newtxmath}
+% Para usar roboto
+% \usepackage[sfdefault]{roboto}
+\usepackage[T1]{fontenc}
+\usepackage{lettrine}
+%\usepackage{itemize}
+
+% Para crear hipervínculos
+\usepackage[colorlinks=true, citecolor=blue, linkcolor=black]{hyperref} 
+\usepackage{url}
+% Para usar BibTeX
+\usepackage{natbib} 
+
+% Para justificar por ambos lados el texto
+\usepackage{ragged2e} 
+
+\title{TFG - XplicaVoz}
+\author{\parbox{.7\textwidth}{\centering Jorge Aured Zarzoso, Germán Bravo Quintián, Rafael López Rodríguez, Iván Pastor Sacristán}}
+\date{\today}
+
+\setlength{\parindent}{1.5em}
+\begin{document}
+
+\maketitle
+\begin{justify}
+
+% Para tener índice (compilar 2 veces si sale vacío)
+\tableofcontents
+
+\section{Introducción}
+En los últimos años hemos visto un aumento considerable en el uso de la IA para suplantar la identidad de alguien de forma maliciosa. Estos son los conocidos \emph{deepfakes}, los cuales abarcan tanto el campo de imagen/vídeo como el de audio, aunque nos centraremos en este último. Por otro lado, las técnicas de detección de \emph{deepfakes} no han avanzado al mismo ritmo, y esto lo vemos en la gran cantidad de estafas que se producen de este tipo.
+
+\hspace{0.7cm} 
+Además, las personas ya no somos capaces de diferenciar entre una voz real y una generada, como se ve en \cite{Barrington2025, Nadine2025}, donde hacen sendos estudios exponiendo a personas reales a diveros audios, algunos reales, algunos generados y algunos que clonan voces reales. En dichos estudios se ve que los que son 100\% generados nos cuesta poco detectarlos, pero entre los reales y los clones no diferenciamos bien, y rondamos el 60\% de precisión clasificando dichas voces en reales o falsas. Por esto no podemos fiarnos más de nuestras capacidades a la hora de diferenciar cuando una voz es real o no.
+
+\hspace{0.7cm}	
+En este texto se proponen varias técnicas que podrían ser útiles para la detección de audios generados por IA. Para esta tarea es fundamental sacar las características de la voz, así como gráficas, para poder entrenar los modelos con dichos datos. Entre los audios deben haber tanto reales como generados, para que los modelos aprendan las diferencias, y así sepan distinguir un audio que nunca han visto.
+
+\hspace{.7cm}
+Para poder clasificar los audios en reales y generados tenemos que pensar primero en qué datos necesitamos pasarle a los modelos para que aprendan. Podemos separar los datos que debemos pasarle a dichos modelos en 3 grupos.
+\begin{enumerate}
+	\item Características. Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos los modelos pueden aprender las relaciones entre los dos grupos de audios.
+	\item Gráficas. Podemos extraer gráficas de la voz como la forma de onda, el espectrograma de MEL, y otros. Con estas gráficas las CNN pueden aprender los puntos clave que diferencian a los audios reales de los generados.
+	\item Audio crudo. Existen modelos llamados wav2vec los cuales aprenden directamente de los audios, sacando un vector denso de características latentes en los audios, para después hacer ajuste fino o \emph{fine-tuning} de un modelo para clasificar los audios.  
+\end{enumerate}
+Con estos 3 enfoques vamos a clasificar los audios y veremos cuál funciona mejor.
+
+\hspace{.7cm}
+Pero el rendimiento del modelo de clasificación no es lo único que nos interesa. Hoy en día los modelos de IA se han convertido en \emph{cajas negras}, donde no sabemos cómo hace las predicciones, dando lugar a problemas de confianza de los humanos respecto de dichas predicciones, como es en el ámbito médico o ingenieril, donde las decisiones que tomen las IAs deben ser precisas, puesto que la vida de las personas está en juego. Para solventar este problema ha surgido la IA explicable (XAI), la cual toma dichos modelos \emph{caja negra} y da una explicación de qué características de los datos afectan más a la decisión del modelo. En esta investigación vamos a aplicar XAI para ver qué afecta más a la clasificación de los audios dentro de los distintos grupos que mencionamos antes. % Gracias a dicha explicación seremos capaces de entender en qué se basan los modelos para clasificar y decidiremos si podemos confiar en ellos para realizar la tarea por nosotros. DISCLAIMER: No sé si esto es redundante con el párrafo de XAI, quiero darle como un resumen al párrafo
+
+\section{Estado del arte}
+
+%\begin{figure}
+%	\includegraphics[width=\textwidth]{Enlace aquí}
+%	\caption{Best photo ever}
+%	\label{fig:x1}
+%\end{figure}
+
+
+\section{Metodología}
+
+En cuanto a la creación de nuestro propio dataset, lo primero es explicar las dos razones que nos llevaron a tomar esta decisión. La primera es por el tamaño del mismo; es más fácil hacer pruebas con un dataset más pequeño, y segundo porque así tenemos más controlados los audios que usamos para estas pruebas.
+
+La totalidad de los audios están sacados de un dataset llamado ODSS(https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech). Hemos usado este conjunto de audios por la principal razón que ya tiene creado un par para cada audio natural, lo que nos ahorraba tiempo de generar nuestros propios audios. A esta ventaja, se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son los objetivos como hemos explicado anteriormente.
+Con todo esto mencionado, hemos elegido un tamaño de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados.
+
+\addvspace{2\parskip}
+Para la transcripción de los audios usamos modelos de vosk(https://alphacephei.com/vosk/models). Esto se debe a que tiene modelos para ambos idiomas que vamos a usar y además, 2 modelos dentro de cada lenguaje. El que usamos para las pruebas es el small  ya que es más rápido y por lo tanto más útil para esta primera fase pero dejamos en consideración el modelo full para futuras fases ya que tiene mayor precisión. 
+Sobre esto, cabe mencionar que primero probamos el modelo whisper pero tras varias pruebas con errores y la incapacidad para hacer funcionar, lo descartamos y es cuando escogimos vosk para esta tarea.
+\end{justify}
+
+\bibliographystyle{plain}
+\bibliography{bibliografia}
+
+\end{document}
