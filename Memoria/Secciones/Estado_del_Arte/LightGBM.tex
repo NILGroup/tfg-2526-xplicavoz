@@ -1,0 +1,52 @@
+\subsubsection{LightGBM}
+
+LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient boosting desarrollado por Microsoft en 2017 \cite{ke2017lightgbm} que optimiza el proceso de entrenamiento mediante innovaciones en la forma de construir los árboles y muestrear los datos. Mientras que Random Forest construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
+
+\subsubsection*{Arquitectura y funcionamiento}
+
+\hspace{.7cm}
+El proceso de boosting funciona de la siguiente manera:
+
+\begin{enumerate}
+    \item Se entrena un primer árbol simple que intenta clasificar las voces como reales o deepfake.
+    \item Se identifican los audios que este primer árbol clasificó incorrectamente.
+    \item Se entrena un segundo árbol enfocado específicamente en esos casos difíciles.
+    \item Se combinan ambos árboles para mejorar la precisión global.
+    \item El proceso se repite construyendo decenas o cientos de árboles, cada uno corrigiendo los residuos de los anteriores.
+\end{enumerate}
+
+\subsubsection*{Innovaciones clave}
+
+\begin{itemize}
+    \item \textbf{Crecimiento por hoja (\textit{leaf-wise})}: 
+    Los árboles tradicionales crecen nivel por nivel (balanceados). LightGBM, en cambio, crece expandiendo la hoja que más puede reducir el error en cada paso, lo que produce árboles más profundos en las regiones problemáticas y más eficientes en las fáciles.
+    
+    \item \textbf{Muestreo basado en gradientes (\textit{GOSS})}:
+    Durante el entrenamiento, LightGBM identifica qué instancias (audios) tienen mayor error y las prioriza. Las instancias con error pequeño se muestrean aleatoriamente para reducir el costo computacional. Esto permite entrenar con datasets grandes sin procesar toda la información redundante.
+    
+    \item \textbf{Agrupación de características (\textit{EFB})}:
+    Muchas características de audio raramente toman valores distintos de cero simultáneamente. LightGBM las agrupa para reducir la dimensionalidad, acelerando el entrenamiento sin pérdida de información significativa.
+\end{itemize}
+
+\subsubsection*{Proceso de clasificación}
+
+\hspace{.7cm}
+Cuando un nuevo audio llega para ser clasificado:
+
+\begin{itemize}
+    \item Pasa secuencialmente por todos los árboles construidos.
+    \item Cada árbol aporta una corrección o ajuste a la predicción anterior.
+    \item La suma ponderada de todas las contribuciones produce la clasificación final (probabilidad de ser deepfake).
+\end{itemize}
+
+\subsubsection*{Ventajas específicas para detección de deepfakes}
+
+\begin{itemize}
+    \item \textbf{Alta precisión}: El enfoque secuencial de corrección de errores suele superar a Random Forest en problemas complejos como la detección de deepfakes.
+    
+    \item \textbf{Eficiencia computacional}: El muestreo inteligente permite entrenar con grandes volúmenes de audios en menos tiempo que otros métodos de boosting.
+    
+    \item \textbf{Manejo de desequilibrios}: Si existen desbalances entre clases, LightGBM incorpora mecanismos para ponderar las muestras adecuadamente.
+    
+    \item \textbf{Early stopping}: Se puede configurar para que detenga el entrenamiento cuando añadir más árboles no mejora la validación, evitando overfitting.
+\end{itemize}

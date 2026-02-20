@@ -1,0 +1,79 @@
+\subsubsection{Support Vector Machines (SVM)}
+
+Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990 \cite{cortes1995support}. Originalmente diseñadas para clasificación binaria, las SVM se han convertido en uno de los métodos más robustos y teóricamente fundamentados del aprendizaje automático.
+
+\subsubsection*{Fundamento conceptual: El hiperplano óptimo}
+
+El objetivo fundamental de una SVM es encontrar un hiperplano que separe las dos clases (en nuestro caso, voces reales y voces generadas por IA) con el máximo margen posible. Para comprender este concepto, es útil visualizar un problema simple en dos dimensiones:
+
+\begin{itemize}
+    \item Imaginemos que representamos cada audio como un punto en un plano, donde los ejes son dos características (por ejemplo, el primer formante y el primer MFCC).
+    \item Las voces reales se agrupan en una región del plano y las generadas por IA en otra.
+    \item Un hiperplano en dos dimensiones es simplemente una línea recta que intenta separar ambos grupos.
+\end{itemize}
+
+La clave de SVM reside en que no cualquier línea divisora es válida: el algoritmo busca aquella que maximiza la distancia (margen) entre la línea y los puntos más cercanos de cada clase. Estos puntos críticos, que ``sostienen'' el margen, reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), de donde el algoritmo toma su nombre.
+
+\subsubsection*{Funcionamiento del algoritmo}
+
+El proceso de entrenamiento de una SVM puede entenderse en los siguientes pasos:
+
+\begin{enumerate}
+    \item \textbf{Identificación de vectores de soporte}: El algoritmo examina todos los puntos de entrenamiento (audios con sus características) e identifica aquellos que son más difíciles de clasificar, es decir, los que están más cerca de la frontera entre clases.
+    
+    \item \textbf{Maximización del margen}: A partir de estos vectores de soporte, la SVM calcula el hiperplano que maximiza la distancia a ambos lados. Este margen máximo proporciona la mejor capacidad de generalización: cuanto más ancho sea el margen, menor será la probabilidad de error al clasificar nuevos audios.
+    
+    \item \textbf{Clasificación de nuevas muestras}: Una vez entrenado el modelo, para clasificar un nuevo audio, simplemente se calcula a qué lado del hiperplano se sitúa. Si cae en el lado de las voces reales, se clasifica como real; si cae en el lado de las generadas por IA, se clasifica como deepfake.
+\end{enumerate}
+
+\subsubsection*{El truco del kernel: Separando lo inseparable}
+
+Uno de los mayores desafíos en la detección de deepfakes es que las voces reales y generadas por IA rara vez son linealmente separables en el espacio original de características. Es decir, no existe una línea recta (o hiperplano) que pueda separarlas perfectamente. Para abordar esta limitación, las SVM introducen el concepto de \textbf{kernel} o núcleo.
+
+El \textit{truco del kernel} (\textit{kernel trick}) funciona de la siguiente manera conceptual:
+
+\begin{itemize}
+    \item Los datos originales (no separables linealmente) se transforman implícitamente a un espacio de mayor dimensionalidad mediante una función matemática.
+    \item En este nuevo espacio, es posible que los datos sí sean linealmente separables.
+    \item La magia del kernel es que realiza esta transformación sin necesidad de calcular explícitamente las coordenadas en el espacio de alta dimensión, lo que sería computacionalmente prohibitivo.
+\end{itemize}
+
+Los kernels más comúnmente utilizados son:
+
+\begin{itemize}
+    \item \textbf{Kernel lineal}: Asume que los datos son aproximadamente separables por un hiperplano. Útil cuando el número de características es muy grande.
+    
+    \item \textbf{Kernel polinomial}: Crea fronteras de decisión curvas mediante combinaciones polinómicas de las características originales.
+    
+    \item \textbf{Kernel RBF (\textit{Radial Basis Function})}: Es el más utilizado en problemas de audio. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas y no lineales. Se basa en la similitud entre muestras medida por distancia euclidiana:
+
+    \[
+    K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)
+    \]
+
+    donde \(\gamma\) controla la influencia de cada muestra: un valor pequeño considera vecindarios amplios (frontera más suave), mientras que un valor grande se enfoca en vecindarios reducidos (frontera más ajustada a los datos).
+\end{itemize}
+
+\subsubsection*{Parámetros críticos}
+
+El rendimiento de una SVM depende fundamentalmente de dos parámetros:
+
+\begin{itemize}
+    \item \textbf{C (parámetro de regularización)}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
+    
+    \item \textbf{\(\gamma\) (gamma)}: Específico del kernel RBF, define hasta qué punto llega la influencia de un solo punto de entrenamiento. Valores bajos significan influencia de largo alcance (frontera más suave), mientras que valores altos hacen que cada punto tenga influencia muy local (frontera más compleja).
+\end{itemize}
+
+\subsubsection*{Ventajas específicas para detección de deepfakes}
+
+\begin{itemize}
+    \item \textbf{Fundamento teórico sólido}: A diferencia de otros métodos heurísticos, SVM está basada en la teoría de optimización convexa, lo que garantiza que la solución encontrada es óptima (máximo margen global).
+    
+    \item \textbf{Eficaz en espacios de alta dimensión}: Las características de audio pueden generar vectores de gran dimensionalidad (decenas o cientos de coeficientes). SVM maneja bien esta situación sin colapsar por la maldición de la dimensionalidad.
+    
+    \item \textbf{Robustez ante overfitting}: La maximización del margen proporciona una regularización natural que mejora la generalización, crucial cuando se trabaja con datasets limitados de voces deepfake.
+    
+    \item \textbf{Versatilidad mediante kernels}: La capacidad de elegir diferentes kernels permite adaptar el modelo a la estructura no lineal de los datos de audio sin necesidad de transformaciones manuales.
+    
+    \item \textbf{Interpretabilidad limitada pero útil}: Aunque no tan interpretable como los árboles de decisión, el análisis de los vectores de soporte puede revelar qué audios son más representativos o ambiguos en la frontera de decisión.
+\end{itemize}

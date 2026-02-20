@@ -45,99 +45,11 @@
 %	\label{fig:x1}
 %\end{figure}
 
-\section{Introducción}
-En los últimos años hemos visto un aumento considerable en el uso de la IA para suplantar la identidad de alguien de forma maliciosa clonando su voz. Estos son los conocidos \emph{deepfakes}. El reconocimiento de dichos deepfakes es de vital importancia, pues suponen una gran amenaza. Por otro lado, las técnicas de detección de \emph{deepfakes} no han avanzado al mismo ritmo, y esto lo vemos en la gran cantidad de estafas que se producen de este tipo.
+\input{Secciones/Introduccion.tex}
 
-\hspace{.7cm} 
-Además, las personas ya no somos capaces de diferenciar entre una voz real y una generada, como se ve en \cite{1Barrington2025, 2Nadine2025}, donde hacen sendos estudios exponiendo a personas reales a diversos audios, algunos reales, algunos generados y algunos que clonan voces reales. En dichos estudios se ve que los que son 100\% generados nos cuesta poco detectarlos, pero entre los reales y los clones no diferenciamos bien, y rondamos el 60\% de precisión clasificando dichas voces en reales o falsas. Por esto no podemos fiarnos más de nuestras capacidades a la hora de diferenciar cuando una voz es real o no.
+\input{Secciones/Estado_del_Arte.tex}
 
-\hspace{.7cm}	
-En este texto se proponen varias técnicas que podrían ser útiles para la detección de audios generados por IA. Para esta tarea es fundamental sacar las características de la voz, así como gráficas, para poder entrenar los modelos con dichos datos. Entre los audios deben haber tanto reales como generados, y estar medianamente equilibrados, para que los modelos aprendan las diferencias, y así sepan clasificar un audio que nunca han visto.
-
-\hspace{.7cm}
-Pero el rendimiento del modelo de clasificación no es lo único que nos interesa. Hoy en día los modelos de IA se han convertido en \emph{cajas negras}, donde no sabemos cómo hace las predicciones, dando lugar a problemas de confianza de los humanos respecto de dichas predicciones, como es en el ámbito médico o ingenieril, donde las decisiones que tomen las IAs deben ser precisas, puesto que la vida de las personas puede estar en juego. Para solventar este problema ha surgido la IA explicable (XAI), la cual toma dichos modelos \emph{caja negra} y da una explicación de qué características de los datos afectan más a la decisión del modelo. En esta investigación vamos a aplicar XAI para ver qué afecta más a la clasificación de los audios dentro de los distintos grupos que mencionamos antes.
-
-\section{Estado del arte}
-
-\subsection{Características} %Falta incluir otros modelos que usemos y referencias
-Para poder clasificar los audios en reales y generados tenemos que pensar primero en qué datos necesitamos pasarle a los modelos para que aprendan. Podemos separar los datos que debemos pasarle a dichos modelos en 3 grupos.
-\begin{enumerate}
-	\item Características. Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos los modelos pueden aprender las relaciones entre los dos grupos de audios.
-	\item Gráficas. Podemos extraer gráficas de la voz como la forma de onda, el espectrograma de MEL, y otros. Con estas gráficas las CNN pueden aprender los puntos clave que diferencian a los audios reales de los generados.
-	\item Audio crudo. Existen modelos llamados wav2vec los cuales aprenden directamente de los audios, sacando un vector denso de características latentes en los audios, para después hacer ajuste fino o \emph{fine-tuning} de un modelo para clasificar los audios.  
-\end{enumerate}
-Con estos 3 enfoques vamos a clasificar los audios y veremos cuál funciona mejor.
-
-\subsection{Modelos de clasificación}
-% Poner aquí todo lo referente a modelos IA que hayamos investigado y hayamos usado
-
-\subsubsection{Perceptrón multicapa}
-
-Hemos usado el código de extracción de características para procesar los audios que tenemos en el dataset personalizado con 100 audios en español (50 reales y 50 generados a partir de esos reales). Una vez preprocesados los audios con sus características extraídas, empleo una CNN (red neuronal convolucional) para sacar un embedding de 128 dimensiones del espectrograma del audio y un MLP (perceptrón multicapa) para sacar un embedding de 64 dimensiones de las características paralingüísticas del audio. Ahora las concateno teniendo un embedding de 192 dimensiones siendo las primeras 64 las características y las otras 128 las del espectrograma.
-
-Después creamos un perceptrón multicapa cuyo objetivo es clasificar el audio en si es generado o es real empleando para ello lógica difusa. Para ello pasamos la salida del perecptrón por un controlador fuzzy que irá aprendiendo también sus parámetros y adaptará la salida para que esté entre 0 y 1 siendo que cuanto más cercano al 0, más posible es que el audio sea real y no sea generado.
-En la práctica, como el dataset es de 100 datos, no hay suficientes para entrenar un perceptrón de forma correcta ya que cuando hicimos las pruebas, todas las predicciones del perceptrón no se alejan del 0.5 que en este contexto de probabilidad continuo significa que el modelo está indeciso y no lo sabe clasificar como real o como generado.
-
-\subsubsection{Fine-tuning Wav2Vec2}
-
-Wav2Vec2 es un modelo de aprendizaje profundo para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de características manuales. Fue propuesto por Meta en 2020.
-
-Este modelo recibe como entrada la forma de onda sin procesar del audio (audio crudo) y su salida debe ser decodificada utilizando Wav2Vec2CTCTokenizer.
-
-El fine-tuning se hará con el dataset de 100 datos que tenemos para entrenar el Wav2Vec2 en la tarea de clasificación de audio. Al igual que con el modelo anterior, también lo pasaré por un controlador fuzzy para que nos diga cuan probable es que el audio sea real o IA.
-
-El proceso comienza creando un dataset de entrenamiento y otro de prueba en el que cada uno tendrá el mismo número de audios reales y generados y una etiqueta que indique si es humano o no. Una vez tenemos el dataset, hay que preprocesar los audios ya que en un inicio solo tiene las rutas de los audios por lo que ahora hay que cargar los audios de verdad. Para esta tarea usaremos el propio extractor de características que tiene el modelo (Wav2Vec2FeatureExtractor) fijando la frecuencia de muestreo a 16KHz y activando el padding que rellenará los audios cortos con ceros y trucará los audios largos para que todos tengan la misma longitud. Este preprocesado resultará en que ahora en el dataset, en lugar de haber rutas a los audios, hay tensores de Torch representándolos.
-
-Ahora que ya tenemos el dataset de entrenamiento preprocesado, lo volvemos a dividir en entrenamiento y validación y entrenamos el modelo ya preentrenado para la nueva tarea de detección de voz generada por ia. Para evaluar el modelo se emplearon tres métricas, la precisión (verdaderos positivos / (verdaderos positivos + falsos positivos), la f1 (Media armónica entre precisión y recall) y el AUC (Área bajo la curva: Capacidad del modelo para distinguir entre clases positivas y negativas). El fine-tuning ha sido muy leve ya que con los 90 audios (80 de entrenamieno y 10 de validación) hay que congelar el aprendizaje del modelo para evitar un sobreentrenamiento.
-
-Una vez hecho el fine-tuning, hacemos el mismo preprocesado para el dataset de test y ponemos el modelo en modo evaluación. Los resultados que de el modelo se pasan por un clasificador fuzzy que se encargará del postprocesado de la salida que la normalizará entre 0 y 1 siendo que los audios cuya score está entre 0.4 y 0.6 no los sabe clasificar, los que están por debajo de 0.4 son audios reales y los que están por encima de 0.6 son audios generados.
-
-
-\subsection{Modelos de explicación}
-Los modelos XAI (eXplainable Artificial Inteligence) han cobrado mucha importancia últimamente y más en términos de modelos de clasificación automáticos debido a la necesidad de saber el por qué se clasifican en un sitio u otro cada elemento, en nuestro caso cada audio.
-
-\hspace{.7cm}
-Dos modelos muy utilizados son el modelo SHAP (SHapley Additive exPlanations) y el modelo LIME (Local Interpretable Model-agnostic Explanations), que se utilizan para el análisis de audio sintético. SHAP, como ya sabemos, cuantifica la contribución de cada característica a la predicción final y ayuda a visualizar qué bandas de frecuencia son indicativas de manipulación. Viendo que a menudo revela distorsiones en las zonas de alta frecuencia que el detector suele utilizar para clasificar una muestra como "fake". Por otro lado, LIME, crea explicaciones locales perturbando la entrada y observando los cambios en la salida. También vimos que en forense de audio, LIME se utiliza para generar máscaras sobre espectrogramas, señalando los milisegundos específicos donde se detectan inconsistencias fónicas.
-
-\hspace{.7cm}
-Además de estos dos modelos, el modelo de Grad-CAM (Gradient-weighted Class Activation Mapping) se usa mucho junto con los modelos basados en CNN, ya que proporciona visualizaciones espaciales de las áreas del espectrograma que activan la decisión del modelo. Esto es importante para identificar si el modelo se está enfocando en anomalías espectrales o en ruido de fondo, por ejemplo.
-
-\hspace{.7cm}
-Por tanto, como hemos visto lo más utilizado y útil son técnicas independientes del modelo, como SHAP y LIME, que muestran que características han servido para que el modelo clasifique un audio como "real" o "fake", y complementariamente para modelos específicos de CNN que usan espectrogramas, se usa Grad-CAM, que muestra que zonas del espectrograma influyen más en la decisión del modelo.
-
-\section{Metodología}
-
-\subsection{Dataset}
-Para encontrar un dataset público que tuviera voces tanto reales como clonadas y que ademas fueran por pares (i.e. un audio de voz real cuya transcripción es "Hoy he comido en un restaurante chino" y un audio clonando dicha voz diciendo lo mismo) ha sido complicado. Hemos echado un ojo a bastantes datasets. Vamos a comentar los que hemos descartado y por qué.
-
-%En cuanto a la creación de nuestro propio dataset, lo primero es explicar las dos razones que nos llevaron a tomar esta decisión. La primera es por el tamaño del mismo; es más fácil hacer pruebas con un dataset más pequeño, y segundo porque así tenemos más controlados los audios que usamos para estas pruebas.
-
-\begin{enumerate}
-	\item HABLA \cite{3tamayoflorez23_interspeech}: Este dataset cuenta con una gran cantidad de audios tanto reales, como generados (con técnicas como TTS) y voces clonadas (con técnicas como Cycle-GAN). Lo hemos descartado principalmente por no contar con pares de audios, aunque tal vez podamos hacer pruebas con este dataset más adelante.
-	\item audioMNIST \citep{4BECKER2024}: Este dataset cuenta con 30 mil audios de los números del 0 al 9 en inglés. Lo hemos descartado porque todos los audios son voces reales, por lo que no nos sirve para nuestra tarea.
-	\item ASVSpoof2021 \citep{asvspoof2021_zenodo}: Este dataset forma parte de una serie de desafios internacionales organizados por la comunidad de verificación automática de audio cuyo objetivo es evaluar y mejorar los sistemas capaces de detectar voz manipulada. El dataset se compone de tres grupos de audio, todos ellos con voz real y generada mezclada, logical access con grabaciones transmitidas mediante canales de voz con efectos de codificación y transmisión, physical access con grabaciones de voz auténticas y ataques de reproducción en espacios físicos reales y speech deepfake con grabaciones generadas sintéticamente y comprimidas de formas distintas. Este dataset lo hemos descartado por no contar con pares de audio aunque se pueden rescatar algunos audios en inglés sobre todo para probar los modelos que probemos más adelante. % Poner cita
-	\item Kaggle % (el que buscó rafa) poner cita y explicacion 
-\end{enumerate}
-
-\hspace{.7cm}
-El dataset por el que nos hemos decantado se llama ODSS(https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech). Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja, se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
-
-\hspace{.7cm}
-Con todo esto mencionado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. Más adelante probaremos a usar más cantidad de audios y compararemos el rendimiento.
-
-
-\subsection{Preprocesamiento} %Si se hace, añadirlo
-
-
-\subsection{Extracción de características}
-%\addvspace{2\parskip}
-Para la transcripción de los audios usamos modelos de vosk(https://alphacephei.com/vosk/models). Esto se debe a que tiene modelos para ambos idiomas que vamos a usar y además, 2 modelos dentro de cada lenguaje. El que usamos para las pruebas es el small  ya que es más rápido y por lo tanto más útil para esta primera fase pero dejamos en consideración el modelo full para futuras fases ya que tiene mayor precisión. 
-Sobre esto, cabe mencionar que primero probamos el modelo whisper pero tras varias pruebas con errores y la incapacidad para hacer funcionar, lo descartamos y es cuando escogimos vosk para esta tarea.
-
-\subsection{Modelos de clasificación}
-
-
-\subsection{Modelos de explicación}
+\input{Secciones/Metodologia.tex}
 
 
 \end{justify}
