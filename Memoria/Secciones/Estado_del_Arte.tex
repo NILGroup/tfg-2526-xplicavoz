@@ -1,13 +1,6 @@
 \section{Estado del arte}
 
-\subsection{Características} %Falta incluir otros modelos que usemos y referencias
-Para poder clasificar los audios en reales y generados tenemos que pensar primero en qué datos necesitamos pasarle a los modelos para que aprendan. Podemos separar los datos que debemos pasarle a dichos modelos en 3 grupos.
-\begin{enumerate}
-	\item Características. Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos los modelos pueden aprender las relaciones entre los dos grupos de audios.
-	\item Gráficas. Podemos extraer gráficas de la voz como la forma de onda, el espectrograma de MEL, y otros. Con estas gráficas las CNN pueden aprender los puntos clave que diferencian a los audios reales de los generados.
-	\item Audio crudo. Existen modelos llamados wav2vec los cuales aprenden directamente de los audios, sacando un vector denso de características latentes en los audios, para después hacer ajuste fino o \emph{fine-tuning} de un modelo para clasificar los audios.  
-\end{enumerate}
-Con estos 3 enfoques vamos a clasificar los audios y veremos cuál funciona mejor.
+
 
 \subsection{Modelos de clasificación}
 % Poner aquí todo lo referente a modelos IA que hayamos investigado y hayamos usado
