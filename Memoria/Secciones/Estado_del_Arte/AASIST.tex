@@ -1,0 +1,49 @@
+\subsubsection{AASIST}
+
+AASIST (\textit{Audio Anti-Spoofing usign Integrated Spectro-Temporal graph attention networks}) es un modelo propuesto por Jee-weon Jung, Hee-Soo Heo, Hemlata Tak, Hye-jin Shim, Joon Son Chung, Bong-Jin Lee, Ha-Jin Yu y Nicholas Evans en 2022. La principal motivación para el desarrollo de este clasificador surge de que los artefactos que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertos artefactos. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
+
+\subsubsection*{Arquitectura y funcionamiento}
+
+\hspace{.7cm}
+El modelo tiene las siguientes fases:
+
+\begin{enumerate}
+    \item Extracción de características a partir del audio crudo:
+        \begin{itemize}
+            \item Se usa un \textbf{encoder} basado en RawNet2 que acaba generando un mapa de características F, $F \in \mathbb{R}^{C \times S \times T}$ siendo C, número de canales, S, número de bins espectrales y T, longitud temporal.
+            \item Para ello, primero, se pasa el audio por una primera capa \textit{sinc-convolution} con 70 filtros. La diferencia frente al RawNet2 original, es que en AASIST se interpreta la salida de esta capa como una ``imagen'' 2D de 1 canal.
+            \item A continuación, esta primera representación se pasa por seis bloques residuales con \textbf{pre-activación} que van comprimiendo y transformando la información útil para tener una representación lo más compacta posible.
+        \end{itemize}
+    \item Posteriormente, se generan dos \textbf{grafos completos} que modelan, de forma independiente, los dominios temporal y espectral, siendo $G_t$ y $G_s$ respectivamente.
+    \item Ambos grafos se combinan en un tercer grafo, $G_{st}$ con $N_t+N_s$ nodos entre los que se generan todas las aristas nuevas posibles en ambas direcciones, manteniendo las aristas de los grafos anteriores.
+    \item Bloque HS-GAL + pooling: 
+        \begin{itemize}
+            \item Se aplica \textbf{atención heterogénea} usando uno de los tres vectores de proyección según la relación entre los tipos de los nodos entre los que se hace la relación.
+            \item Un \textbf{(stack node)}, conectado de forma unidireccional a todos los nodos, que va acumulando la información espectro-temporal entre sucesivas capas HS-GAL.
+            \item Tras cada HS-GAL, se aplica ``\textbf{graph pooling}'' para reducir el número de nodos, conservando los más relevantes lo que permite bajar el coste computacional posterior.
+        \end{itemize}
+    \item A continuación de crear el grafo $G_{st}$, se aplica la operación MGO(\textit{Max Graph Operation}) que usa las técnicas del punto anterior. De forma paralela, se procesan dos ramas en las que se ejecutan consecutivamente dos secuencias HS-GAL-pooling. Dentro de cada rama, el ``stack node'' se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento.
+    \item Por último, usando las operaciones ''\textbf{max}'' y ``\textbf{average}'' sobre cada subgrafo final(temporal y espectral), se generan 4 vectores que se combinan con el ``stack node'' y se pasan a la capa de salida.
+\end{enumerate}
+
+\subsubsection*{Innovaciones clave}
+
+\begin{itemize}
+    \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simulteamente ambos grafos, combinada con un ``stack'' node para ir acumulando información espectro-temporal
+    
+    \item \textbf{MGO}: un método con dos ramas aplicando paralelamente HS-GAL más una fase de ``pooling'' lo que permite que cada secuencia puedo aprender distintos grupos de artefactos.
+    
+    \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el ``stack node'' con las estadisticas sacadas de la operaciones ``max'' y ``average'' finales.
+\end{itemize}
+
+\subsubsection*{Ventajas específicas para detección de deepfakes}
+
+\begin{itemize}
+    \item \textbf{Integración espectro-temporal}: al modelar conjuntamente los grafos temporal y espectral en un grafo heterogéneo, permite encontrar información cruzada que se podría perder si se tratara por separado.
+    
+    \item \textbf{Stack node}: esta técnica ``acumulativa'' ayuda a encontrar artefactos de spoofing cuando no están presentes en un solo nodo y se encuentran distribuidos en varios instantes o bandas.
+    
+    \item \textbf{Readout}: al juntar estadísticas globales(average) con evidencia puntual fuerte(max), facilita la detección de diferentes patrones de ``spoofing''.
+
+    \item \textbf{Ramas paralelas}: en MGO, se introducen dos ramas procesando en paralelo, permitiendo captar pistas complementarias.
+\end{itemize}
