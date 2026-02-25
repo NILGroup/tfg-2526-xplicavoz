@@ -1,0 +1,16 @@
+\subsection{Dataset}
+Para encontrar un dataset público que tuviera voces tanto reales como clonadas y que ademas fueran por pares (i.e. un audio de voz real cuya transcripción es "Hoy he comido en un restaurante chino" y un audio clonando dicha voz diciendo lo mismo) ha sido complicado. Hemos echado un ojo a bastantes datasets. Vamos a comentar los que hemos tenido en cuenta.
+
+\begin{enumerate}
+	\item HABLA \cite{3tamayoflorez23_interspeech}: Este dataset cuenta con una gran cantidad de audios tanto reales, como generados (con técnicas como TTS) y voces clonadas (con técnicas como Cycle-GAN). Lo hemos descartado para una primera iteración del proyecto, pero no lo descartamos para una próxima iteración.
+	\item audioMNIST \citep{4BECKER2024}: Este dataset cuenta con 30 mil audios de los números del 0 al 9 en inglés. Lo hemos descartado porque todos los audios son voces reales, por lo que no nos sirve para nuestra tarea.
+	\item ASVSpoof2021 \citep{asvspoof2021_zenodo}: Este dataset forma parte de una serie de desafios internacionales organizados por la comunidad de verificación automática de audio cuyo objetivo es evaluar y mejorar los sistemas capaces de detectar voz manipulada. El dataset se compone de tres grupos de audio, todos ellos con voz real y generada mezclada, logical access con grabaciones transmitidas mediante canales de voz con efectos de codificación y transmisión, physical access con grabaciones de voz auténticas y ataques de reproducción en espacios físicos reales y speech deepfake con grabaciones generadas sintéticamente y comprimidas de formas distintas. Este dataset lo hemos descartado por no contar con pares de audio aunque se pueden rescatar algunos audios en inglés sobre todo para probar los modelos que probemos más adelante.
+	\item Kaggle % (el que buscó rafa) poner cita y explicacion 
+	\item Wavefake \citep{}: Este dataset de Kaggle cuenta con gran cantidad de audios generados. Como tal, nos sirvió para probar el primer prototipo de extracción de características y buscar librerías como librosa o speechRecognition. Este dataset, al no tener los audios reales, no nos sirve para luego desarrollar los modelos.     % poner cita
+\end{enumerate}
+
+\hspace{.7cm}
+El dataset por el que nos hemos decantado se llama \href{https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech}{ODSS}. Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
+
+\hspace{.7cm}
+Con todo esto mencionado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. Más adelante, probaremos a usar más cantidad de audios y compararemos el rendimiento.

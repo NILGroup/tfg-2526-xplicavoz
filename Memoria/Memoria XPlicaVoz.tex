@@ -1,27 +1,8 @@
 \documentclass{article}
+% Preámbulo
 
-\usepackage[utf8]{inputenc}
-\usepackage{graphicx}
-\usepackage{parskip}
-\usepackage{indentfirst}
-
-\usepackage[spanish, activeacute]{babel}
-% Para usar Times Roman
-\usepackage{newtxtext, newtxmath}
-% Para usar roboto
-% \usepackage[sfdefault]{roboto}
-\usepackage[T1]{fontenc}
-\usepackage{lettrine}
-%\usepackage{itemize}
-
-% Para crear hipervínculos
-\usepackage[colorlinks=true, citecolor=blue, linkcolor=black]{hyperref} 
-\usepackage{url}
-% Para usar BibTeX
-\usepackage{natbib} 
-
-% Para justificar por ambos lados el texto
-\usepackage{ragged2e} 
+% Cargamos los paquetes que usamos en la memoria
+\input{config.tex}
 
 \title{TFG - XplicaVoz}
 \author{\parbox{.7\textwidth}{\centering Jorge Aured Zarzoso, Germán Bravo Quintián, Rafael López Rodríguez, Iván Pastor Sacristán}}
@@ -45,7 +26,9 @@
 %	\label{fig:x1}
 %\end{figure}
 
+% Para que no se mezcle el índice con la memoria
 \newpage
+
 \input{Secciones/Introduccion.tex}
 
 \input{Secciones/Estado_del_Arte.tex}

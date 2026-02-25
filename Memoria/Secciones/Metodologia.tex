@@ -1,111 +1,11 @@
 \section{Metodología}
 
-\subsection{Dataset}
-Para encontrar un dataset público que tuviera voces tanto reales como clonadas y que ademas fueran por pares (i.e. un audio de voz real cuya transcripción es "Hoy he comido en un restaurante chino" y un audio clonando dicha voz diciendo lo mismo) ha sido complicado. Hemos echado un ojo a bastantes datasets. Vamos a comentar los que hemos descartado y por qué.
+\input{Secciones/Metodologia/Dataset.tex}
 
-%En cuanto a la creación de nuestro propio dataset, lo primero es explicar las dos razones que nos llevaron a tomar esta decisión. La primera es por el tamaño del mismo; es más fácil hacer pruebas con un dataset más pequeño, y segundo porque así tenemos más controlados los audios que usamos para estas pruebas.
-
-\begin{enumerate}
-	\item HABLA \cite{3tamayoflorez23_interspeech}: Este dataset cuenta con una gran cantidad de audios tanto reales, como generados (con técnicas como TTS) y voces clonadas (con técnicas como Cycle-GAN). Lo hemos descartado principalmente por no contar con pares de audios, aunque tal vez podamos hacer pruebas con este dataset más adelante.
-	\item audioMNIST \citep{4BECKER2024}: Este dataset cuenta con 30 mil audios de los números del 0 al 9 en inglés. Lo hemos descartado porque todos los audios son voces reales, por lo que no nos sirve para nuestra tarea.
-	\item ASVSpoof2021 \citep{asvspoof2021_zenodo}: Este dataset forma parte de una serie de desafios internacionales organizados por la comunidad de verificación automática de audio cuyo objetivo es evaluar y mejorar los sistemas capaces de detectar voz manipulada. El dataset se compone de tres grupos de audio, todos ellos con voz real y generada mezclada, logical access con grabaciones transmitidas mediante canales de voz con efectos de codificación y transmisión, physical access con grabaciones de voz auténticas y ataques de reproducción en espacios físicos reales y speech deepfake con grabaciones generadas sintéticamente y comprimidas de formas distintas. Este dataset lo hemos descartado por no contar con pares de audio aunque se pueden rescatar algunos audios en inglés sobre todo para probar los modelos que probemos más adelante.
-	\item Kaggle % (el que buscó rafa) poner cita y explicacion 
-	\item Wavefake \citep{}: Este dataset de Kaggle cuenta con gran cantidad de audios generados. Como tal, nos sirvió para probar el primer prototipo de extracción de características y buscar librerías como librosa o speechRecognition. Este dataset, al no tener los audios reales, no nos sirve para luego desarrollar los modelos.     % poner cita
-\end{enumerate}
-
-\hspace{.7cm}
-El dataset por el que nos hemos decantado se llama ODSS(https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech). Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja, se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
-
-\hspace{.7cm}
-Con todo esto mencionado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. Más adelante, probaremos a usar más cantidad de audios y compararemos el rendimiento.
-
-\subsection{Extracción de características} %Falta incluir otros modelos que usemos y referencias
-Para poder clasificar los audios en reales y generados tenemos que pensar primero en qué datos necesitamos pasar a los modelos para que aprendan. Podemos separar los datos que debemos proporcionar a dichos modelos en 3 grupos:
-
-\subsubsection*{Características}
-
-Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos, los modelos pueden aprender las relaciones entre los dos grupos de audios. Tenemos que destacar que las características de este tipo extraidas son mayormente arrays en el que cada componente es un valor en un momento determinado. Esto es porque la voz tiene la componente temporal, por lo que hay que dividir cada audio en marcos temporales (frames). Además, los modelos que aplicaremos no entrenan con arrays, por lo que los promediaremos con la media y/o desviación típica.
- Vamos a explicar cada característica que extraemos de los audios:
-
-\begin{enumerate}
-	\item \textbf{Valor cuadrático medio (rms)}: Mide la energía promedio de una señal acústica (i.e. la intensidad o volumen general del audio). Se extrae dividiendo la señal en frames, para cada frame se calcula la raíz cuadrada del promedio de los valores de onda al cuadrado y, por último, se promedian esos valores. En voz humana natural, el RMS tiende a tener variaciones más orgánicas, mientras que audios sintéticos pueden mostrar patrones más uniformes.
-	\item \textbf{Tasa de cruces por cero (zcr)}: Mide el número de veces que la señal cambia de signo por segundo, lo que nos permite distinguir entre los sonidos tonales (periódicos) y los ruidosos (no periódicos). Se extrae detectando los puntos donde la señal cambia de signo, se cuentan dichos puntos por unidad de tiempo y se normaliza por la longitud del frame. Los sonidos sordos (como /s/, /f/) tienen ZCR alto, mientras los sonoros (/a/, /m/) tienen ZCR bajo.
-	\item \textbf{Centroide espectral}: Mide el centro de masa del espectro de frecuencias, lo que nos dice, de forma ponderada, si la energía de un sonido se concentra en las frecuencias graves (bajas) o en las frecuencias agudas (altas). Se obtiene calculando la Transformada Rápida de Fourier (FFT) para cada frame para obtener el espectro de frecuencias, se ponderan las frecuencias por su magnitud (energía de dicha frecuencia) y se calcula la media de estas. Cabe menciona que las voces femeninas tienden a tener centroides más altos que masculinas.
-	\item \textbf{Ancho de banda espectral}: Mide qué tan dispersas están las frecuencias alrededor del centroide, para ver si el sonido es ``puro'' como un silbido o una sílaba mantenida, o es ``ruidoso'' como el ruido blanco o un aplauso. Se extrae hallando el centroide como antes y se calcula la desviación típica ponderada en vez de la media ponderada. 
-	\item \textbf{Punto de caída espectral (spectral rolloff)}: Mide la frecuencia por debajo de la cual se concentra un determinado porcentaje de la energía total del espectro, es decir, la frecuencia límite para un porcentaje de energía. Normalmente, dicho porcentaje es del 85\%, aunque puede variar entre 75\% a 90\%, y funciona como un percentil. Se obtiene calculando el centroide igual que antes y sumando la energía progresivamente hasta que lleguemos a una frecuencia con la que nos pasamos de dicho porcentaje. Es útil para distinguir entre sonidos con energía concentrada en bajas frecuencias, en un amplio espectro, o en altas frecuencias.
-	\item \textbf{Planutid espectral}: Mide cómo de plano es el sonido. Varía entre 0 y 1 siendo 0 un sonido con picos pronunciados y 1 un sonido con pocos picos. Se obtiene calculando el espectro como antes (FFT) y dividiendo la media geométrica del espectro entre la media aritmética del mismo.
-	\item \textbf{Tono fundamental (F0)}: Es la frecuencia más baja y periódica de un sonido. En el contexto de la voz, es la frecuencia a la que vibran tus cuerdas vocales. El tono fundamental puede verse en, por ejemplo, las emociones, las preguntas frente a afirmaciones, las notas musicales, entre otras, por lo que nos da mucha información acerca de algo o alguien. Hay varias formas de calcularlo, y ninguna es 100\% precisa. Nosotros nos decantamos por la función PYIN, la cual primero obtiene las frecuencias fundamentales mediante el algoritmo YIN y después aplica el algoritmo probabilístico de Viterbi para obtener la cadena F0 más probable. Estos son algoritmos más sofisticados que combinan autocorrelación, análisis espectral y probabilidades para evitar errores comunes como la octava errónea (detectar 200Hz por ruido en vez del tono real de 100Hz), zonas no voceadas (unvoiced) y ruido de fondo.
-	\item \textbf{Formantes}: Son las frecuencias de resonancia del tracto vocal (la boca, la garganta y la nariz). Estas frecuencias se amplifican de forma natural cuando hablamos, dependiendo de la forma que le demos a la boca.
-	\begin{enumerate}
-		\item F1 (Primer formante): Relacionado con la abertura de la mandíbula (qué tan abierta está la boca).
-		\item F2 (Segundo formante): Relacionado con la posición de la lengua (adelante o atrás).
-		\item F3 (Tercer formante): Relacionado con la posición de la punta de la lengua y tiene mucha importancia en las vocales "r" y en la identidad del hablante.
-	\end{enumerate}
-Para extraerlos hay varias alternativas, nosotros usamos el método de Burg para estimar las formantes, después se muestrean 100 puntos a lo largo del audio y se calcula la media.
-
-- Harmonic-to-Noise Ratio (hnr):
-    - Relación Armónico-Ruido.
-    - Mide: La proporción entre energía periódica (armónicos) y energía aperiódica (ruido).
-    - Representa: La calidad vocal y presencia de ruido glotal.
-    - Extracción:
-        1. Dividir la señal en parte periódica (armónicos) y aperiódica (ruido).
-        2. Medir la energía de cada componente por separado.
-        3. Dividir energía armónica entre energía de ruido y convertir a decibelios.
-    - Información extra: Valores bajos pueden indicar voz ronca o patológica. Voces humanas naturales suelen tener HNR entre 10-20 dB; valores extremos pueden indicar síntesis.
-- silence ratio:
-    - Proporción de silencio.
-    - Mide: El porcentaje de frames considerados silencio.
-    - Representa: Los patrones de pausas y continuidad del habla.
-    - Extracción:
-        1. Calcular RMS para segmentos cortos del audio.
-        2. Comparar cada valor con un umbral mínimo (ej: 0.02).
-        3. Calcular porcentaje de frames que caen bajo el umbral.
-    - Información extra: Las IAs pueden generar patrones de pausas poco naturales o demasiado regulares.
-- Mel Frequency cepstral coefficients (mfcc) 1-13:
-    - Coeficientes Cepstrales en Frecuencia Mel.
-    - Mide: Representación compacta de la envolvente espectral en escala perceptual Mel.
-    - Representa: MFCC1 relacionado con energía, otros con forma del tracto vocal.
-    - Extracción:
-        1. Aplicar filtros triangulares que simulan percepción humana de frecuencia.
-        2. Comprimir el rango dinámico calculando logaritmo de las energías.
-        3. Transformada Coseno Discreta para obtener coeficientes cepstrales.
-    - Información extra: Estándar en reconocimiento de voz; muy efectivos para capturar timbre.
-- skewness:
-    - Asimetría.
-    - Mide: La medida de la asimetría de la distribución de amplitud.
-    - Representa: El sesgo en la forma de onda de la voz.
-    - Extracción:
-        1. Restar la media a cada muestra y elevar al cubo.
-        2. Calcular el promedio de estas desviaciones cúbicas.
-        3. Dividir por la desviación estándar al cubo para estandarizar.
-    - Información extra: Distribuciones de amplitud asimétricas pueden indicar características anómalas en voces sintéticas.
-- kurtosis:
-    - Curtosis.
-    - Mide: La medida de la ``pesadez'' de las colas de la distribución.
-    - Representa: La presencia de picos pronunciados en la señal.
-    - Extracción:
-        1. Elevar las desviaciones respecto a la media a la cuarta potencia.
-        2. Calcular el promedio de estos valores.
-        3. Restar 3 para que la distribución normal tenga curtosis = 0.
-    - Información extra: Curtosis alta (distribución picuda) puede aparecer en audios con compresión excesiva o artefactos de síntesis.
-\end{enumerate}
-
-\begin{enumerate}
-	\item Características. Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos, los modelos pueden aprender las relaciones entre los dos grupos de audios.
-	\item Gráficas. Podemos extraer gráficas de la voz como la forma de onda, el espectrograma de MEL, y otros. Con estas gráficas las CNN pueden aprender los puntos clave que diferencian a los audios reales de los generados.
-	\item Audio crudo. Existen modelos llamados wav2vec los cuales aprenden directamente de los audios, sacando un vector denso de características latentes en los audios, para después hacer ajuste fino o \emph{fine-tuning} de un modelo para clasificar los audios.  
-\end{enumerate}
-
-Vamos a ver más en detalle qué características de cada tipo sacamos.
-
+\input{Secciones/Metodologia/Extraccion_caracteristicas.tex}
 
 \subsection{Preprocesamiento} %Si se hace, añadirlo
 
-
-\subsection{Extracción de características}
-%\addvspace{2\parskip}
-Para la transcripción de los audios usamos modelos de vosk(https://alphacephei.com/vosk/models). Esta elección se debe a que tiene modelos para ambos idiomas que vamos a usar y además, 2 modelos dentro de cada lenguaje. El que usamos para las pruebas es el small  ya que es más rápido y por lo tanto más útil para esta primera fase pero dejamos en consideración el modelo full para futuras fases ya que tiene mayor precisión. 
-Sobre esto, cabe mencionar que primero probamos el modelo whisper pero tras varias pruebas con errores y la incapacidad para hacer funcionar, lo descartamos y es cuando escogimos vosk para esta tarea.
 
 \subsection{Modelos de clasificación}
 
