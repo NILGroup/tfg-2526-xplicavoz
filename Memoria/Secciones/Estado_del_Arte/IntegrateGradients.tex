@@ -1,0 +1,4 @@
+\subsubsection{Integrated Gradients}
+IG aborda la saturación del gradiente integrando las variaciones a lo largo de una trayectoria desde una entrada de referencia (baseline) $x'$ hasta la entrada real $x$. La atribución para la característica $i$ se define como:
+$$ IG_i(x) = (x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial f(x' + \alpha(x - x'))}{\partial x_i} d\alpha $$
+En audio, la selección de la línea base (silencio vs. ruido blanco) es un factor crítico para evitar explicaciones espurias.

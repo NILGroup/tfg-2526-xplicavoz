@@ -18,13 +18,17 @@
 \input{Secciones/Estado_del_Arte/AASIST.tex}
 
 \subsection{Modelos de explicación}
-Los modelos XAI (eXplainable Artificial Inteligence) han cobrado mucha importancia últimamente y más en términos de modelos de clasificación automáticos debido a la necesidad de saber el por qué se clasifican en un sitio u otro cada elemento, en nuestro caso cada audio.
 
-\hspace{.7cm}
-Dos modelos muy utilizados son el modelo SHAP (SHapley Additive exPlanations) y el modelo LIME (Local Interpretable Model-agnostic Explanations), que se utilizan para el análisis de audio sintético. SHAP, como ya sabemos, cuantifica la contribución de cada característica a la predicción final y ayuda a visualizar qué bandas de frecuencia son indicativas de manipulación. Viendo que a menudo revela distorsiones en las zonas de alta frecuencia que el detector suele utilizar para clasificar una muestra como "fake". Por otro lado, LIME, crea explicaciones locales perturbando la entrada y observando los cambios en la salida. También, vimos que en forense de audio, se utiliza LIME para generar máscaras sobre espectrogramas, señalando los milisegundos específicos donde se detectan inconsistencias fónicas.
+\input{Secciones/Estado_del_Arte/SHAP.tex}
 
-\hspace{.7cm}
-Además de estos dos modelos, el modelo de Grad-CAM (Gradient-weighted Class Activation Mapping) se usa mucho junto con los modelos basados en CNN, ya que proporciona visualizaciones espaciales de las áreas del espectrograma que activan la decisión del modelo. Esto es importante para identificar si el modelo se está enfocando en anomalías espectrales o en ruido de fondo, por ejemplo.
+\input{Secciones/Estado_del_Arte/LIME.tex}
 
-\hspace{.7cm}
-Por tanto, como hemos visto lo más utilizado y útil son técnicas independientes del modelo, como SHAP y LIME, que muestran que características han servido para que el modelo clasifique un audio como "real" o "fake", y complementariamente para modelos específicos de CNN que usan espectrogramas, se usa Grad-CAM, que muestra que zonas del espectrograma influyen más en la decisión del modelo.
+\input{Secciones/Estado_del_Arte/GRAD-CAM.tex}
+
+\input{Secciones/Estado_del_Arte/IntegrateGradients.tex}
+
+\input{Secciones/Estado_del_Arte/DICE.tex}
+
+\input{Secciones/Estado_del_Arte/SincNet.tex}
+
+\input{Secciones/Estado_del_Arte/ProtoPNet.tex}

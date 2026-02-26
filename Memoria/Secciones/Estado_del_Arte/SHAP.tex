@@ -1,0 +1,5 @@
+\subsubsection{SHAP}
+
+Basado en la teoría de juegos cooperativos, SHAP asigna a cada característica acústica un valor de importancia que representa su contribución marginal. El valor de Shapley $\phi_i$ para una característica $i$ se calcula como:
+$$ \phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|! (|F| - |S| - 1)!}{|F|!} [f(S \cup \{i\}) - f(S)] $$
+Este método es preferido en el análisis forense debido a su consistencia matemática y su capacidad para ofrecer tanto explicaciones locales como una visión global de la importancia de los descriptores (como los coeficientes MFCC o el pitch).
