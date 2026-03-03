@@ -15,11 +15,226 @@ Este modelo recibe como entrada la forma de onda sin procesar del audio (audio c
 
 El fine-tuning se hará con el dataset de 100 datos que tenemos para entrenar el Wav2Vec2 en la tarea de clasificación de audio. Al igual que con el modelo anterior, también lo pasaré por un controlador fuzzy para que nos diga cuan probable es que el audio sea real o IA.
 
+% La parte de crear el dataset creo que sobra, eso ya se ha contado cómo se hace en el apartado del dataset
 El proceso comienza creando un dataset de entrenamiento y otro de prueba en el que cada uno tendrá el mismo número de audios reales y generados y una etiqueta que indique si es humano o no. Una vez tenemos el dataset, hay que preprocesar los audios ya que en un inicio solo tiene las rutas de los audios por lo que ahora hay que cargar los audios de verdad. Para esta tarea usaremos el propio extractor de características que tiene el modelo (Wav2Vec2FeatureExtractor) fijando la frecuencia de muestreo a 16KHz y activando el padding que rellenará los audios cortos con ceros y trucará los audios largos para que todos tengan la misma longitud. Este preprocesado resultará en que ahora en el dataset, en lugar de haber rutas a los audios, hay tensores de Torch representándolos.
 
 Ahora que ya tenemos el dataset de entrenamiento preprocesado, lo volvemos a dividir en entrenamiento y validación y entrenamos el modelo ya preentrenado para la nueva tarea de detección de voz generada por . Para evaluar el modelo se emplearon tres métricas, la precisión (verdaderos positivos / (verdaderos positivos + falsos positivos), la f1 (Media armónica entre precisión y recall) y el AUC (Área bajo la curva: Capacidad del modelo para distinguir entre clases positivas y negativas). El fine-tuning ha sido muy leve ya que con los 90 audios (80 de entrenamieno y 10 de validación) hay que congelar el aprendizaje del modelo para evitar un sobreentrenamiento.
 
 Una vez hecho el fine-tuning, hacemos el mismo preprocesado para el dataset de test y ponemos el modelo en modo evaluación. Los resultados que de el modelo se pasan por un clasificador fuzzy que se encargará del postprocesado de la salida que la normalizará entre 0 y 1 siendo que los audios cuya score está entre 0.4 y 0.6 no los sabe clasificar, los que están por debajo de 0.4 son audios reales y los que están por encima de 0.6 son audios generados.
 
+\subsubsection{Random Forest}
 
+% El algoritmo Random Forest, propuesto por Breiman \cite{breiman2001random}, se seleccionó como uno de los clasificadores base debido a su robustez frente al sobreajuste, su capacidad para manejar características heterogéneas y su interpretabilidad mediante el análisis de importancia de variables.
+
+% \subsubsection*{Justificación del modelo}
+
+% Random Forest presenta varias ventajas para la tarea de detección de deepfakes de audio:
+
+% \begin{itemize}
+%     \item \textbf{Manejo de características heterogéneas}: Las características extraídas (formantes, MFCC, ZCR, HNR) operan en diferentes escalas y unidades; Random Forest no requiere normalización previa.
+    
+%     \item \textbf{Robustez ante el sobreajuste}: El mecanismo de bagging y la selección aleatoria de características reducen la varianza del modelo.
+    
+%     \item \textbf{Interpretabilidad}: Proporciona una medida intrínseca de la importancia de cada característica, permitiendo identificar qué parámetros acústicos resultan más discriminativos.
+    
+%     \item \textbf{Manejo de no linealidades}: Las firmas acústicas de las voces generadas por IA presentan patrones complejos que los árboles de decisión pueden capturar de forma natural.
+% \end{itemize}
+
+% \subsubsection*{Configuración experimental}
+
+% El proceso experimental para Random Forest se estructuró en cuatro fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, (3) optimización de hiperparámetros mediante búsqueda sistemática, y (4) evaluación comparativa con métricas exhaustivas.
+
+% \paragraph{División de datos}
+% El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
+
+% \begin{lstlisting}[language=Python, caption=División estratificada de datos]
+% X_train, X_test, y_train, y_test = train_test_split(
+%     X, y, 
+%     test_size=0.2, 
+%     random_state=42, 
+%     stratify=y  # Mantiene proporcion de clases
+% )
+% \end{lstlisting}
+
+% \paragraph{Modelo baseline}
+% Se estableció una configuración inicial con hiperparámetros por defecto para obtener una referencia de rendimiento:
+
+% \begin{minted}{python}
+% rf_baseline = RandomForestClassifier(
+%     n_estimators=100,      # Número de árboles
+%     max_depth=10,           # Profundidad máxima
+%     min_samples_split=5,    # Mínimo muestras para dividir nodo
+%     min_samples_leaf=2,     # Mínimo muestras en hoja
+%     max_features='sqrt',    # Características por división
+%     random_state=42,
+%     n_jobs=-1,              # Usar todos los cores
+%     class_weight='balanced' # Ajuste para clases desbalanceadas
+% )
+% \end{minted}
+
+% El parámetro \texttt{class_weight='balanced'} ajusta los pesos de las clases de forma inversamente proporcional a su frecuencia, compensando posibles desbalances en el conjunto de datos.
+
+% \subsubsection*{Validación cruzada}
+
+% Para evaluar la robustez del modelo y evitar que los resultados dependan de una única partición de los datos, se realizó validación cruzada estratificada con 5 folds:
+
+% \begin{minted}{python}
+% from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+% cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+% cv_scores_accuracy = cross_val_score(rf_baseline, X_train, y_train, 
+%                                      cv=cv, scoring='accuracy')
+% cv_scores_f1 = cross_val_score(rf_baseline, X_train, y_train, 
+%                                cv=cv, scoring='f1')
+% cv_scores_auc = cross_val_score(rf_baseline, X_train, y_train, 
+%                                 cv=cv, scoring='roc_auc')
+% \end{minted}
+
+% La validación cruzada proporciona una estimación más realista del rendimiento esperado en datos no vistos, reportándose la media y la desviación estándar de las métricas.
+
+% \subsubsection*{Optimización de hiperparámetros}
+
+% Se realizó una búsqueda sistemática de hiperparámetros mediante \texttt{GridSearchCV} con validación cruzada de 5 folds, optimizando el F1-score. El espacio de búsqueda incluyó:
+
+% \begin{itemize}
+%     \item \texttt{n\_estimators}: Número de árboles en el bosque [50, 100, 200]
+%     \item \texttt{max\_depth}: Profundidad máxima de cada árbol [5, 10, 15, None]
+%     \item \texttt{min\_samples\_split}: Mínimo de muestras para dividir un nodo [2, 5, 10]
+%     \item \texttt{min\_samples\_leaf}: Mínimo de muestras en una hoja [1, 2, 4]
+%     \item \texttt{max\_features}: Número de características a considerar por división ['sqrt', 'log2']
+% \end{itemize}
+
+% \begin{minted}{python}
+% param_grid = {
+%     'n_estimators': [50, 100, 200],
+%     'max_depth': [5, 10, 15, None],
+%     'min_samples_split': [2, 5, 10],
+%     'min_samples_leaf': [1, 2, 4],
+%     'max_features': ['sqrt', 'log2']
+% }
+
+% grid_search = GridSearchCV(
+%     RandomForestClassifier(random_state=42, class_weight='balanced'),
+%     param_grid,
+%     cv=cv,
+%     scoring='f1',  # Optimización de F1-score
+%     n_jobs=-1,
+%     verbose=1
+% )
+
+% grid_search.fit(X_train, y_train)
+% rf_optimized = grid_search.best_estimator_
+% \end{minted}
+
+% \subsubsection*{Métricas de evaluación}
+
+% Para una evaluación exhaustiva de los modelos, se emplearon las siguientes métricas:
+
+% \begin{itemize}
+%     \item \textbf{Accuracy (Exactitud)}: Proporción de predicciones correctas sobre el total.
+%     \[
+%     \text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN}
+%     \]
+    
+%     \item \textbf{Precision (Precisión)}: Proporción de predicciones positivas correctas.
+%     \[
+%     \text{Precision} = \frac{TP}{TP + FP}
+%     \]
+    
+%     \item \textbf{Recall (Sensibilidad)}: Proporción de positivos reales correctamente identificados.
+%     \[
+%     \text{Recall} = \frac{TP}{TP + FN}
+%     \]
+    
+%     \item \textbf{F1-Score}: Media armónica de precisión y recall.
+%     \[
+%     F1 = 2 \cdot \frac{\text{Precision} \cdot \text{Recall}}{\text{Precision} + \text{Recall}}
+%     \]
+    
+%     \item \textbf{AUC-ROC} (Área bajo la curva ROC): Mide la capacidad del modelo para distinguir entre clases, independientemente del umbral de clasificación. Un valor de 0.5 indica clasificación aleatoria, mientras que 1.0 indica clasificación perfecta.
+    
+%     \item \textbf{MCC} (Coeficiente de correlación de Matthews): Métrica equilibrada que considera todos los elementos de la matriz de confusión, especialmente útil en problemas con clases desbalanceadas. Su rango es \([-1, 1]\), donde 1 indica predicción perfecta, 0 predicción aleatoria y -1 predicción inversa perfecta.
+%     \[
+%     \text{MCC} = \frac{TP \cdot TN - FP \cdot FN}{\sqrt{(TP+FP)(TP+FN)(TN+FP)(TN+FN)}}
+%     \]
+% \end{itemize}
+
+% La función de evaluación implementada automatiza el cálculo de todas estas métricas y genera visualizaciones:
+
+% \begin{minted}{python}
+% def evaluacion_modelo(model_name, y_true, y_pred, y_pred_proba):
+%     """
+%     Evalúa un modelo con métricas completas y visualizaciones.
+%     """
+%     # Cálculo de métricas
+%     accuracy = accuracy_score(y_true, y_pred)
+%     auc = roc_auc_score(y_true, y_pred_proba)
+%     f1 = f1_score(y_true, y_pred)
+%     mcc = matthews_corrcoef(y_true, y_pred)
+%     precision = precision_score(y_true, y_pred)
+%     recall = recall_score(y_true, y_pred)
+    
+%     # Matriz de confusión
+%     cm = confusion_matrix(y_true, y_pred)
+    
+%     # Visualizaciones (matriz de confusión, curva ROC)
+%     # ...
+    
+%     return {
+%         'accuracy': accuracy, 'precision': precision,
+%         'recall': recall, 'f1': f1,
+%         'auc': auc, 'mcc': mcc,
+%         'confusion_matrix': cm
+%     }
+% \end{minted}
+
+% \subsubsection*{Análisis de importancia de características}
+
+% Una ventaja fundamental de Random Forest es su capacidad para proporcionar una medida de la importancia relativa de cada característica en la clasificación. Esta importancia se calcula como la reducción media de impureza (media de la disminución del índice de Gini) aportada por cada variable en todos los árboles del bosque.
+
+% \begin{minted}{python}
+% importances = rf_optimized.feature_importances_
+% feature_names = X.columns if hasattr(X, 'columns') else [f'F{i}' for i in range(X.shape[1])]
+
+% # Ordenar por importancia descendente
+% indices = np.argsort(importances)[::-1]
+
+% # Visualizar top 20
+% plt.figure(figsize=(12, 8))
+% top_n = min(20, len(feature_names))
+% plt.barh(range(top_n), importances[indices[:top_n]][::-1])
+% plt.yticks(range(top_n), [feature_names[i] for i in indices[:top_n]][::-1])
+% plt.xlabel('Importancia relativa')
+% plt.title('Top 20 características más importantes')
+% plt.tight_layout()
+% \end{minted}
+
+% Este análisis permite identificar qué parámetros acústicos (determinados formantes, coeficientes MFCC, etc.) resultan más discriminativos para diferenciar voces reales de generadas por IA, aportando interpretabilidad al modelo y posibles hipótesis sobre las diferencias acústicas entre ambos tipos de voz.
+
+% \subsubsection*{Resultados comparativos}
+
+% La Tabla \ref{tab:rf_comparativa} muestra la comparación entre el modelo baseline y el modelo optimizado tras la búsqueda de hiperparámetros.
+
+% \begin{table}[h]
+% \centering
+% \caption{Comparativa de rendimiento: Baseline vs Optimizado}
+% \label{tab:rf_comparativa}
+% \begin{tabular}{|l|c|c|c|}
+% \hline
+% \textbf{Métrica} & \textbf{Baseline} & \textbf{Optimizado} & \textbf{Mejora} \\
+% \hline
+% Accuracy    & 0.xxxx & 0.xxxx & +0.xxxx \\
+% Precision   & 0.xxxx & 0.xxxx & +0.xxxx \\
+% Recall      & 0.xxxx & 0.xxxx & +0.xxxx \\
+% F1-Score    & 0.xxxx & 0.xxxx & +0.xxxx \\
+% AUC-ROC     & 0.xxxx & 0.xxxx & +0.xxxx \\
+% MCC         & 0.xxxx & 0.xxxx & +0.xxxx \\
+% \hline
+% \end{tabular}
+% \end{table}
+
+\subsubsection{LightGBM}
+
+\subsubsection{Support Vector Machine (SVM)}
 
