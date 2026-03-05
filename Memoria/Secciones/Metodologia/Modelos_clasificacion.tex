@@ -236,7 +236,446 @@ Una vez hecho el fine-tuning, hacemos el mismo preprocesado para el dataset de t
 
 \subsubsection{LightGBM}
 
+LightGBM (Light Gradient Boosting Machine) es un framework de gradient boosting desarrollado por Microsoft en 2017 \cite{ke2017lightgbm} que optimiza el proceso de entrenamiento mediante innovaciones como el muestreo unilateral basado en gradientes (GOSS) y la agrupación exclusiva de características (EFB). A diferencia de Random Forest, que construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
+
+\subsubsection*{Justificación del modelo}
+
+LightGBM presenta ventajas significativas para la tarea de detección de deepfakes de audio:
+
+\begin{itemize}
+    \item \textbf{Alta precisión}: El enfoque secuencial de corrección de errores suele superar a los métodos de bagging en problemas complejos como la detección de deepfakes.
+    
+    \item \textbf{Eficiencia computacional}: El muestreo inteligente (GOSS) permite entrenar con grandes volúmenes de audios en menos tiempo que otros métodos de boosting.
+    
+    \item \textbf{Manejo de no linealidades}: Las firmas acústicas de las voces generadas por IA presentan patrones complejos que los árboles de decisión secuenciales pueden capturar de forma más efectiva.
+    
+    \item \textbf{Regularización integrada}: Los parámetros de regularización L1 y L2 ayudan a prevenir el sobreajuste cuando se trabaja con características de audio altamente correlacionadas.
+    
+    \item \textbf{Soporte nativo para datos desbalanceados}: Mediante el parámetro \texttt{is\_unbalance} o \texttt{scale\_pos\_weight}, LightGBM ajusta automáticamente los pesos de las clases.
+\end{itemize}
+
+\subsubsection*{Fundamento del algoritmo}
+
+LightGBM construye los árboles de decisión de forma secuencial, minimizando una función de pérdida mediante el gradiente. A diferencia del boosting tradicional, introduce dos innovaciones clave:
+
+\begin{itemize}
+    \item \textbf{GOSS (Gradient-based One-Side Sampling)}: En lugar de usar todas las muestras para estimar la ganancia de información, GOSS retiene las muestras con gradientes grandes (aquellas con mayor error) y muestrea aleatoriamente las de gradiente pequeño. Esto reduce drásticamente el número de instancias a considerar sin perder precisión.
+    
+    \item \textbf{EFB (Exclusive Feature Bundling)}: Agrupa características mutuamente excluyentes (que raramente toman valores no cero simultáneamente) para reducir la dimensionalidad, crucial cuando se trabaja con características de audio de alta dimensión como los MFCC.
+    
+    \item \textbf{Crecimiento por hoja (leaf-wise)}: A diferencia del crecimiento nivelado tradicional, LightGBM expande el nodo con mayor pérdida, lo que produce árboles más profundos en las regiones problemáticas y más eficientes en las fáciles.
+\end{itemize}
+
+\subsubsection*{Configuración experimental}
+
+El proceso experimental para LightGBM se estructuró en cuatro fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, (3) optimización de hiperparámetros mediante búsqueda sistemática, y (4) evaluación comparativa con métricas exhaustivas.
+
+\paragraph{Preparación de datos}
+A diferencia de otros algoritmos, LightGBM puede manejar directamente datos sin normalización, aunque requiere que no existan valores nulos.
+
+\paragraph{Modelo baseline con LightGBM}
+Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento:
+
+% \begin{lstlisting}[language=Python, caption=Configuración del modelo baseline LightGBM]
+% # Creación de datasets optimizados de LightGBM
+% train_data = lgb.Dataset(X_train, label=y_train)
+% test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
+
+% # Parámetros baseline
+% params_baseline = {
+%     'objective': 'binary',              # Clasificación binaria
+%     'metric': 'binary_logloss',          # Métrica de evaluación
+%     'boosting_type': 'gbdt',              # Gradient Boosting Decision Tree
+%     'num_leaves': 31,                     # Número máximo de hojas
+%     'learning_rate': 0.05,                 # Tasa de aprendizaje (eta)
+%     'feature_fraction': 0.9,               # Fracción de características por iteración
+%     'bagging_fraction': 0.8,               # Fracción de datos por iteración
+%     'bagging_freq': 5,                      # Frecuencia de bagging
+%     'verbose': 0,                           # Modo silencioso
+%     'random_state': 42,
+%     'is_unbalance': True,                    # Compensación de clases desbalanceadas
+%     'num_threads': -1                        # Usar todos los cores
+% }
+
+% # Entrenamiento con early stopping
+% model_baseline = lgb.train(
+%     params_baseline,
+%     train_data,
+%     valid_sets=[test_data],
+%     num_boost_round=1000,
+%     callbacks=[
+%         lgb.early_stopping(50),   # Detiene si no mejora en 50 rondas
+%         lgb.log_evaluation(100)    # Log cada 100 iteraciones
+%     ]
+% )
+% \end{lstlisting}
+
+El parámetro \texttt{is\_unbalance=True} activa la compensación automática para clases desbalanceadas, ajustando los pesos de forma inversamente proporcional a la frecuencia de cada clase.
+
+\paragraph{Early stopping}
+Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento cuando añadir más árboles no mejora el rendimiento en validación. Esto:
+\begin{itemize}
+    \item Previene el sobreajuste (overfitting)
+    \item Ahorra tiempo computacional
+    \item Determina automáticamente el número óptimo de iteraciones
+\end{itemize}
+
+\subsubsection*{Validación cruzada}
+
+Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar:
+
+% \begin{lstlisting}[language=Python, caption=Validación cruzada con LightGBM]
+% from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+% # Usamos la interfaz scikit-learn de LightGBM
+% lgb_sklearn = lgb.LGBMClassifier(
+%     objective='binary',
+%     boosting_type='gbdt',
+%     num_leaves=31,
+%     learning_rate=0.05,
+%     random_state=42,
+%     is_unbalance=True,
+%     n_jobs=-1
+% )
+
+% cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+% cv_scores_accuracy = cross_val_score(lgb_sklearn, X_train, y_train, 
+%                                      cv=cv, scoring='accuracy')
+% cv_scores_f1 = cross_val_score(lgb_sklearn, X_train, y_train, 
+%                                cv=cv, scoring='f1')
+% cv_scores_auc = cross_val_score(lgb_sklearn, X_train, y_train, 
+%                                 cv=cv, scoring='roc_auc')
+% \end{lstlisting}
+
+La validación cruzada proporciona una estimación más robusta del rendimiento, reportándose la media y la desviación estándar de las métricas.
+
+\subsubsection*{Optimización de hiperparámetros}
+
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento:
+
+\begin{itemize}
+    \item \texttt{num\_leaves}: Controla la complejidad del modelo. Valores altos permiten capturar patrones más complejos pero aumentan el riesgo de sobreajuste.
+    
+    \item \texttt{learning\_rate}: Tasa de aprendizaje (eta). Valores pequeños requieren más iteraciones pero pueden lograr mejor convergencia.
+    
+    \item \texttt{n\_estimators}: Número de iteraciones de boosting.
+    
+    \item \texttt{min\_child\_samples}: Mínimo de muestras requeridas en una hoja. Controla la profundidad y evita hojas con pocas muestras.
+    
+    \item \texttt{subsample} y \texttt{colsample\_bytree}: Fracciones de muestras y características para cada árbol, introduciendo aleatoriedad.
+    
+    \item \texttt{reg\_alpha} y \texttt{reg\_lambda}: Regularización L1 y L2 para controlar la complejidad.
+\end{itemize}
+
+% \begin{lstlisting}[language=Python, caption=Grid Search para LightGBM]
+% param_grid = {
+%     'num_leaves': [15, 31, 63],           # Complejidad del modelo
+%     'learning_rate': [0.01, 0.05, 0.1],    # Tasa de aprendizaje
+%     'n_estimators': [100, 200, 300],       # Número de iteraciones
+%     'min_child_samples': [20, 50, 100],     # Mínimo muestras por hoja
+%     'subsample': [0.6, 0.8, 1.0],           # Fracción de muestras
+%     'colsample_bytree': [0.6, 0.8, 1.0],    # Fracción de características
+%     'reg_alpha': [0, 0.1, 0.5],             # Regularización L1
+%     'reg_lambda': [0, 0.1, 0.5]             # Regularización L2
+% }
+
+% grid_search = GridSearchCV(
+%     lgb.LGBMClassifier(objective='binary', random_state=42, 
+%                       is_unbalance=True, n_jobs=-1),
+%     param_grid,
+%     cv=cv,
+%     scoring='f1',
+%     n_jobs=-1,
+%     verbose=1
+% )
+
+% grid_search.fit(X_train, y_train)
+% lgb_optimized = grid_search.best_estimator_
+% \end{lstlisting}
+
+\subsubsection*{Métricas de evaluación}
+
+Se emplearon las mismas métricas que en Random Forest para mantener la comparabilidad:
+
+\begin{itemize}
+    \item \textbf{Accuracy}: Proporción de predicciones correctas.
+    \item \textbf{Precision}: Proporción de predicciones positivas correctas.
+    \item \textbf{Recall}: Proporción de positivos reales correctamente identificados.
+    \item \textbf{F1-Score}: Media armónica de precisión y recall.
+    \item \textbf{AUC-ROC}: Área bajo la curva ROC.
+    \item \textbf{MCC}: Coeficiente de correlación de Matthews.
+\end{itemize}
+
+La función de evaluación implementada es la misma que para Random Forest, garantizando consistencia en la comparación.
+
+\subsubsection*{Análisis de importancia de características}
+
+LightGBM ofrece dos tipos de importancia de características, complementarias entre sí:
+
+\begin{itemize}
+    \item \textbf{Gain}: Suma de la mejora (reducción de pérdida) que aporta cada característica cuando se usa en una división. Es la medida más informativa.
+    
+    \item \textbf{Split}: Número de veces que la característica se utiliza para dividir nodos. Indica la frecuencia de uso, no necesariamente su impacto.
+\end{itemize}
+
+% \begin{lstlisting}[language=Python, caption=Extracción de importancia dual en LightGBM]
+% importances_gain = lgb_optimized.booster_.feature_importance(importance_type='gain')
+% importances_split = lgb_optimized.booster_.feature_importance(importance_type='split')
+
+% # Visualización comparativa
+% fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+
+% # Importancia por ganancia
+% axes[0].barh(range(top_n), importances_gain[indices[:top_n]][::-1])
+% axes[0].set_title('Feature Importance (Gain) - LightGBM')
+
+% # Importancia por frecuencia de split
+% axes[1].barh(range(top_n), importances_split[indices[:top_n]][::-1])
+% axes[1].set_title('Feature Importance (Split Count) - LightGBM')
+% \end{lstlisting}
+
+Esta dualidad permite un análisis más profundo: una característica puede usarse con frecuencia (split alto) pero aportar poca mejora (gain bajo), o viceversa.
+
+\subsubsection*{Análisis de eficiencia computacional}
+
+Una ventaja destacada de LightGBM es su eficiencia. Se midieron los tiempos de entrenamiento para cuantificar esta mejora:
+
+% \begin{lstlisting}[language=Python, caption=Medición de tiempos de entrenamiento]
+% import time
+
+% start_time = time.time()
+% lgb.train(params_baseline, train_data, num_boost_round=100)
+% baseline_time = time.time() - start_time
+
+% start_time = time.time()
+% lgb_optimized.fit(X_train, y_train)
+% optimized_time = time.time() - start_time
+% \end{lstlisting}
+
 \subsubsection{Support Vector Machine (SVM)}
+
+Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990 \cite{cortes1995support}. SVM se fundamenta en la búsqueda del hiperplano óptimo que maximiza el margen de separación entre clases, lo que proporciona una base teórica sólida y garantías de generalización.
+
+\subsubsection*{Justificación del modelo}
+
+SVM presenta características especialmente relevantes para la detección de deepfakes de audio:
+
+\begin{itemize}
+    \item \textbf{Fundamento teórico robusto}: A diferencia de métodos heurísticos, SVM está basada en la teoría de optimización convexa, garantizando que la solución encontrada es óptima (máximo margen global).
+    
+    \item \textbf{Eficacia en espacios de alta dimensión}: Las características de audio generan vectores de gran dimensionalidad (decenas o cientos de coeficientes). SVM maneja eficientemente esta situación sin colapsar por la maldición de la dimensionalidad.
+    
+    \item \textbf{Versatilidad mediante kernels}: La capacidad de utilizar diferentes funciones kernel (lineal, polinomial, RBF) permite adaptar el modelo a la estructura no lineal de los datos de audio sin necesidad de transformaciones manuales.
+    
+    \item \textbf{Regularización natural}: La maximización del margen proporciona una regularización implícita que mejora la capacidad de generalización, crucial cuando se trabaja con datasets limitados de voces deepfake.
+    
+    \item \textbf{Interpretabilidad limitada pero útil}: El análisis de los vectores de soporte revela qué audios son más representativos o ambiguos en la frontera de decisión.
+\end{itemize}
+
+\subsubsection*{Fundamento del algoritmo}
+
+El objetivo fundamental de SVM es encontrar un hiperplano que separe las dos clases (voz real y voz generada por IA) con el máximo margen posible. Los puntos de entrenamiento más cercanos a este hiperplano reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), y son los únicos que determinan la posición y orientación del hiperplano.
+
+Para problemas no lineales, SVM utiliza el \textbf{truco del kernel} (\textit{kernel trick}), que transforma implícitamente los datos a un espacio de mayor dimensionalidad donde sean linealmente separables, sin necesidad de calcular explícitamente las coordenadas en ese espacio.
+
+Los kernels utilizados en este trabajo son:
+
+\begin{itemize}
+    \item \textbf{Kernel lineal}: Asume que los datos son aproximadamente separables por un hiperplano. Útil como referencia baseline.
+    \[
+    K(\mathbf{x}_i, \mathbf{x}_j) = \mathbf{x}_i^T \mathbf{x}_j
+    \]
+    
+    \item \textbf{Kernel RBF} (\textit{Radial Basis Function}): El más utilizado en problemas de audio. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas.
+    \[
+    K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)
+    \]
+    donde \(\gamma\) controla la influencia de cada muestra: valores pequeños consideran vecindarios amplios (frontera más suave), mientras que valores grandes se enfocan en vecindarios reducidos (frontera más ajustada).
+\end{itemize}
+
+\subsubsection*{Importancia de la normalización}
+
+Una característica crítica de SVM es su sensibilidad a la escala de las características. Las variables de audio presentan escalas muy diferentes:
+
+\begin{itemize}
+    \item \textbf{Formantes}: Del orden de cientos de Hz (ej. 300-3000 Hz)
+    \item \textbf{MFCC}: Valores típicamente en el rango \([-200, 200]\)
+    \item \textbf{ZCR} (Zero Crossing Rate): Valores normalizados entre 0 y 1
+    \item \textbf{HNR} (Harmonics-to-Noise Ratio): Valores en decibelios (dB)
+\end{itemize}
+
+Sin normalización, las características con mayor magnitud dominarían el cálculo de distancias, sesgando el modelo. Por ello, se aplicó \texttt{StandardScaler} para estandarizar las características a media cero y desviación estándar uno:
+
+% \begin{lstlisting}[language=Python, caption=Normalización de características para SVM]
+% from sklearn.preprocessing import StandardScaler
+
+% scaler = StandardScaler()
+% X_train_scaled = scaler.fit_transform(X_train)
+% X_test_scaled = scaler.transform(X_test)
+% \end{lstlisting}
+
+Es crucial aplicar el escalado \textit{después} de la división train/test para evitar \textit{data leakage} (fuga de información del conjunto de prueba al entrenamiento).
+
+\subsubsection*{Configuración experimental}
+
+El proceso experimental para SVM se estructuró en cinco fases: (1) modelo baseline con kernel lineal, (2) modelo con kernel RBF, (3) validación cruzada, (4) optimización de hiperparámetros mediante Grid Search, y (5) evaluación comparativa.
+
+\paragraph{Modelo baseline: SVM lineal}
+Se estableció un primer modelo con kernel lineal como referencia simple:
+
+% \begin{lstlisting}[language=Python, caption=Configuración SVM lineal baseline]
+% svm_linear = SVC(
+%     kernel='linear',           # Frontera de decisión lineal
+%     C=1.0,                     # Parámetro de regularización
+%     probability=True,           # Habilita probabilidades para AUC-ROC
+%     random_state=42,
+%     class_weight='balanced'    # Compensación de clases desbalanceadas
+% )
+% \end{lstlisting}
+
+El parámetro \texttt{class\_weight='balanced'} ajusta los pesos de las clases de forma inversamente proporcional a su frecuencia, compensando posibles desbalances en el conjunto de datos.
+
+\paragraph{Modelo no lineal: SVM con kernel RBF}
+Dada la naturaleza compleja de las señales de audio, se implementó un modelo con kernel RBF para capturar relaciones no lineales:
+
+% \begin{lstlisting}[language=Python, caption=Configuración SVM con kernel RBF]
+% svm_rbf = SVC(
+%     kernel='rbf',              # Kernel no lineal
+%     C=1.0,                     # Regularización
+%     gamma='scale',              # Coeficiente del kernel
+%     probability=True,
+%     random_state=42,
+%     class_weight='balanced'
+% )
+% \end{lstlisting}
+
+El parámetro \texttt{gamma='scale'} establece automáticamente \(\gamma = 1/(n_{\text{características}} \cdot \text{Var}(X))\), un valor inicial razonable.
+
+\subsubsection*{Validación cruzada}
+
+Para garantizar la robustez de las evaluaciones y evitar dependencias de una única partición, se implementó validación cruzada estratificada con 5 folds. Se utilizó un pipeline que integra el escalado y el clasificador para asegurar que la normalización se realice correctamente en cada fold:
+
+% \begin{lstlisting}[language=Python, caption=Pipeline con validación cruzada para SVM]
+% from sklearn.pipeline import Pipeline
+% from sklearn.model_selection import StratifiedKFold, cross_val_score
+
+% # Pipeline que integra escalado + SVM
+% svm_pipeline = Pipeline([
+%     ('scaler', StandardScaler()),
+%     ('svm', SVC(kernel='rbf', probability=True, 
+%                 random_state=42, class_weight='balanced'))
+% ])
+
+% cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+
+% cv_scores_accuracy = cross_val_score(svm_pipeline, X_train, y_train, 
+%                                      cv=cv, scoring='accuracy')
+% cv_scores_f1 = cross_val_score(svm_pipeline, X_train, y_train, 
+%                                cv=cv, scoring='f1')
+% cv_scores_auc = cross_val_score(svm_pipeline, X_train, y_train, 
+%                                 cv=cv, scoring='roc_auc')
+% \end{lstlisting}
+
+El uso de pipeline es especialmente importante en SVM porque garantiza que la normalización se ajuste únicamente con los datos de entrenamiento de cada fold, evitando contaminación con datos de validación.
+
+\subsubsection*{Optimización de hiperparámetros}
+
+SVM con kernel RBF tiene dos hiperparámetros críticos que determinan su rendimiento:
+
+\begin{itemize}
+    \item \textbf{C (parámetro de regularización)}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Valores bajos (\(\approx 0.1\)) buscan un margen grande aunque se cometan algunos errores (modelo más generalista). Valores altos (\(\approx 100\)) penalizan fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de sobreajuste).
+    
+    \item \textbf{\(\gamma\) (gamma)}: Define el alcance de la influencia de un solo punto de entrenamiento. Valores bajos (\(\approx 0.001\)) significan influencia de largo alcance (frontera más suave). Valores altos (\(\approx 1\)) hacen que cada punto tenga influencia muy local (frontera más compleja, riesgo de sobreajuste).
+\end{itemize}
+
+La búsqueda sistemática se realizó mediante Grid Search con validación cruzada:
+
+% \begin{lstlisting}[language=Python, caption=Grid Search para optimización de SVM]
+% param_grid = {
+%     'svm__C': [0.1, 1, 10, 100],           # Regularización
+%     'svm__gamma': [0.001, 0.01, 0.1, 1, 'scale', 'auto'],  # Influencia del kernel
+%     'svm__kernel': ['rbf']                   # Nos centramos en RBF
+% }
+
+% grid_search = GridSearchCV(
+%     svm_pipeline,
+%     param_grid,
+%     cv=cv,
+%     scoring='f1',              # Optimizamos F1-score
+%     n_jobs=-1,
+%     verbose=1
+% )
+
+% grid_search.fit(X_train, y_train)
+% svm_optimized = grid_search.best_estimator_
+% \end{lstlisting}
+
+La elección de optimizar el F1-score responde a la necesidad de balancear precisión y sensibilidad en un problema donde ambos tipos de error (falsos positivos y falsos negativos) son relevantes.
+
+\subsubsection*{Análisis de la interacción C-gamma}
+
+Una contribución importante del análisis SVM es la visualización de la interacción entre los parámetros C y gamma. El heatmap generado a partir de los resultados del Grid Search (Figura \ref{fig:svm_heatmap}) permite identificar regiones óptimas y entender la sensibilidad del modelo:
+
+% \begin{lstlisting}[language=Python, caption=Visualización de la interacción C-gamma]
+% # Extraemos resultados y creamos matriz de scores
+% results = pd.DataFrame(grid_search.cv_results_)
+% C_values = sorted(set([p['svm__C'] for p in grid_search.cv_results_['params']]))
+% gamma_values = sorted(set([p['svm__gamma'] for p in grid_search.cv_results_['params'] 
+%                           if isinstance(p['svm__gamma'], (int, float))]))
+
+% # Heatmap de F1-score para diferentes combinaciones
+% sns.heatmap(score_matrix, annot=True, fmt='.3f',
+%             xticklabels=gamma_values, yticklabels=C_values,
+%             cmap='viridis', cbar_kws={'label': 'F1-Score'})
+% \end{lstlisting}
+
+Este análisis revela:
+\begin{itemize}
+    \item La zona óptima suele formar una "cresta" diagonal, indicando que valores altos de C requieren valores bajos de gamma y viceversa.
+    \item Combinaciones extremas (C muy alto con gamma muy alto) producen sobreajuste severo.
+    \item La superficie de rendimiento guía la selección final de hiperparámetros.
+\end{itemize}
+
+\subsubsection*{Análisis de vectores de soporte}
+
+Una característica única de SVM es la identificación de los \textbf{vectores de soporte}: las muestras críticas que determinan la frontera de decisión. Su análisis proporciona información sobre la complejidad del problema:
+
+% \begin{lstlisting}[language=Python, caption=Análisis de vectores de soporte]
+% # Obtenemos el modelo del pipeline
+% svm_model = svm_optimized.named_steps['svm']
+% n_support_vectors = svm_model.n_support_
+% support_vectors_count = sum(n_support_vectors)
+
+% print(f"Total de vectores de soporte: {support_vectors_count}")
+% print(f"Porcentaje del dataset: {support_vectors_count/len(X_train)*100:.2f}%")
+% print(f"Vectores clase Real (0): {n_support_vectors[0]}")
+% print(f"Vectores clase IA (1): {n_support_vectors[1]}")
+% \end{lstlisting}
+
+La interpretación de estos valores es reveladora:
+\begin{itemize}
+    \item Un bajo porcentaje de vectores de soporte (\(< 30\%\)) indica que la frontera de decisión es relativamente simple y está bien definida por pocos ejemplos.
+    \item Si una clase tiene significativamente más vectores de soporte, su región de decisión es más compleja o presenta mayor solapamiento.
+    \item Los vectores de soporte son candidatos naturales para un análisis cualitativo: ¿qué tienen en común los audios más difíciles de clasificar?
+\end{itemize}
+
+\subsubsection*{Métricas de evaluación}
+
+Se emplearon las mismas métricas que en Random Forest y LightGBM para mantener la comparabilidad entre modelos:
+
+\begin{itemize}
+    \item \textbf{Accuracy}: Proporción de predicciones correctas.
+    \item \textbf{Precision}: Proporción de predicciones positivas correctas.
+    \item \textbf{Recall}: Proporción de positivos reales correctamente identificados.
+    \item \textbf{F1-Score}: Media armónica de precisión y recall.
+    \item \textbf{AUC-ROC}: Área bajo la curva ROC.
+    \item \textbf{MCC}: Coeficiente de correlación de Matthews.
+\end{itemize}
+
+La función de evaluación implementada es la misma que para los modelos anteriores, garantizando consistencia en la comparación.
+
+
 
 \subsubsection{AASIST}
 Como hemos comentado antes, AASIST produce una predicción a partir del audio crudo por lo que el primer paso es definir las rutas a los audios. 
