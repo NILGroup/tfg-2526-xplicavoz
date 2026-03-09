@@ -1,0 +1,14 @@
+\subsubsection{Fine-tuning Wav2Vec2}
+
+Wav2Vec2 es un modelo de aprendizaje profundo para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de características manuales. Fue propuesto por Meta en 2020.
+
+Este modelo recibe como entrada la forma de onda sin procesar del audio (audio crudo) y su salida debe ser decodificada utilizando Wav2Vec2CTCTokenizer.
+
+El fine-tuning se hará con el dataset de 100 datos que tenemos para entrenar el Wav2Vec2 en la tarea de clasificación de audio. Al igual que con el modelo anterior, también lo pasaré por un controlador fuzzy para que nos diga cuan probable es que el audio sea real o IA.
+
+% La parte de crear el dataset creo que sobra, eso ya se ha contado cómo se hace en el apartado del dataset
+El proceso comienza creando un dataset de entrenamiento y otro de prueba en el que cada uno tendrá el mismo número de audios reales y generados y una etiqueta que indique si es humano o no. Una vez tenemos el dataset, hay que preprocesar los audios ya que en un inicio solo tiene las rutas de los audios por lo que ahora hay que cargar los audios de verdad. Para esta tarea usaremos el propio extractor de características que tiene el modelo (Wav2Vec2FeatureExtractor) fijando la frecuencia de muestreo a 16KHz y activando el padding que rellenará los audios cortos con ceros y trucará los audios largos para que todos tengan la misma longitud. Este preprocesado resultará en que ahora en el dataset, en lugar de haber rutas a los audios, hay tensores de Torch representándolos.
+
+Ahora que ya tenemos el dataset de entrenamiento preprocesado, lo volvemos a dividir en entrenamiento y validación y entrenamos el modelo ya preentrenado para la nueva tarea de detección de voz generada por . Para evaluar el modelo se emplearon tres métricas, la precisión (verdaderos positivos / (verdaderos positivos + falsos positivos), la f1 (Media armónica entre precisión y recall) y el AUC (Área bajo la curva: Capacidad del modelo para distinguir entre clases positivas y negativas). El fine-tuning ha sido muy leve ya que con los 90 audios (80 de entrenamieno y 10 de validación) hay que congelar el aprendizaje del modelo para evitar un sobreentrenamiento.
+
+Una vez hecho el fine-tuning, hacemos el mismo preprocesado para el dataset de test y ponemos el modelo en modo evaluación. Los resultados que de el modelo se pasan por un clasificador fuzzy que se encargará del postprocesado de la salida que la normalizará entre 0 y 1 siendo que los audios cuya score está entre 0.4 y 0.6 no los sabe clasificar, los que están por debajo de 0.4 son audios reales y los que están por encima de 0.6 son audios generados.
