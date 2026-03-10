@@ -1,6 +1,19 @@
 \subsubsection{Perceptrón multicapa}
 
-Hemos usado el código de extracción de características para procesar los audios que tenemos en el dataset personalizado con 100 audios en español (50 reales y 50 generados a partir de esos reales). Una vez preprocesados los audios con sus características extraídas, empleamos una CNN (red neuronal convolucional) para sacar un embedding de 128 dimensiones del espectrograma del audio y un MLP (perceptrón multicapa) para sacar un embedding de 64 dimensiones de las características paralingüísticas del audio. Tras esto, las concatenamos teniendo un embedding de 192 dimensiones siendo las primeras 64 las características y las otras 128 las del espectrograma.
+El motivo de probar un MLP para esta tarea de clasificación fue sobre todo por explorar que posibles opciones tenemos a la hora de realizar esta tarea.
+
+Hemos usado el código de extracción de características para procesar los audios que tenemos en el dataset personalizado con 100 audios en español (50 reales y 50 generados a partir de esos reales) y sacar sus características. 
+
+Una vez preprocesados los audios con sus características extraídas, empleamos una CNN (red neuronal convolucional) para sacar un embedding de 128 dimensiones del espectrograma del audio y un MLP (perceptrón multicapa) para sacar un embedding de 64 dimensiones de las características paralingüísticas del audio. Tras esto, las concatenamos teniendo un embedding de 192 dimensiones siendo las primeras 64 las características y las otras 128 las del espectrograma.
 
 Después, creamos un perceptrón multicapa cuyo objetivo es clasificar el audio en si es generado o es real empleando para ello lógica difusa (\emph{fuzzy logic}). Para ello, pasamos la salida del perceptrón por un controlador fuzzy que irá aprendiendo también sus parámetros y adaptará la salida para que esté entre 0 y 1 siendo que cuanto más cercano al 0, más posible es que el audio sea real y no sea generado.
 En la práctica, como el dataset es de 100 datos, no hay suficientes para entrenar un perceptrón de forma correcta ya que cuando hicimos las pruebas, todas las predicciones del perceptrón no se alejan del 0.5 que en este contexto de probabilidad continuo significa que el modelo está indeciso y no lo sabe clasificar como real o como generado.
+
+El flujo de datos de este método se resume en coger los archivos de audios audios, pasarlos por el extractor de características para obtener todas sus características y agruparlo todo en el mismo dataframe. Después pasamos todas las características del audio por un MLP para sacar un embedding de 64 dimensiones. También sacamos el espectrograma para pasarlo por una pequeña CNN y sacar otro embedding de 128 dimensiones. Ambos embeddings los concatenamos en uno de 192 dimensiones que es lo que se le pasa al MLP final para calcular la pertenencia de los audios a las clases real o generado.
+
+Los resultados obtenidos por el modelo muestran un gran sobreajuste dado los pocos audios de los que disponemos en el dataset que tenemos. 
+
+(Insertar tabla de predicciones del modelo).
+
+Las conclusiones que podemos sacar sobre este modelo a la vista de los resultados son que para crear un modelo de clasificación desde 0 y que sea eficaz en su labor, necesitaríamos muchísimos más audios de los que disponemos, además, en lo que se refiere a la posterior tarea de aplicar elementos de IA explicable al modelo, al usar embeddings como entrada, no podemos aplicarle directamente ninguna de esas técnicas.
+
