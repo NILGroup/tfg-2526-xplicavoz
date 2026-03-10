@@ -8,8 +8,8 @@ LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient 
 El proceso de boosting funciona de la siguiente manera:
 
 \begin{enumerate}
-    \item Se entrena un primer árbol simple que intenta clasificar las voces como reales o deepfake.
-    \item Se identifican los audios que este primer árbol clasificó incorrectamente.
+    \item Se entrena un primer árbol simple que intenta clasificar las instancias según las etiquetas.
+    \item Se identifican las que este primer árbol clasificó incorrectamente.
     \item Se entrena un segundo árbol enfocado específicamente en esos casos difíciles.
     \item Se combinan ambos árboles para mejorar la precisión global.
     \item El proceso se repite construyendo decenas o cientos de árboles, cada uno corrigiendo los residuos de los anteriores.
@@ -22,21 +22,21 @@ El proceso de boosting funciona de la siguiente manera:
     Los árboles tradicionales crecen nivel por nivel (balanceados). LightGBM, en cambio, crece expandiendo la hoja que más puede reducir el error en cada paso, lo que produce árboles más profundos en las regiones problemáticas y más eficientes en las fáciles.
     
     \item \textbf{Muestreo basado en gradientes (\textit{GOSS})}:
-    Durante el entrenamiento, LightGBM identifica qué instancias (audios) tienen mayor error y las prioriza. Las instancias con error pequeño se muestrean aleatoriamente para reducir el costo computacional. Esto permite entrenar con datasets grandes sin procesar toda la información redundante.
+    Durante el entrenamiento, LightGBM identifica qué instancias tienen mayor error y las prioriza. Las instancias con error pequeño se muestrean aleatoriamente para reducir el costo computacional. Esto permite entrenar con datasets grandes sin procesar toda la información redundante.
     
     \item \textbf{Agrupación de características (\textit{EFB})}:
-    Muchas características de audio raramente toman valores distintos de cero simultáneamente. LightGBM las agrupa para reducir la dimensionalidad, acelerando el entrenamiento sin pérdida de información significativa.
+    LightGBM agrupa las características que no suelen tomar valores iguales a 0 para reducir la dimensionalidad, acelerando el entrenamiento sin pérdida de información significativa.
 \end{itemize}
 
 \subsubsection*{Proceso de clasificación}
 
 \hspace{.7cm}
-Cuando un nuevo audio llega para ser clasificado:
+Cuando una nueva instancia llega para ser clasificada:
 
 \begin{itemize}
     \item Pasa secuencialmente por todos los árboles construidos.
     \item Cada árbol aporta una corrección o ajuste a la predicción anterior.
-    \item La suma ponderada de todas las contribuciones produce la clasificación final (probabilidad de ser deepfake).
+    \item La suma ponderada de todas las contribuciones produce la clasificación final (probabilidad de pertenecer a una clase).
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}

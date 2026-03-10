@@ -13,3 +13,4 @@
 *.safetensors
 *.minted
 /Otros
+*__pycache__

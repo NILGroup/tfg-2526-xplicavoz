@@ -24,13 +24,7 @@ Cuando llega una nueva muestra de audio con sus características (formantes, MFC
 \end{itemize}
 
 \hspace{.7cm}
-Este mecanismo de votación reduce drásticamente la varianza del modelo: aunque un árbol individual pueda cometer errores, el consenso del bosque suele ser acertado. Esto se puede ver en la siguiente imagen:
-
-%\begin{figure}
-%	\includegraphics[width=\textwidth]{random-forest-majority-voting}
-%	\caption{Best photo ever}
-%	\label{fig:x1}
-%\end{figure}
+Este mecanismo de votación reduce drásticamente la varianza del modelo: aunque un árbol individual pueda cometer errores, el consenso del bosque suele ser acertado. Esto se puede ver en la siguiente imagen: \ref{fig:voto_mayoria}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
 
@@ -43,3 +37,9 @@ Este mecanismo de votación reduce drásticamente la varianza del modelo: aunque
     
     \item \textbf{Resistencia al overfitting}: La combinación de bagging y aleatoriedad evita que el modelo memorice el conjunto de entrenamiento.
 \end{itemize}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/random_forest_majority_vote.png}
+	\caption{Voto por mayoría en el ``bosque''.}
+	\label{fig:voto_mayoria}
+\end{figure}

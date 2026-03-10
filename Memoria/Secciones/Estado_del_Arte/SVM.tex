@@ -19,23 +19,23 @@ La clave de SVM reside en que no cualquier línea divisora es válida: el algori
 El proceso de entrenamiento de una SVM puede entenderse en los siguientes pasos:
 
 \begin{enumerate}
-    \item \textbf{Identificación de vectores de soporte}: El algoritmo examina todos los puntos de entrenamiento (audios con sus características) e identifica aquellos que son más difíciles de clasificar, es decir, los que están más cerca de la frontera entre clases.
+    \item \textbf{Identificación de vectores de soporte}: El algoritmo examina todos los puntos de entrenamiento (instancias) e identifica aquellas que son más difíciles de clasificar, es decir, las que están más cerca de la frontera entre clases.
     
-    \item \textbf{Maximización del margen}: A partir de estos vectores de soporte, la SVM calcula el hiperplano que maximiza la distancia a ambos lados. Este margen máximo proporciona la mejor capacidad de generalización: cuanto más ancho sea el margen, menor será la probabilidad de error al clasificar nuevos audios.
+    \item \textbf{Maximización del margen}: A partir de estos vectores de soporte, la SVM calcula el hiperplano que maximiza la distancia a ambos lados. Este margen máximo proporciona la mejor capacidad de generalización: cuanto más ancho sea el margen, menor será la probabilidad de error al clasificar nuevas instancias.
     
-    \item \textbf{Clasificación de nuevas muestras}: Una vez entrenado el modelo, para clasificar un nuevo audio, simplemente se calcula a qué lado del hiperplano se sitúa. Si cae en el lado de las voces reales, se clasifica como real; si cae en el lado de las generadas por IA, se clasifica como deepfake.
+    \item \textbf{Clasificación de nuevas muestras}: Una vez entrenado el modelo, para clasificar una nueva instancia, simplemente se calcula a qué lado del hiperplano se sitúa.
 \end{enumerate}
 
 \subsubsection*{El truco del kernel: Separando lo inseparable}
 
-Uno de los mayores desafíos en la detección de deepfakes es que las voces reales y generadas por IA rara vez son linealmente separables en el espacio original de características. Es decir, no existe una línea recta (o hiperplano) que pueda separarlas perfectamente. Para abordar esta limitación, las SVM introducen el concepto de \textbf{kernel} o núcleo.
+Uno de los mayores desafíos en la clasificación es que las instancias rara vez son linealmente separables en el espacio original de características. Es decir, no existe una línea recta (o hiperplano) que pueda separarlas perfectamente. Para abordar esta limitación, las SVM introducen el concepto de \textbf{kernel} o núcleo.
 
 El \textit{truco del kernel} (\textit{kernel trick}) funciona de la siguiente manera conceptual:
 
 \begin{itemize}
     \item Los datos originales (no separables linealmente) se transforman implícitamente a un espacio de mayor dimensionalidad mediante una función matemática.
     \item En este nuevo espacio, es posible que los datos sí sean linealmente separables.
-    \item La magia del kernel es que realiza esta transformación sin necesidad de calcular explícitamente las coordenadas en el espacio de alta dimensión, lo que sería computacionalmente prohibitivo.
+    \item La magia del kernel es que realiza esta transformación sin necesidad de calcular explícitamente las coordenadas en el espacio de alta dimensión, lo que sería computacionalmente costoso.
 \end{itemize}
 
 Los kernels más comúnmente utilizados son:
@@ -45,7 +45,7 @@ Los kernels más comúnmente utilizados son:
     
     \item \textbf{Kernel polinomial}: Crea fronteras de decisión curvas mediante combinaciones polinómicas de las características originales.
     
-    \item \textbf{Kernel RBF (\textit{Radial Basis Function})}: Es el más utilizado en problemas de audio. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas y no lineales. Se basa en la similitud entre muestras medida por distancia euclidiana:
+    \item \textbf{Kernel RBF (\textit{Radial Basis Function})}: Es el más utilizado en mcuhos problemas. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas y no lineales. Se basa en la similitud entre muestras medida por distancia euclidiana:
 
     \[
     K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)
