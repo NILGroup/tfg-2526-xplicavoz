@@ -1,0 +1,24 @@
+\subsubsection{Jorge Aured Zarzoso}
+
+\begin{itemize}
+
+	\item Investigué sobre las motivaciones para investigar sobre la detección de voz generada por IA con dos papers. En estos se hablaba de cómo las personas hemos perdido la capacidad de detectar correctamente cuando un audio es real o no.
+	
+	\item Investigué sobre qué características son relevantes en la voz y cómo extraerlas mediante código. Esto ya que es crucial saber qué representa cada característica para tener una noción de qué puede tener en cuenta los modelos a la hora de predecir si un audio es real o no.  
+	
+	\item Investigué parcialmente sobre la extracción de gráficas de la voz, para su uso en redes convolucionales (CNN).	
+	
+	 \item paper deepShap
+	 
+	 \item paper peru
+	 
+	 \item Investigué sobre el estado del arte de los modelos LightGBM, Random Forest y SVM para clasificación. En dicha investigación profundicé en el funcionamiento de los modelos...
+	 
+	 \item Investigué sobre datasets que nos pudieran servir para la clasificación. Encontré audioMNIST y HABLA, el primero de los números del 0 al 9 y el segundo son voces en español de hispanoamérica. audioMNIST solo cuenta con voces reales, mientras que HABLA tiene tanto clonaciones de voz como ataques (hacer que una voz se parezca a otra).
+	 
+	 \item He hecho un pipeline completo para cada uno de los tres modelos, entrenándolos de varias formas para ver cuál funcionaba mejor. Este pipeline consta de un modelo baseline, una fase de cross validation y un grid search optimizando los parámetros. En cada paso visualicé los resultados de los modelos viendo su rendimiento. Al final del pipeline guardé como archivo .pkl los mejores modelos
+	 
+	 \item XAI Random Forest
+
+
+\end{itemize}

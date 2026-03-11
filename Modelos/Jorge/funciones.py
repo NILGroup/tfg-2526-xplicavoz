@@ -177,28 +177,46 @@ def evaluacion_modelo(model_name: str, y_true, y_pred, y_pred_proba,
     }
     
 # FUNCIONES XAI
-def show(model, i, shap_values):
+def show(model, i, shap_values, save=False):
     for j in range(i):
-        model(shap_values[j])
+        if save:
+            # Para waterfall plots necesitamos capturar la figura de SHAP
+            shap.waterfall_plot(shap_values[j], show=False)
+            
+            # Obtener la figura actual y guardarla
+            fig = plt.gcf()
+            fig.savefig(f'shap_local_{j}.png', bbox_inches='tight', dpi=300)
+            plt.close()
+        else:
+            model(shap_values[j])
         
-def explica_shap(modelo, X_train, X_test, n_show, local):
+def explica_shap(modelo, X_train, X_test, n_show, local, save=False):
     # Generamos explicaciones
     explainer = shap.Explainer(modelo.predict, X_train)
     shap_values = explainer(X_test)
     
     # Mostramos los valores shap dependiendo de si es explicación local o global
     if local:
-        show(model=shap.plots.waterfall, i=n_show, shap_values=shap_values)
+        show(model=shap.plots.waterfall, i=n_show, shap_values=shap_values, save=save)
     else:
-        shap.summary_plot(shap_values, X_test)
-        plt.show()
+        plt.figure(figsize=(12, 8))
+        
+        if save:
+            shap.summary_plot(shap_values, X_test)
+            fig = plt.gcf()
+            fig.savefig('shap_global.png', bbox_inches='tight', dpi=300)
+            fig.close()
+        else:
+            shap.summary_plot(shap_values, X_test)
+            plt.show()
     
     # Por último devolvemos y_pred por si evaluamos el modelo
     y_pred = modelo.predict(X_test)
     y_pred_proba = modelo.predict_proba(X_test)[:, 1]
     return y_pred, y_pred_proba
 
-def drop_features_explica_shap(modelo, model_name, X_train, y_train, X_test, y_test, feats, n_show, evalua_modelo = False, local = True):
+def drop_features_explica_shap(modelo, model_name, X_train, y_train, X_test, y_test, feats, n_show, 
+                               evalua_modelo=False, local=True, save=False):
     # Creamos los nuevos conjuntos de train y test
     X_train_new = X_train.drop(feats, axis=1, inplace=False)
     X_test_new = X_test.drop(feats, axis=1, inplace=False)
@@ -210,7 +228,7 @@ def drop_features_explica_shap(modelo, model_name, X_train, y_train, X_test, y_t
     modelo.fit(X_train_new, y_train)
     
     # Generamos las explicaciones como antes
-    y_pred, y_pred_proba = explica_shap(modelo=modelo, X_train=X_train_new, X_test=X_test_new, n_show=n_show, local=local)
+    y_pred, y_pred_proba = explica_shap(modelo=modelo, X_train=X_train_new, X_test=X_test_new, n_show=n_show, local=local, save=save)
     
     # Evaluamos el modelo
     if evalua_modelo: evaluacion_modelo(model_name=model_name, y_true=y_test, y_pred=y_pred, y_pred_proba=y_pred_proba)
