@@ -23,11 +23,11 @@ Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nom
 
 \paragraph{Resultados y análisis}
 
-Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como “bona fide” y alguna como “spoof” pero sin mucho acierto lo que da una sensación de clasificación al azar.
-Ante estos resultados, decidimos realizar fine-tunning sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en train, eval y dev y generamos los archivos de “protocols” de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
+Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
+Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en train, eval y dev y generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
 
 Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de \textbf{épocas: 10, 20, 40 o 80}. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
-Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios “bonafide” y 10 “spoof, entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
+Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios ``bonafide'' y 10 ``spoof'', entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
 
 A la hora de evaluar, hemos usado 3 medidas:
 
@@ -45,11 +45,78 @@ A la hora de evaluar, hemos usado 3 medidas:
 \begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/AASIST_resultados_preentrenamientos.png}
 	\caption{Resultados del preentrenamiento en AASIST.}
-	\label{fig:voto_mayoria}
 \end{figure}
 Lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica claramente mejor los audios en español ya que todas las métricas, a excepción de precisión en 40 épocas, tienen valores superiores. Esta diferencia explica el porqué la partición mixta lo hace peor que la que solo tiene muestras en inglés y permite deducir que ejecutar ambos idiomas juntos no le ayuda a clasificarlos mejor. 
 
 En lo referido a las épocas, lo más destacable es que superar las 40 épocas empeora la predicción por lo que podemos suponer que está ocurriendo un fenómeno de sobreaprendizaje. También, podemos observar que en la partición en inglés, el aumento del valor de este parámetro no equivale en términos generales a una subida en la mejora de la predicción, fenómeno que no ocurre con la partición en español.
+
+\paragraph{Explicabilidad}
+Hemos usado las propias estructuras del modelo para empezar a explicar qué es lo que le empuja a decidir una clase a la otra. Esto nos sirve además para enseñar mejor cómo funciona AASIST por dentro.
+Lo primero que mostramos es el formato de la salida que es una tupla con dos valores, la probabilidad de que el audio sea ``spoof'' y de que sea ``bona fide'', y la estructura de los grafos que nos permite ver que se crean 23 nodos espectrales y 29 temporales. También, simulamos como funciona un ``pooling'' mostrando los nodos de cada tipo con mayor puntuación.
+
+Después,  ejemplificamos cuales son los valores que se pasan a la capa de salida y cuánto afectan al cálculo de cada uno de los valores de la salida. Estos valores son los resultados de las operaciones ``max'' y ``average'' de cada subgrafo y el resultado del stack node. Con estas muestras podemos empezar a ver que ha sido mas significativo a la hora de responder si un audio es ``spoof'' o no.
+ 
+En el apartado temporal, el siguiente paso es crear una función que va tapando segmentos de audio, calculamos la nueva probabilidad según el clasificador y vemos como cae la probabilidad base respecto a la nueva. Esta función de forma predeterminada hace estos cálculos para la clase predecida pero le puedes indicar tú por parámetro cualquiera de las dos.
+Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
+	\caption{Resultados de la ocultación temporal en AASIST.}
+\end{figure}
+
+Como vemos en este ejemplo, en las primeras décimas de segundo ocurre un evento completamente determinante para el predictor. Destacamos los instantes con valor negativo que indican que si ``quitamos'' ese trozo la probabilidad crece.
+
+En el ámbito espectral, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de fourier y las graficamos
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/AASIST_bandasf_filtros.png}
+	\caption{Gráfica bandas de frecuencia de los filtros.}
+\end{figure}
+
+Con esta gráfica, podemos afirmar que se captan todas las frecuencias de 0 a 8000 Hz y que en las frecuencias bajas hay más solapamiento entre filtros. Esto es importante ya que cuando extraemos cuales son los filtros que más se activan durante el procesado del audio, no es raro que salgan algunos consecutivos ya que si dos filtros están observando una frecuencia muy activa, ambos responderán parecido.
+
+Posteriormente, graficamos los filtros que más activación han tenido en el primer procesado de dos formas: en la imagen de la izquierda viendo que frecuencias cubren y en la imagen de la derecha viendo su activación a lo largo del audio.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{AASIST_top_filtros.png}
+        \caption{Bandas de frecuencia de los filtros más activados.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{AASIST_activación_top_filtros.png}
+        \caption{Activación de los filtros más activados a lo largo del audio.}
+    \end{subfigure}
+\end{figure}
+
+Como hemos mencionado anteriormente, los 5 filtros más excitados se pueden separar en dos grupos por su consecución. Además, en la gráfica de la derecha se ve claramente como tienen comportamientos muy parecidos. 
+Comparando estas últimas imágenes, con la figura X podemos ver que donde en está última parece que había mucha relevancia, aquí no se ve reflejado. Esto se explica en que los filtros son solo la activación temprana del frontal sinc-conv y la información captada tiene que pasar por varios procesos. Sin embargo, la observación de los filtros empieza a ofrecernos información relevante para la clasificación.
+
+Por último, en relación al ámbito espectral, simulamos como sería la salida de la capa sinc-convolution que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``heatmap'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
+
+Hemos creado dos mapas filtro-tiempo, el de la izquierda que sería el más fiel al modelo y el de la derecha que normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
+
+\begin{figure}[h]
+    \centering
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{AASIST_heatmap.png}
+        \caption{Mapa filtro-tiempo de la capa sinc-convolution.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{AASIST_heatmap_normalizado.png}
+        \caption{Mapa filtro-tiempo normalizado.}
+    \end{subfigure}
+\end{figure}
+
+Con estos mapas, volvemos a observar que los filtros más activados son los de baja frecuencia, predominantemente en los primeros segundos del audio. Además, volvemos a ver una región ``vacía'' en torno a los 3,5 segundos que equivale a un silencio en el audio.
+
+
 
 
 
