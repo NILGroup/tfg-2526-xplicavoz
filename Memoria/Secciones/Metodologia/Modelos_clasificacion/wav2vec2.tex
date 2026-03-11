@@ -16,8 +16,16 @@ Una vez hecho el fine-tuning, hacemos el mismo preprocesado para el dataset de t
 
 Este modelo muestra unos resultados muy buenos ya que tanto la precisión, como el f1-score y el auc rondan siempre el 0,9. Si que es cierto que los fallos se concentran sobre todo en los audios reales diciendo que son generados. 
 
-(Insertar tabla de precisión,f1 y auc)
+\begin{figure}[htbp]
+	\includegraphics[width=\textwidth]{imagenes/Estadisticas_fine_tuning.png}
+	\caption{Métricas fine-tuning Wav2Vec2.}
+	\label{fig:Wav2Vec2}
+\end{figure}
 
-(Insertar tabla de resultados)
+\begin{figure}[htbp]
+	\includegraphics[width=\textwidth]{imagenes/Resultados_wav2vec2.png}
+	\caption{Resultados fine-tuning Wav2Vec2.}
+	\label{fig:Wav2Vec2}
+\end{figure}
 
 Sobre esto errores que comete el modelo intentamos integrated gradients para ver una explicación de por qué el modelo fallaba. Lamentablemente, este modelo como entrada recibe embeddings de los audios por lo que no se le pueden aplicar técnicas de IA explicable directamente.

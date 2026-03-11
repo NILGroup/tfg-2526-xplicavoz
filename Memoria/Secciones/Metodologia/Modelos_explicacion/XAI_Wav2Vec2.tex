@@ -1,12 +1,36 @@
 \subsubsection{XAI_Wav2Vec2}
 
-Esquema para rellenar:
+Ahora que tenemos el resultado del modelo (el Wav2Vec2 fine-tuneado), vamos a explicar que características y que parte del espectrograma de Mel del audio son las más influyentes y en que sentido.
 
-Problema de tener pocos audios y muchas características por audio
+Sin embargo ahora nos encontramos con el problema principal de este modelo que es que como entrada recibe un embedding, entonces, no podemos aplicar técnicas de XAI directamente al modelo. Otro problema que tenemos es que el código que tenemos de extracción de características saca muchísimas características y de ciertas características no solo saca un valor escalar sino que también saca un vector con sus valores en cada instante.
 
-Solución: Agrupación de características y surrogates models (regresión logística)
+Para solucionar estos problemas hemos hecho dos cosas. La primera es que agruparemos las características en cinco grupos en función de sus características y lo que representan. Con esto nos quedan las siguientes agrupaciones:
 
-Métodos XAI para características
+\begin{enumerate}
+ \item Energía: rms, silence ratio, zcr, skewness, kurtosis. Este grupo son las características que se centran en la energía del audio.
+ \item Espectrales: spectral centroid, spectral bandwidth, spectral rolloff, spectral flatness, hnr. Este grupo son las características que miden la distribución de la energía en el ámbito de la frecuencia.
+ \item Pitch: pitch mean, pitch std. Este grupo son las características %falta completar
+ \item Formantes:  f1 mean, f2 mean, f3 mean. Este grupo son las características que describen la estructura vocal.
+ \item MFCC: mfcc1 mean, mfcc2 mean,  mfcc3 mean, mfcc4 mean,  mfcc5 mean, mfcc6 mean,  mfcc7 mean, mfcc8 mean,  mfcc9 mean, mfcc10 mean,  mfcc11 mean, mfcc12 mean,  mfcc13 mean. Este grupo de características capturan %falta completar
+	\end{enumerate}
+
+La segunda cosa que se ha hecho ha sido desarrollar modelos sencillos que imiten el comportamiento del modelo. Para esto hemos hecho 6 modelos distintos. Cinco de ellos son regresiones logísticas, uno para cada grupo de características y una CNN muy simple para los espectrogramas.
+
+Esquema para rellenar
+
+SHAP:
+- Energía
+- Espectrales
+- Pitch
+- Formantes
+- MFCC
+
+LIME
+- Energía
+- Espectrales
+- Pitch
+- Formantes
+- MFCC
 
 Agregación de todas las características para ver las más influyentes
 
@@ -18,6 +42,7 @@ Métodsos XAI para espectrogramas
 
 Análisis de resultados y conclusiones
 
+Cosas que faltan por hacer:
 Combinación de ambas - 3 opciones
 Proyección de características al espectrograma, correlación entre explicaciones, explicación jerárquiqua
 
