@@ -1,0 +1,30 @@
+\subsubsection{Regresión Logística}
+
+A pesar de su denominación, la Regresión Logística es un algoritmo fundamental para tareas de clasificación binaria. Se incluyó en este estudio como un modelo de referencia lineal (\textit{baseline}) para comparar la capacidad discriminativa de las características acústicas extraídas frente a modelos de mayor complejidad algorítmica.
+
+\textbf{Justificación del modelo} \\
+La elección de este modelo se fundamenta en su alta interpretabilidad. Al ser un modelo lineal, permite observar directamente, mediante el análisis de sus coeficientes, qué descriptores acústicos (como el centroide espectral o los MFCC) tienen un mayor peso e influencia en la clasificación de un audio como real o generado. Además, su eficiencia computacional lo hace ideal para validar la calidad del dataset antes de proceder con arquitecturas más pesadas.
+
+\textbf{Configuración experimental} \\
+Dado que la Regresión Logística calcula una suma ponderada de las entradas, es extremadamente sensible a la escala de las mismas. Por ello, el proceso se estructuró de la siguiente manera:
+
+\begin{enumerate}
+    \item \textbf{Normalización:} Se aplicó un escalado estándar (\textit{Z-score}) utilizando \textit{StandardScaler}, asegurando que todas las características paralingüísticas tuvieran media 0 y varianza 1.
+    \item \textbf{Regularización:} Se empleó una penalización L2 (Ridge) para controlar la complejidad del modelo y evitar el sobreajuste, factor crítico dado el tamaño reducido de nuestra muestra (100 audios).
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption={Configuración de Regresión Logística}]
+from sklearn.linear_model import LogisticRegression
+
+lr_model = LogisticRegression(
+    penalty='l2',
+    C=1.0, # Inversa de la fuerza de regularizacion
+    random_state=12,
+    class_weight='balanced', # Ajuste por dataset reducido
+    solver='liblinear'
+)
+lr_model.fit(X_train_scaled, y_train)
+\end{lstlisting}
+
+\textbf{Evaluación y Conclusiones} \\
+El modelo se evaluó mediante validación cruzada. Al ser entrenado con pocos audios con diferencias notables en algunos, conseguía clasificar de manera perfecta, aunque al aumentar el tamaño del conjunto, seguía clasificando perfecto con una precisión de 1.0. Tras escuchar algunos ejemplos notamos por qué algunos casos los diferencia sin problema, pero aún no sabemos que consigue aplicar a otros ejemplos que no se llega a notar mucha diferencia entre el audio real y el generado.

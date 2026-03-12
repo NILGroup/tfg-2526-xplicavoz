@@ -5,6 +5,10 @@
 \subsection{Modelos de clasificación}
 % Poner aquí todo lo referente a modelos IA que hayamos investigado y hayamos usado
 
+La detección de audio deepfake se fundamenta en la capacidad de los algoritmos para discriminar entre patrones biométricos naturales y artefactos generados sintéticamente. Dado que los métodos de falsificación varían en complejidad desde técnicas de concatenación simple hasta modelos de difusión avanzados, es necesario abordar el problema mediante diversos enfoques de aprendizaje automático.
+
+A continuación se describen los modelos de clasificación que se usan actualmente para este estudio de audios fake, abarcando desde algoritmos estadísticos clásicos y modelos basados en árboles, hasta arquitecturas de aprendizaje profundo más complejas.
+
 \input{Secciones/Estado_del_Arte/PerceptronMulticapa.tex}
 
 \input{Secciones/Estado_del_Arte/Wav2Vec2.tex}
@@ -17,8 +21,29 @@
 
 \input{Secciones/Estado_del_Arte/AASIST.tex}
 
+\input{Secciones/Estado_del_Arte/RegresionLogistica.tex}
+
+\input{Secciones/Estado_del_Arte/KNN.tex}
+
+Como hemos visto, se ha presentado un espectro diverso de clasificadores que permiten abordar la detección de spoofing desde diferentes ángulos. Los modelos lineales y de vecinos cercanos, como la \textbf{Regresión Logística} y \textbf{k-NN}, ofrecen una base sólida y eficiente para el análisis de características acústicas predefinidas. Por otro lado, métodos como \textbf{Random Forest} y \textbf{LightGBM} incrementan la robustez del sistema ante datos ruidosos y relaciones no lineales.
+
+Por último, modelos como \textbf{Wav2Vec2} y \textbf{AASIST} procesan la señal de audio cruda y modelar relaciones espectro-temporales mediante grafos y mecanismos de atención. La combinación de estos enfoques permite no solo alcanzar altas tasas de precisión, sino también adaptarnos según la disponibilidad de recursos computacionales. Esta base taxonómica de modelos constituye el núcleo operativo sobre el cual se aplicarán posteriormente las técnicas de explicabilidad.
+
 \subsection{Modelos de explicación}
 
+La adopción de modelos de aprendizaje profundo ha permitido alcanzar una precisión sin precedentes en la detección de audio sintético. Sin embargo, estos sistemas operan frecuentemente como ``cajas negras'', lo que dificulta su aplicación en ámbitos críticos como en forense o ciberseguridad. La Inteligencia Artificial Explicable (XAI) surge como la solución técnica para dotar a estos modelos de transparencia, permitiendo a los expertos entender el ``por qué'' de cada clasificación.
+
+A continuación, se describen las técnicas de explicabilidad actuales, organizados según el siguiente enfoque técnico:
+
+\begin{itemize}
+    \item \textbf{Métodos de Atribución y Perturbación:} Se analizan técnicas post-hoc como \textbf{SHAP} y \textbf{LIME}, que permiten identificar qué características acústicas individuales son determinantes para el modelo, así como \textbf{Grad-CAM} e \textbf{Integrated Gradients}, fundamentales para visualizar la relevancia en el plano tiempo-frecuencia.
+
+    \item \textbf{Razonamiento Contrafáctico:} Se explora el modelo \textbf{DiCE}, una herramienta que permite entender la frontera de decisión mediante la creación de escenarios hipotéticos (``¿qué cambios harían que este audio fake pareciera real?'').
+
+    \item \textbf{Modelos Interpretables por Diseño (Ante-hoc):} Se profundiza en arquitecturas cuya transparencia es intrínseca, como \textbf{SincNet}, que utiliza filtros con significado físico, y \textbf{ProtoPNet}, que basa su decisión en la comparación con prototipos o ejemplos conocidos.
+\end{itemize}
+
+\hspace{.7cm} 
 \input{Secciones/Estado_del_Arte/SHAP.tex}
 
 \input{Secciones/Estado_del_Arte/LIME.tex}
@@ -32,3 +57,13 @@
 \input{Secciones/Estado_del_Arte/SincNet.tex}
 
 \input{Secciones/Estado_del_Arte/ProtoPNet.tex}
+
+Tras ver las diversas metodologías, se puede concluir que la detección de audio deepfake no depende de un único enfoque, sino de la combinación estratégica de diferentes niveles de explicabilidad. Los modelos analizados ofrecen una visión complementaria del problema:
+
+\begin{itemize}
+    \item \textbf{Precisión vs. Explicabilidad:} Mientras que métodos post-hoc como \textbf{SHAP}, \textbf{LIME} e \textbf{Integrated Gradients} permiten auditar modelos de alta complejidad sin sacrificar su rendimiento, técnicas como \textbf{SincNet} y \textbf{ProtoPNet} proponen un cambio de paradigma hacia la transparencia por diseño (\textit{ante-hoc}), donde el razonamiento del modelo es inseparable de su arquitectura.
+
+    \item \textbf{Análisis Multidimensional:} La inclusión de \textbf{Grad-CAM} permite a los analistas visualizar anomalías en el espectro sonoro, mientras que herramientas como \textbf{DiCE} aportan un valor único al proporcionar simulaciones causales. Estas últimas son fundamentales para identificar qué rasgos de ``naturalidad'' están ausentes en una señal sintética.
+\end{itemize}
+
+En definitiva, el conjunto de técnicas presentadas establece el marco de referencia para este proyecto. La integración de estos métodos garantiza que el sistema resultante no solo actúe como un clasificador binario, sino como una herramienta de soporte a la decisión, capaz de proporcionar evidencias técnicas robustas.

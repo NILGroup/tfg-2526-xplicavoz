@@ -1,0 +1,37 @@
+\subsubsection{K-Nearest Neighbors (k-NN)}
+
+El algoritmo de los K-Vecinos más Cercanos se seleccionó como un enfoque no paramétrico basado en la similitud geométrica. A diferencia de los modelos anteriores, k-NN no asume una forma funcional para la frontera de decisión, sino que clasifica las muestras basándose en la proximidad en el espacio de características.
+
+\textbf{Justificación del modelo} \\
+El uso de k-NN es intuitivo para la detección de \textit{deepfakes}: asume que audios con propiedades acústicas y artefactos de síntesis similares estarán próximos entre sí en el hiperespacio de descriptores. Es especialmente útil para identificar grupos de audios generados por el mismo motor de IA, ya que estos suelen compartir una ``firma'' de error cercana.
+
+\textbf{Configuración experimental} \\
+El rendimiento de k-NN depende críticamente de la métrica de distancia y del valor de $k$. El proceso experimental incluyó:
+
+\begin{enumerate}
+    \item \textbf{Análisis de la tasa de error:} Se realizó una iteración probando valores de $k$ del 1 al 20. Se observó que valores muy bajos ($k < 3$) provocaban sobreajuste al ruido del audio, mientras que valores muy altos suavizaban excesivamente la frontera de decisión, perdiendo capacidad de detección.
+    \item \textbf{Métrica de distancia:} Se utilizó la distancia euclidiana sobre los datos previamente normalizados para evitar que variables con rangos grandes (como los Hz de los formantes) dominaran el cálculo.
+\end{enumerate}
+
+\begin{lstlisting}[language=Python, caption={Optimización de hiperparámetros para k-NN}]
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import GridSearchCV
+
+param_grid_knn = {
+    'n_neighbors': [3, 5, 7, 9, 11, 15, 19],
+    'weights': ['uniform', 'distance'],
+    'metric': ['euclidean', 'manhattan']
+}
+
+grid_knn = GridSearchCV(
+    KNeighborsClassifier(),
+    param_grid_knn,
+    cv=5,
+    scoring='f1'
+)
+grid_knn.fit(X_train_scaled, y_train)
+knn_optimized = grid_knn.best_estimator_
+\end{lstlisting}
+
+\textbf{Ventajas y Conclusiones} \\
+Una ventaja clave de k-NN en esta metodología es su naturaleza de ``aprendizaje perezoso'' (\textit{lazy learning}), que permite capturar distribuciones de datos no lineales. Sin embargo, en nuestro dataset de 100 audios, el modelo demostró ser altamente sensible a la presencia de características irrelevantes, lo que reforzó la necesidad de un proceso riguroso de selección de características previo a la clasificación. Aunque volvemos a ver como al final vuelve a clasificar de forma perfecta todos los audios, por lo que suponemos que alguna característica está siendo muy determinante dado a que varios modelos de clasificación se encuentran en esta situación.
