@@ -42,7 +42,8 @@ A la hora de evaluar, hemos usado 3 medidas:
 
  $\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
 
-\begin{figure}
+\begin{figure}[H]
+    \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_resultados_preentrenamientos.png}
 	\caption{Resultados del preentrenamiento en AASIST.}
 \end{figure}
@@ -59,7 +60,8 @@ Después,  ejemplificamos cuales son los valores que se pasan a la capa de salid
 En el apartado temporal, el siguiente paso es crear una función que va tapando segmentos de audio, calculamos la nueva probabilidad según el clasificador y vemos como cae la probabilidad base respecto a la nueva. Esta función de forma predeterminada hace estos cálculos para la clase predecida pero le puedes indicar tú por parámetro cualquiera de las dos.
 Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
 
-\begin{figure}
+\begin{figure}[H]
+    \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
 	\caption{Resultados de la ocultación temporal en AASIST.}
 \end{figure}
@@ -68,7 +70,8 @@ Como vemos en este ejemplo, en las primeras décimas de segundo ocurre un evento
 
 En el ámbito espectral, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de fourier y las graficamos
 
-\begin{figure}
+\begin{figure}[H]
+    \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_bandasf_filtros.png}
 	\caption{Gráfica bandas de frecuencia de los filtros.}
 \end{figure}
@@ -77,15 +80,15 @@ Con esta gráfica, podemos afirmar que se captan todas las frecuencias de 0 a 80
 
 Posteriormente, graficamos los filtros que más activación han tenido en el primer procesado de dos formas: en la imagen de la izquierda viendo que frecuencias cubren y en la imagen de la derecha viendo su activación a lo largo del audio.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{AASIST_top_filtros.png}
         \caption{Bandas de frecuencia de los filtros más activados.}
         \end{subfigure}
     \hfill
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{AASIST_activación_top_filtros.png}
         \caption{Activación de los filtros más activados a lo largo del audio.}
@@ -99,15 +102,15 @@ Por último, en relación al ámbito espectral, simulamos como sería la salida 
 
 Hemos creado dos mapas filtro-tiempo, el de la izquierda que sería el más fiel al modelo y el de la derecha que normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{AASIST_heatmap.png}
         \caption{Mapa filtro-tiempo de la capa sinc-convolution.}
         \end{subfigure}
     \hfill
-    \begin{subfigure}{0.45\textwidth}
+    \begin{subfigure}[t]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{AASIST_heatmap_normalizado.png}
         \caption{Mapa filtro-tiempo normalizado.}
