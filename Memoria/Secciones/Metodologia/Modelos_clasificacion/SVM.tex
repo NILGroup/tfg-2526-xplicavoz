@@ -36,31 +36,21 @@ El proceso experimental para SVM se estructuró en cuatro fases: (1) modelo base
 \paragraph{Modelo baseline: SVM lineal}
 Se estableció un primer modelo con kernel lineal como referencia simple:
 
-\begin{lstlisting}[language=Python, caption=Configuración SVM lineal baseline]
-	svm_linear = SVC(
-    	kernel='linear',           # Frontera de decision lineal
-    	C=1.0,                     # Parametro de regularizacion
-    	probability=True,           # Habilita probabilidades para AUC-ROC
-    	random_state=12,
-    	class_weight='balanced'    # Compensacion de clases desbalanceadas
-	)
-\end{lstlisting}
-
-El parámetro \texttt{class\_weight='balanced'} ajusta los pesos de las clases de forma inversamente proporcional a su frecuencia, compensando posibles desbalances en el conjunto de datos.
+\begin{itemize}
+	\item \textbf{kernel (``linear'')}: La función matemática que transforma los datos para encontrar el hiperplano óptimo.
+	\item \textbf{C}: Parámetro de regularización.
+	\item \textbf{probability}: Habilita el cálculo de probabilidades en lugar de solo clases.
+	\item \textbf{random_state}: Fija el estado aleatorio para reproducibilidad.
+	\item \textbf{class_weight}: Ajuste de pesos para clases desbalanceadas inversamente proporcionales a la frecuencia de cada clase.
+\end{itemize}
 
 \paragraph{Modelo no lineal: SVM con kernel RBF}
 Dada la naturaleza compleja de las señales de audio, se implementó un modelo con kernel RBF para capturar relaciones no lineales:
 
-\begin{lstlisting}[language=Python, caption=Configuración SVM con kernel RBF]
- 	svm_rbf = SVC(
-    	kernel='rbf',              # Kernel no lineal
-     	C=1.0,                     # Regularizacion
-     	gamma='scale',              # Coeficiente del kernel
-     	probability=True,
-     	random_state=12,
-     	class_weight='balanced'
- 	)
-\end{lstlisting}
+\begin{itemize}
+	\item \textbf{kernel (``rbf'')}: La función matemática que transforma los datos para encontrar el hiperplano óptimo.
+	\item \textbf{gamma}: Parámetro que controla la influencia de cada punto de entrenamiento en la frontera de decisión.
+\end{itemize}
 
 El parámetro \texttt{gamma='scale'} establece automáticamente \(\gamma = 1/(n_{\text{características}} \cdot \text{Var}(X))\), un valor inicial razonable.
 
@@ -103,25 +93,13 @@ SVM con kernel RBF tiene dos hiperparámetros críticos que determinan su rendim
 
 La búsqueda sistemática se realizó mediante Grid Search con validación cruzada:
 
- \begin{lstlisting}[language=Python, caption=Grid Search para optimización de SVM]
- param_grid = {
-     'svm__C': [0.1, 1, 10, 100],           # Regularizacion
-     'svm__gamma': [0.001, 0.01, 0.1, 1, 'scale', 'auto'],  # Influencia del kernel
-     'svm__kernel': ['rbf']                   # Nos centramos en RBF
- }
+\begin{itemize}
+	\item \textbf{C}: Probamos 0,1, 1, 10 y 100.
+	\item \textbf{gamma}: Probamos 0,001, 0,01, 0,1, 1, ``scale'' y ``auto''.
+	\item \textbf{kernel}: Probamos únicamente el kernel no lineal ``rbf''.
+\end{itemize}
 
- grid_search = GridSearchCV(
-     svm_pipeline,
-     param_grid,
-     cv=cv,
-     scoring='f1',              # Optimizamos F1-score
-     n_jobs=-1,
-     verbose=1
- )
-
- grid_search.fit(X_train, y_train)
- svm_optimized = grid_search.best_estimator_
- \end{lstlisting}
+Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
 
 La elección de optimizar el F1-score responde a la necesidad de balancear precisión y sensibilidad en un problema donde ambos tipos de error (falsos positivos y falsos negativos) son relevantes.
 

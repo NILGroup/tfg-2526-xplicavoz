@@ -16,26 +16,27 @@ A diferencia de otros algoritmos, LightGBM puede manejar directamente datos sin 
 \paragraph{Modelo baseline con LightGBM}
 Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento:
 
-\begin{lstlisting}[language=Python, caption=Configuración del modelo baseline LightGBM]
- # Creacion de datasets optimizados de LightGBM
- train_data = lgb.Dataset(X_train, label=y_train)
- test_data = lgb.Dataset(X_test, label=y_test, reference=train_data)
+\begin{itemize}
+	\item \textbf{objective}: binary.
+	\item \textbf{metric}: binary logloss.
+	\item \textbf{boosting type}: gbdt.
+	\item \textbf{num leaves}: 31.
+	\item \textbf{learning rate (\eta)}: 0,05.
+	\item \textbf{feature fraction}: 0,9.
+	\item \textbf{bagging fraction}: 0,8.
+	\item \textbf{bagging freq}: 5.
+	\item \textbf{random state}: 12.
+	\item \textbf{is unbalanced}: True.
+\end{itemize}
 
- # Parametros baseline
- params_baseline = {
-     'objective': 'binary',              # Clasificacion binaria
-     'metric': 'binary_logloss',          # Metrica de evaluacion
-     'boosting_type': 'gbdt',              # Gradient Boosting Decision Tree
-     'num_leaves': 31,                     # Numero maximo de hojas
-     'learning_rate': 0.05,                 # Tasa de aprendizaje (eta)
-     'feature_fraction': 0.9,               # Fraccion de caracteristicas por iteracion
-     'bagging_fraction': 0.8,               # Fraccion de datos por iteracion
-     'bagging_freq': 5,                      # Frecuencia de bagging
-     'verbose': 0,                           # Modo silencioso
-     'random_state': 12,
-     'is_unbalance': True,                    # Compensacion de clases desbalanceadas
-     'num_threads': -1                        # Usar todos los cores
- }
+Tras ello entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
+
+\begin{itemize}
+	\item \textbf{num boost round}:
+	\item \textbf{callbacks}: 
+\end{itemize}
+
+\begin{lstlisting}[language=Python, caption=Configuración del modelo baseline LightGBM]
 
  # Entrenamiento con early stopping
  model_baseline = lgb.train(
@@ -106,6 +107,17 @@ LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a l
     \item \texttt{subsample} y \texttt{colsample\_bytree}: Fracciones de muestras y características para cada árbol, introduciendo aleatoriedad.
     
     \item \texttt{reg\_alpha} y \texttt{reg\_lambda}: Regularización L1 y L2 para controlar la complejidad.
+\end{itemize}
+
+\begin{itemize}
+	\item \textbf{num leaves}: Probamos 15, 31 y 63.
+	\item \textbf{learning rate}: Probamos 0,01, 0,05 y 0,1.
+	\item \textbf{n estimators}: Probamos 100, 200 y 300.
+	\item \textbf{min child samples}: Probamos 20, 50 y 100.
+	\item \textbf{subsample}: Probamos 0,6, 0,8 y 1.
+	\item \textbf{colsample bytree}: Probamos 0,6, 0,8 y 1.
+	\item \textbf{reg alpha}: Probamos 0, 0,1 y 0,5.
+	\item \textbf{reg lambda}: Probamos 0, 0,1 y 0,5.
 \end{itemize}
 
 \begin{lstlisting}[language=Python, caption=Grid Search para LightGBM]

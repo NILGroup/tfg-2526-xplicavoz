@@ -13,32 +13,18 @@ El proceso experimental para Random Forest se estructuró en tres fases: (1) est
 \paragraph{División de datos}
 El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
 
-\begin{lstlisting}[language=Python, caption=División estratificada de datos]
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, 
-    test_size=0.2, 
-    random_state=12, 
-    stratify=y  # Mantiene proporcion de clases
-)
-\end{lstlisting}
-
 \paragraph{Modelo baseline}
 Se estableció una configuración inicial con hiperparámetros por defecto para obtener una referencia de rendimiento:
 
-\begin{lstlisting}[language=Python, caption=Configuración del modelo baseline Random Forest]
-rf_baseline = RandomForestClassifier(
-    n_estimators=100,      # Numero de arboles
-    max_depth=10,           # Profundidad maxima
-    min_samples_split=5,    # Minimo muestras para dividir nodo
-    min_samples_leaf=2,     # Minimo muestras en hoja
-    max_features='sqrt',    # Caracteristicas por division
-    random_state=12,
-    n_jobs=-1,              # Usar todos los cores
-    class_weight='balanced' # Ajuste para clases desbalanceadas
-)
-\end{lstlisting}
-
-El parámetro \texttt{class\_weight='balanced'} ajusta los pesos de las clases de forma inversamente proporcional a su frecuencia, compensando posibles desbalances en el conjunto de datos.
+\begin{itemize}
+	\item \textbf{n_estimators}: Número de árboles de decisión que conforman el bosque.
+	\item \textbf{max_depth}: Profundidad máxima que puede alcanzar un árbol.
+	\item \textbf{min_samples_split}: Mínimo de muestras necesarias para dividir un nodo, para generalizar más y tener menos overfitting.
+	\item \textbf{min_samples_leaf}: Mínimo de muestras que debe tener (explicar) una hoja (nodo final).
+	\item \textbf{max_features}: Número de características a considerar en cada división. ``sqrt'' toma la raíz cuadrada del total de características.
+	\item \textbf{random_state}: Fija el estado aleatorio para reproducibilidad.
+	\item \textbf{class_weight}: Ajuste de pesos para clases desbalanceadas inversamente proporcionales a la frecuencia de cada clase.
+\end{itemize}
 
 \subsubsection*{Validación cruzada}
 
@@ -63,27 +49,16 @@ La validación cruzada proporciona una estimación más realista del rendimiento
 
 Se realizó una búsqueda sistemática de hiperparámetros mediante \texttt{GridSearchCV} con validación cruzada de 5 folds, optimizando el F1-score. El espacio de búsqueda incluyó:
 
-\begin{lstlisting}[language=Python, caption=Grid Search para Random Forest]
-param_grid = {
-    'n_estimators': [50, 100, 200],	# Numero de arboles en el bosque
-    'max_depth': [5, 10, 15, None],	# Profundidad maxima de cada arbol
-    'min_samples_split': [2, 5, 10],	# Minimo de muestras para dividir un nodo
-    'min_samples_leaf': [1, 2, 4],	# Minimo de muestras en una hoja
-    'max_features': ['sqrt', 'log2']	# Numero de caracteristicas a considerar por division
-}
+\begin{itemize}
+	% ¿Explicación de para qué? Todos son para ver el valor óptimo
+	\item \textbf{n_estimators}: Probamos los valores 50, 100 y 200.
+	\item \textbf{max_depth}: Probamos los valores 5, 10, 15.
+	\item \textbf{min_samples_split}: Probamos 2, 5 y 10.
+	\item \textbf{min_samples_leaf}: Probamos 1, 2 y 4.
+	\item \textbf{max_features}: Probamos ``sqrt'' y ``log2''. Este último toma el logaritmo en base 2 del número de características.
+\end{itemize}
 
-grid_search = GridSearchCV(
-    RandomForestClassifier(random_state=12, class_weight='balanced'),
-    param_grid,
-    cv=cv,
-    scoring='f1',  # Optimizacion de F1-score
-    n_jobs=-1,
-    verbose=1
-)
-
-grid_search.fit(X_train, y_train)
-rf_optimized = grid_search.best_estimator_
-\end{lstlisting}
+Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
 
 \subsubsection*{Métricas de evaluación}
 
