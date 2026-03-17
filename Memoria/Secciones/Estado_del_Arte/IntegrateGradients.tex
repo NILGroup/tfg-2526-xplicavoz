@@ -1,4 +1,14 @@
 \subsubsection{Integrated Gradients}
-IG aborda la saturación del gradiente integrando las variaciones a lo largo de una trayectoria desde una entrada de referencia (baseline) $x'$ hasta la entrada real $x$. La atribución para la característica $i$ se define como:
+Integrated Gradients (IG) se basa en integrar los gradientes de la función del modelo a lo largo de una trayectoria que conecta una entrada de referencia (``baseline'') x' con la entrada real x. Este modelo permite capturar cómo varía la sensibilidad del modelo respecto a cada característica a lo largo del recorrido, evitando problemas como la saturación del gradiente en el punto de entrada.
+
+Siendo F la función del modelo, i una característica específica que se está observando, x' el ``baseline'' y $\alpha$ que parametriza el camino continuo entre x y x':
+
 $$ IG_i(x) = (x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial f(x' + \alpha(x - x'))}{\partial x_i} d\alpha $$
-En audio, la selección de la línea base (silencio vs. ruido blanco) es un factor crítico para evitar explicaciones espurias.
+
+Tres propiedas clave de IG que justifican teoricamente su uso son:
+\begin{itemize}
+            \item \textbf{Sensibilidad}: si x y x' difieren unicamente en una característica y la predicción varía, entonces esa característica debe tener una atribución no nula.
+            \item \textbf{Invariancia de implementación}: si dos modelos implementan la misma función aunque varien las arquitecturas o la organización de parámetros, entonces las atribuciones de IG serán iguales. 
+            \item \textbf{Completitud}: la suma de las atribuciones de todas las características es igual a la diferencia entre la predicción del modelo para x y x'.
+\end{itemize}
+En audio, el ``baseline'' se representa como ruido blanco o como silencio, nosotros hemos optado por esta última opción.
