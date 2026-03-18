@@ -54,14 +54,22 @@ Los kernels más comúnmente utilizados son:
     donde \(\gamma\) controla la influencia de cada muestra: un valor pequeño considera vecindarios amplios (frontera más suave), mientras que un valor grande se enfoca en vecindarios reducidos (frontera más ajustada a los datos).
 \end{itemize}
 
-\subsubsection*{Parámetros críticos}
+\subsubsection*{Hiperparámetros}
 
-El rendimiento de una SVM depende fundamentalmente de dos parámetros:
+Vamos a ver cuáles son los hiperparámetros más importantes en los SVM.
 
 \begin{itemize}
-    \item \textbf{C (parámetro de regularización)}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
+    \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
     
-    \item \textbf{\(\gamma\) (gamma)}: Específico del kernel RBF, define hasta qué punto llega la influencia de un solo punto de entrenamiento. Valores bajos significan influencia de largo alcance (frontera más suave), mientras que valores altos hacen que cada punto tenga influencia muy local (frontera más compleja).
+    \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente. Los kernels más comunes son: lineal (recomendado para datos con muchas características o problemas aproximadamente lineales), polinomial (permite curvas más complejas mediante el grado del polinomio), y RBF o radial (el más utilizado por defecto, capaz de crear límites de decisión muy flexibles y adaptarse a diferentes formas de los datos). La elección del kernel determina fundamentalmente la capacidad del modelo para encontrar patrones complejos.
+    
+    \item \textbf{gamma \(\gamma\)}: Específico de kernels no lineales (RBF, sigmoide o polinomial). define cuánta influencia tiene un solo punto de entrenamiento: valores bajos significan que cada punto tiene un alcance amplio, produciendo límites de decisión más suaves y generales; valores altos hacen que cada punto influya solo en su vecindario cercano, lo que puede generar límites muy ajustados a los datos de entrenamiento pero con alto riesgo de sobreajuste.
+    
+    \item \textbf{degree}: Cuando se utiliza el kernel polinomial, este parámetro especifica el grado del polinomio usado para transformar los datos. Un grado mayor permite capturar relaciones más complejas y no lineales, pero también aumenta el riesgo de sobreajuste y el costo computacional. Normalmente se utilizan grados bajos (2, 3 o 4) porque valores muy altos tienden a producir modelos inestables y difíciles de generalizar.
+    
+    \item \textbf{coef0}: Este parámetro es relevante para los kernels polinomial y sigmoide, donde actúa como un término independiente en la función del kernel. En el kernel polinomial, coef0 controla cuánto influyen los términos de menor grado respecto a los de mayor grado; en el sigmoide, ayuda a definir la forma de la función de activación. Aunque no es tan crítico como C o gamma, puede necesitar ajuste para optimizar el rendimiento del modelo.
+    
+    \item \textbf{probability}: Este parámetro booleano determina si el modelo SVM debe calibrarse para proporcionar estimaciones de probabilidad junto con las predicciones de clase. Activarlo (True) permite obtener la probabilidad de pertenencia a cada clase mediante validación cruzada interna, lo cual es útil para interpretar la confianza del modelo. Sin embargo, este proceso aumenta significativamente el tiempo de entrenamiento y puede afectar ligeramente la precisión de las clasificaciones.
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
