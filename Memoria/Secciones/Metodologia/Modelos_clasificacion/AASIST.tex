@@ -29,16 +29,19 @@ Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el pro
 Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de \textbf{épocas: 10, 20, 40 o 80}. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
 Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios ``bonafide'' y 10 ``spoof'', entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
 
-A la hora de evaluar, hemos usado 3 medidas:
+A la hora de evaluar, hemos usado 4 medidas:
 
-\textbf{Precision}: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof 
+\textbf{Accuracy}: proporción de las muestras clasificadas correctamente sobre el total de muestras.
+
+    $\text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN}$
+\textbf{Precision}: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof.
 
  $\text{Precision}=\frac{TP}{TP+FP}$
-\textbf{Recall}: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof
+\textbf{Recall}: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof.
 
  $\text{Recall}=\frac{TP}{TP+FN}$
 
-\textbf{F1}: media armónica entre precision y recall
+\textbf{F1}: media armónica entre precision y recall.
 
  $\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
 
@@ -58,8 +61,8 @@ Lo primero que mostramos es el formato de la salida que es una tupla con dos val
 Después,  ejemplificamos cuales son los valores que se pasan a la capa de salida y cuánto afectan al cálculo de cada uno de los valores de la salida. Estos valores son los resultados de las operaciones ``max'' y ``average'' de cada subgrafo y el resultado del stack node. Con estas muestras podemos empezar a ver que ha sido mas significativo a la hora de responder si un audio es ``spoof'' o no.
  
 En el apartado temporal, el siguiente paso es crear una función que va tapando segmentos de audio, calculamos la nueva probabilidad según el clasificador y vemos como cae la probabilidad base respecto a la nueva. Esta función de forma predeterminada hace estos cálculos para la clase predecida pero le puedes indicar tú por parámetro cualquiera de las dos.
-Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
-
+Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que picos en tramos pequeños se compensen y salga aportación nula.
+Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
 \begin{figure}[H]
     \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
