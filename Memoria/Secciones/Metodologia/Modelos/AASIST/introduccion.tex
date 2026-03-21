@@ -34,16 +34,18 @@ A la hora de evaluar, hemos usado 4 medidas:
 \textbf{Accuracy}: proporción de las muestras clasificadas correctamente sobre el total de muestras.
 
     $\text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN}$
+
 \textbf{Precision}: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof.
 
- $\text{Precision}=\frac{TP}{TP+FP}$
+    $\text{Precision}=\frac{TP}{TP+FP}$
+
 \textbf{Recall}: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof.
 
- $\text{Recall}=\frac{TP}{TP+FN}$
+    $\text{Recall}=\frac{TP}{TP+FN}$
 
 \textbf{F1}: media armónica entre precision y recall.
 
- $\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
+    $\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
 
 \begin{figure}[H]
     \centering
@@ -59,19 +61,10 @@ Hemos usado las propias estructuras del modelo para empezar a explicar qué es l
 Lo primero que mostramos es el formato de la salida que es una tupla con dos valores, la probabilidad de que el audio sea ``spoof'' y de que sea ``bona fide'', y la estructura de los grafos que nos permite ver que se crean 23 nodos espectrales y 29 temporales. También, simulamos como funciona un ``pooling'' mostrando los nodos de cada tipo con mayor puntuación.
 
 Después,  ejemplificamos cuales son los valores que se pasan a la capa de salida y cuánto afectan al cálculo de cada uno de los valores de la salida. Estos valores son los resultados de las operaciones ``max'' y ``average'' de cada subgrafo y el resultado del stack node. Con estas muestras podemos empezar a ver que ha sido mas significativo a la hora de responder si un audio es ``spoof'' o no.
- 
-En el apartado temporal, el siguiente paso es crear una función que va tapando segmentos de audio, calculamos la nueva probabilidad según el clasificador y vemos como cae la probabilidad base respecto a la nueva. Esta función de forma predeterminada hace estos cálculos para la clase predecida pero le puedes indicar tú por parámetro cualquiera de las dos.
-Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que picos en tramos pequeños se compensen y salga aportación nula.
-Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
-	\caption{Resultados de la ocultación temporal en AASIST.}
-\end{figure}
 
 Como vemos en este ejemplo, en las primeras décimas de segundo ocurre un evento completamente determinante para el predictor. Destacamos los instantes con valor negativo que indican que si ``quitamos'' ese trozo la probabilidad crece.
 
-En el ámbito espectral, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de fourier y las graficamos
+En relación a filtros de frecuencia, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de fourier y las graficamos
 
 \begin{figure}[H]
     \centering
@@ -101,9 +94,22 @@ Posteriormente, graficamos los filtros que más activación han tenido en el pri
 Como hemos mencionado anteriormente, los 5 filtros más excitados se pueden separar en dos grupos por su consecución. Además, en la gráfica de la derecha se ve claramente como tienen comportamientos muy parecidos. 
 Comparando estas últimas imágenes, con la figura X podemos ver que donde en está última parece que había mucha relevancia, aquí no se ve reflejado. Esto se explica en que los filtros son solo la activación temprana del frontal sinc-conv y la información captada tiene que pasar por varios procesos. Sin embargo, la observación de los filtros empieza a ofrecernos información relevante para la clasificación.
 
-Por último, en relación al ámbito espectral, simulamos como sería la salida de la capa sinc-convolution que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``heatmap'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
+A continuación, vamos a aplicar ``\textbf{occlusion}'' tanto al ámbito espectral como al temporal focalizando, además, tanto logit de la clase clasificada como el margen entre los logits de ambas clase.
+Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver como cambia el logit final con estas variaciones para ver que tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
 
-Hemos creado dos mapas filtro-tiempo, el de la izquierda que sería el más fiel al modelo y el de la derecha que normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
+A la hora de llevar esta idea a código, hemos creado dos funciones separadas de cada dominio per su idea es la misma: sacan los logits iniciales, con un bucle vamos tapando segmentos y sacando nuevos logits que nos permiten ver como ha variado el resultado al obviar ese segmento. Ambas funciones tienen un parámetro que permite decidir que clase obsevar y en caso de no especificar, se mira la clase con la se clasifico el audio.
+La única diferencia entre estas funciones, es que la del plano espectral necesitas hacer uso de una FFT para poder cambiar entre ámbitos y así seleccionar correctamente que banda de frecuencia silenciar.
+Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que picos en tramos pequeños se compensen y salga aportación nula.
+Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
+	\caption{Resultados de la ocultación temporal en AASIST.}
+\end{figure}
+
+Siguiento en relación con las frecuencias, simulamos como sería la salida de la capa sinc-convolution que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``heatmap'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
+
+Hemos creado dos mapas filtro-tiempo, el de la izquierda sería el más fiel al modelo y el de la derecha normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
 
 \begin{figure}[H]
     \centering
@@ -122,7 +128,21 @@ Hemos creado dos mapas filtro-tiempo, el de la izquierda que sería el más fiel
 
 Con estos mapas, volvemos a observar que los filtros más activados son los de baja frecuencia, predominantemente en los primeros segundos del audio. Además, volvemos a ver una región ``vacía'' en torno a los 3,5 segundos que equivale a un silencio en el audio.
 
+La siguiente técnica que vamos a aplicar es Integrated Gradients, primero sobre los mapas filtro-tiempo que acabamos de ver. 
+Con este objetivo, usamos la clase LayerIntegratedGradients porque analizamos solo una capa concreta del modelo y nos devuelve la salidad en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Cabe mencionar que como baseline utilizamos un vector silencio ya que la entrada es un audio.
 
+A diferencia de los mapas filtro-tiempo anteriores, aquí representamos las zonas que más contribuyen al logit final.
+Sin embargo, igual que antes, representamos una gráfica normalizada para apreciar más detalle y una sin normalizar para ver el mapa puro.
+
+Como podemos ver en las imágenes en este caso, los filtos que más se activarían son los de baja frecuencias.
+
+Para mostrar esto de manera más visual, generamos una gráfica parecida a las de occlusion pero con los filtros en el eje x.
+
+Para mostrar estos mapas de manera temporal, resumimos todos los filtros en cada instante y hacemos una curva temporal viendo que instantes han sido más relevantes.
+
+Siguiendo con IG, ahora lo aplicamos sobre el audio crudo, usando, a diferencia de con los mapas, la clase IntegratedGradients. Como resultado, obtenemos una gráfica de importancia temporal indicando lo importante que es cada instante según está técnica.
+
+Como última técnica aplicamos RISE, y obtenemos los resultados en forma de gráfica temporal.
 
 
 
