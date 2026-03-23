@@ -8,52 +8,37 @@ Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea
 
 \subsubsection*{Configuración experimental}
 
-El proceso experimental para LightGBM se estructuró en cuatro fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, (3) optimización de hiperparámetros mediante búsqueda sistemática, y (4) evaluación comparativa con métricas exhaustivas.
+El proceso experimental para LightGBM se estructuró en tres fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, y (3) optimización de hiperparámetros mediante búsqueda sistemática.
 
-\paragraph{Preparación de datos}
+\subsubsection*{Preparación de datos}
 A diferencia de otros algoritmos, LightGBM puede manejar directamente datos sin normalización, aunque requiere que no existan valores nulos.
 
-\paragraph{Modelo baseline con LightGBM}
+\subsubsection*{Modelo baseline con LightGBM}
 Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento:
 
 \begin{itemize}
 	\item \textbf{objective}: binary.
 	\item \textbf{metric}: binary logloss.
-	\item \textbf{boosting type}: gbdt.
-	\item \textbf{num leaves}: 31.
-	\item \textbf{learning rate \(\eta\)}: 0,05.
-	\item \textbf{feature fraction}: 0,9.
-	\item \textbf{bagging fraction}: 0,8.
-	\item \textbf{bagging freq}: 5.
-	\item \textbf{random state}: 12.
-	\item \textbf{is unbalanced}: True.
+	\item \textbf{boosting\_type}: gbdt.
+	\item \textbf{num\_leaves}: 31.
+	\item \textbf{learning\_rate \(\eta\)}: 0,05.
+	\item \textbf{feature\_fraction}: 0,9.
+	\item \textbf{bagging\_fraction}: 0,8.
+	\item \textbf{bagging\_freq}: 5.
+	\item \textbf{random\_state}: 12.
+	\item \textbf{is\_unbalanced}: True.
 \end{itemize}
+
+El parámetro \texttt{is\_unbalance=True} activa la compensación automática para clases desbalanceadas, ajustando los pesos de forma inversamente proporcional a la frecuencia de cada clase. 
 
 Tras ello entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
 
 \begin{itemize}
-	\item \textbf{num boost round}:
-	\item \textbf{callbacks}: 
+	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán. En este caso, 1000 es el límite superior, pero el early\_stopping puede detener el proceso antes si no hay mejoras.
+	\item \textbf{callbacks}: funciones que se ejecutan durante el entrenamiento para controlar el proceso. En este caso mostramos información del entrenamiento cada 100 iteraciones y paramos si no mejora por 50 iteraciones.
 \end{itemize}
 
-\begin{lstlisting}[language=Python, caption=Configuración del modelo baseline LightGBM]
-
- # Entrenamiento con early stopping
- model_baseline = lgb.train(
-     params_baseline,
-     train_data,
-     valid_sets=[test_data],
-     num_boost_round=1000,
-     callbacks=[
-         lgb.early_stopping(50),   # Detiene si no mejora en 50 rondas
-         lgb.log_evaluation(100)    # Log cada 100 iteraciones
-     ]
- )
-\end{lstlisting}
-
-El parámetro \texttt{is\_unbalance=True} activa la compensación automática para clases desbalanceadas, ajustando los pesos de forma inversamente proporcional a la frecuencia de cada clase.
-
-\paragraph{Early stopping}
+\subsubsection*{Early stopping}
 Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento cuando añadir más árboles no mejora el rendimiento en validación. Esto:
 \begin{itemize}
     \item Previene el sobreajuste (overfitting)
@@ -61,33 +46,9 @@ Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento c
     \item Determina automáticamente el número óptimo de iteraciones
 \end{itemize}
 
-\subsubsection*{Validación cruzada}
+\subsubsection*{Validación cruzada estratificada}
 
-Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar:
-
- \begin{lstlisting}[language=Python, caption=Validación cruzada con LightGBM]
- from sklearn.model_selection import StratifiedKFold, cross_val_score
-
- # Usamos la interfaz scikit-learn de LightGBM
- lgb_sklearn = lgb.LGBMClassifier(
-     objective='binary',
-     boosting_type='gbdt',
-     num_leaves=31,
-     learning_rate=0.05,
-     random_state=12,
-     is_unbalance=True,
-     n_jobs=-1
- )
-
- cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=12)
-
- cv_scores_accuracy = cross_val_score(lgb_sklearn, X_train, y_train, 
-                                      cv=cv, scoring='accuracy')
- cv_scores_f1 = cross_val_score(lgb_sklearn, X_train, y_train, 
-                                cv=cv, scoring='f1')
- cv_scores_auc = cross_val_score(lgb_sklearn, X_train, y_train, 
-                                 cv=cv, scoring='roc_auc')
- \end{lstlisting}
+Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras crear el modelo aplicamos la validación cruzada donde mezclamos los datos de entrenamiento y dividimos en 5 conjuntos, donde en cada paso se entrena al modelo con 4 y se evalúa con el restante, cambiando el conjunto de evaluación en cada etapa. Finalmente evaluamos con accuracy, f1 y ROC-AUC.  
 
 La validación cruzada proporciona una estimación más robusta del rendimiento, reportándose la media y la desviación estándar de las métricas.
 
@@ -96,52 +57,14 @@ La validación cruzada proporciona una estimación más robusta del rendimiento,
 LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento:
 
 \begin{itemize}
-    \item \texttt{num\_leaves}: Controla la complejidad del modelo. Valores altos permiten capturar patrones más complejos pero aumentan el riesgo de sobreajuste.
-    
-    \item \texttt{learning\_rate}: Tasa de aprendizaje (eta). Valores pequeños requieren más iteraciones pero pueden lograr mejor convergencia.
-    
-    \item \texttt{n\_estimators}: Número de iteraciones de boosting.
-    
-    \item \texttt{min\_child\_samples}: Mínimo de muestras requeridas en una hoja. Controla la profundidad y evita hojas con pocas muestras.
-    
-    \item \texttt{subsample} y \texttt{colsample\_bytree}: Fracciones de muestras y características para cada árbol, introduciendo aleatoriedad.
-    
-    \item \texttt{reg\_alpha} y \texttt{reg\_lambda}: Regularización L1 y L2 para controlar la complejidad.
-\end{itemize}
-
-\begin{itemize}
-	\item \textbf{num leaves}: Probamos 15, 31 y 63.
-	\item \textbf{learning rate}: Probamos 0,01, 0,05 y 0,1.
-	\item \textbf{n estimators}: Probamos 100, 200 y 300.
-	\item \textbf{min child samples}: Probamos 20, 50 y 100.
+	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.
+	\item \textbf{learning\_rate}: Probamos 0,01, 0,05 y 0,1.
+	\item \textbf{n\_estimators}: Probamos 100, 200 y 300.
+	\item \textbf{min\_child samples}: Probamos 20, 50 y 100.
 	\item \textbf{subsample}: Probamos 0,6, 0,8 y 1.
-	\item \textbf{colsample bytree}: Probamos 0,6, 0,8 y 1.
-	\item \textbf{reg alpha}: Probamos 0, 0,1 y 0,5.
-	\item \textbf{reg lambda}: Probamos 0, 0,1 y 0,5.
+	\item \textbf{colsample\_bytree}: Probamos 0,6, 0,8 y 1.
+	\item \textbf{reg\_alpha}: Probamos 0, 0,1 y 0,5.
+	\item \textbf{reg\_lambda}: Probamos 0, 0,1 y 0,5.
 \end{itemize}
 
-\begin{lstlisting}[language=Python, caption=Grid Search para LightGBM]
- param_grid = {
-     'num_leaves': [15, 31, 63],           # Complejidad del modelo
-     'learning_rate': [0.01, 0.05, 0.1],    # Tasa de aprendizaje
-     'n_estimators': [100, 200, 300],       # Numero de iteraciones
-     'min_child_samples': [20, 50, 100],     # Minimo muestras por hoja
-     'subsample': [0.6, 0.8, 1.0],           # Fraccion de muestras
-     'colsample_bytree': [0.6, 0.8, 1.0],    # Fraccion de caracteristicas
-     'reg_alpha': [0, 0.1, 0.5],             # Regularizacion L1
-     'reg_lambda': [0, 0.1, 0.5]             # Regularizacion L2
- }
-
- grid_search = GridSearchCV(
-     lgb.LGBMClassifier(objective='binary', random_state=42, 
-                       is_unbalance=True, n_jobs=-1),
-     param_grid,
-     cv=cv,
-     scoring='f1',
-     n_jobs=-1,
-     verbose=1
- )
-
- grid_search.fit(X_train, y_train)
- lgb_optimized = grid_search.best_estimator_
-\end{lstlisting}
+Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
