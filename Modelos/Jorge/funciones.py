@@ -68,8 +68,8 @@ def evaluacion_modelo(model_name: str, y_true, y_pred, y_pred_proba,
     
     print("\nMÉTRICAS PRINCIPALES:")
     print(f"   • Accuracy:  {accuracy:.4f}  (Porcentaje total de aciertos)")
-    print(f"   • Precision: {precision:.4f}  (De los que dije IA, ¿cuántos eran?)")
-    print(f"   • Recall:    {recall:.4f}    (De los IA, ¿cuántos detecté?)")
+    print(f"   • Precision: {precision:.4f}  (De los que dije que eran reales, ¿cuántos lo eran?)")
+    print(f"   • Recall:    {recall:.4f}  (De los reales, ¿cuántos detecté?)")
     print(f"   • F1-Score:  {f1:.4f}  (Balance precision-recall)")
     print(f"   • AUC-ROC:   {auc:.4f}  (Capacidad discriminativa)")
     print(f"   • MCC:       {mcc:.4f}  (Coeficiente de correlación de Matthews)")
@@ -77,7 +77,7 @@ def evaluacion_modelo(model_name: str, y_true, y_pred, y_pred_proba,
     # 2. CLASSIFICATION REPORT DETALLADO
     print("\nCLASSIFICATION REPORT:")
     print(classification_report(y_true, y_pred, 
-                              target_names=['Real (0)', 'IA (1)'],
+                              target_names=['Real (1)', 'IA (0)'],
                               digits=4))
     
     # 3. MATRIZ DE CONFUSIÓN

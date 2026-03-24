@@ -1,0 +1,99 @@
+\subsubsection*{Resultados del LightGBM}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+
+\subsubsection*{Modelo baseline}
+
+============================================================
+ EVALUACIÓN: LightGBM - Baseline
+============================================================
+
+MÉTRICAS PRINCIPALES:
+   • Accuracy:  1.0000  (Porcentaje total de aciertos)
+   • Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+   • Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+   • F1-Score:  1.0000  (Balance precision-recall)
+   • AUC-ROC:   1.0000  (Capacidad discriminativa)
+   • MCC:       1.0000  (Coeficiente de correlación de Matthews)
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+    Real (1)     1.0000    1.0000    1.0000        10
+      IA (0)     1.0000    1.0000    1.0000        10
+
+    accuracy                         1.0000        20
+   macro avg     1.0000    1.0000    1.0000        20
+weighted avg     1.0000    1.0000    1.0000        20
+
+
+ANÁLISIS DE ERRORES:
+   • Verdaderos Negativos (Reales bien clasificados): 10
+   • Verdaderos Positivos (IA bien clasificados): 10
+   • Falsos Positivos (Reales clasificados como IA): 0
+   • Falsos Negativos (IA clasificados como Reales): 0
+   • Error tipo I (Falsos Positivos): 0.00%
+   • Error tipo II (Falsos Negativos): 0.00%
+
+============================================================ \\
+
+Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien.
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+Resultados Validación Cruzada (5 folds):
+   • Accuracy: 0.9875 (+/- 0.0500)
+   • F1-Score: 0.9882 (+/- 0.0471)
+   • AUC-ROC:  1.0000 (+/- 0.0000)
+   
+Estos resultados arrojan una pequeña desviación en exactitud y en f1, lo cual puede indicar que en el modelo baseline el split con el que se entrenó era ``fácil'' y por eso lo hace tan bien, ya que no en todos los splits lo hace perfecto.
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+
+num\_leaves: 15
+learning\_rate: 0.01
+n\_estimators: 100
+min\_child\_samples: 20
+subsample: 0.6
+colsample\_bytree: 0.6
+reg\_alpha: 0
+reg\_lambda: 0
+
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+
+============================================================
+ EVALUACIÓN: LightGBM - Optimizado
+============================================================
+
+MÉTRICAS PRINCIPALES:
+   • Accuracy:  1.0000  (Porcentaje total de aciertos)
+   • Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+   • Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+   • F1-Score:  1.0000  (Balance precision-recall)
+   • AUC-ROC:   1.0000  (Capacidad discriminativa)
+   • MCC:       1.0000  (Coeficiente de correlación de Matthews)
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+    Real (1)     1.0000    1.0000    1.0000        10
+      IA (0)     1.0000    1.0000    1.0000        10
+
+    accuracy                         1.0000        20
+   macro avg     1.0000    1.0000    1.0000        20
+weighted avg     1.0000    1.0000    1.0000        20
+
+
+ANÁLISIS DE ERRORES:
+   • Verdaderos Negativos (Reales bien clasificados): 10
+   • Verdaderos Positivos (IA bien clasificados): 10
+   • Falsos Positivos (Reales clasificados como IA): 0
+   • Falsos Negativos (IA clasificados como Reales): 0
+   • Error tipo I (Falsos Positivos): 0.00%
+   • Error tipo II (Falsos Negativos): 0.00%
+
+============================================================ \\
+
+Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
