@@ -1,0 +1,7 @@
+RISE(Randomized Input Sampling for Explanation) se basa en generar nuevos resultados aplicando máscaras aleatorias que tapan parcial o completamente segmentos de la entrada. La importancia de cada segmento se calcula como la media del score del modelo de todas las entradas enmascaradas en las que el segmento permanece visible, es decir, con máscara distinta de 0. Aunque la técnica fue ideada para imágenes, hemos reconvertido la idea para audio. 
+
+La fórmula para cada segmento sería: 
+ 
+S_{I,f}(\lambda) \approx \frac{1}{N \cdot \mathbb{E}[M]} \sum_{i=1}^{N} f(I \odot M_i)\, M_i(\lambda)
+
+siendo I la entrada original, N el número total de máscaras,  E[M] la fracción media de píxeles que queda visible en cada máscara y Mi​ la máscara aleatoria i.
