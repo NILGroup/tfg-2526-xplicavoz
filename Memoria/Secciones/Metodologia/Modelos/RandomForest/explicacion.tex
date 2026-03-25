@@ -111,7 +111,7 @@ Las visualizaciones obtenidas se interpretan de la siguiente manera:
     \end{itemize}
 \end{itemize}
 Un ejemplo de explicación local es: 
-    \begin{figure}
+    \begin{figure}[H]
 		\includegraphics[width=\textwidth]{imagenes/shap_local_0.png}
 		\caption{Explicación local con SHAP}
 		\label{fig:shap_local}
@@ -226,6 +226,12 @@ Este proceso realiza las siguientes transformaciones:
     
     \item \textbf{Visualización}: Se utiliza \texttt{display(HTML(...))} de IPython para renderizar el HTML personalizado en el notebook.
 \end{enumerate}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/explicacion_rf_lime.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:shap_local}
+\end{figure}
 
 \subsubsection*{Interpretación de las explicaciones LIME}
 
