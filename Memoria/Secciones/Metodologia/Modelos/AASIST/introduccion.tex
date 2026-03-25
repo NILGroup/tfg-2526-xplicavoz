@@ -17,7 +17,7 @@ Con esto preparado, las tres funciones de inferencia las creamos para ver si con
 \begin{itemize}
     \item \textbf{average\_windows}: esta función devuelve la media de sumar las predicciones de cada ventana calculadas de forma independiente. 
     \item \textbf{score\_without\_windows}: esta función devuelve solamente la puntuación del segmento incial del audio en archivos largos o del audio en su totalidad en el caso contrario.
-    \item \textbf{average\_logits}: esta función fusiona todas las ventana sumando sus logits antes de calcular una única probabilidad.
+    \item \textbf{average\_logits}: esta función fusiona todas las ventana sumando sus ``logits'' antes de calcular una única probabilidad.
 \end{itemize}
 Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nombre del audio, la probabilidad de que sea ``bonafide'' y su duración. Para esto, se recorre cada audio del dataset, se le aplica una de las funciones de inferencia y se escribe la información en el csv.
 
@@ -62,8 +62,6 @@ Lo primero que mostramos es el formato de la salida que es una tupla con dos val
 
 Después,  ejemplificamos cuales son los valores que se pasan a la capa de salida y cuánto afectan al cálculo de cada uno de los valores de la salida. Estos valores son los resultados de las operaciones ``max'' y ``average'' de cada subgrafo y el resultado del stack node. Con estas muestras podemos empezar a ver que ha sido mas significativo a la hora de responder si un audio es ``spoof'' o no.
 
-Como vemos en este ejemplo, en las primeras décimas de segundo ocurre un evento completamente determinante para el predictor. Destacamos los instantes con valor negativo que indican que si ``quitamos'' ese trozo la probabilidad crece.
-
 En relación a filtros de frecuencia, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de fourier y las graficamos
 
 \begin{figure}[H]
@@ -80,13 +78,13 @@ Posteriormente, graficamos los filtros que más activación han tenido en el pri
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{AASIST_top_filtros.png}
+        \includegraphics[width=\linewidth]{imagenes/AASIST_top_filtros.png}
         \caption{Bandas de frecuencia de los filtros más activados.}
         \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{AASIST_activación_top_filtros.png}
+        \includegraphics[width=\linewidth]{imagenes/AASIST_activación_top_filtros.png}
         \caption{Activación de los filtros más activados a lo largo del audio.}
     \end{subfigure}
 \end{figure}
@@ -94,20 +92,46 @@ Posteriormente, graficamos los filtros que más activación han tenido en el pri
 Como hemos mencionado anteriormente, los 5 filtros más excitados se pueden separar en dos grupos por su consecución. Además, en la gráfica de la derecha se ve claramente como tienen comportamientos muy parecidos. 
 Comparando estas últimas imágenes, con la figura X podemos ver que donde en está última parece que había mucha relevancia, aquí no se ve reflejado. Esto se explica en que los filtros son solo la activación temprana del frontal sinc-conv y la información captada tiene que pasar por varios procesos. Sin embargo, la observación de los filtros empieza a ofrecernos información relevante para la clasificación.
 
-A continuación, vamos a aplicar ``\textbf{occlusion}'' tanto al ámbito espectral como al temporal focalizando, además, tanto logit de la clase clasificada como el margen entre los logits de ambas clase.
-Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver como cambia el logit final con estas variaciones para ver que tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
+A continuación, vamos a aplicar ``\textbf{occlusion}'' tanto al ámbito espectral como al temporal. Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver como cambia el ``logit'' final con estas variaciones para ver que tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
 
-A la hora de llevar esta idea a código, hemos creado dos funciones separadas de cada dominio per su idea es la misma: sacan los logits iniciales, con un bucle vamos tapando segmentos y sacando nuevos logits que nos permiten ver como ha variado el resultado al obviar ese segmento. Ambas funciones tienen un parámetro que permite decidir que clase obsevar y en caso de no especificar, se mira la clase con la se clasifico el audio.
+Además, vamos a utilizar dos medidas complementarias. Por un lado, el cambio en el ``\textbf{logit}'' de la clase objetivo nos permite representar cuanto contribuye cada región a la evidencia bruta de dicha clase. Por otro, medimos el \textbf{margen} o diferencia entre los ``logits'' de ambas clases, esta métrica nos permite analizar separación entre clases durante el audio. Mientras que la primera aporta información importante sobre cierta clase, el margen resulta más valioso para entender la decisión final de AASIST ya que nos muestra si realmente una región ayuda a la clase objetivo o ayuda a ambas por igual. 
+
+A la hora de llevar esta idea a código, hemos creado dos funciones separadas de cada dominio pero su idea es la misma. Primero, sacan los ``logits'' iniciales, seguidamente, con un bucle vamos tapando segmentos y sacando nuevos ``logits'' que nos permiten ver como ha variado el resultado al obviar ese segmento. Ambas funciones tienen un parámetro que permite decidir que clase obsevar y en caso de no especificar, se mira la clase con la se clasifico el audio.
 La única diferencia entre estas funciones, es que la del plano espectral necesitas hacer uso de una FFT para poder cambiar entre ámbitos y así seleccionar correctamente que banda de frecuencia silenciar.
 Las caídas en la probabilidad las graficamos y nos permite ver qué instantes del audio son más relevantes para el modelo. Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que picos en tramos pequeños se compensen y salga aportación nula.
 Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite saber en qué momento ocurren.
 \begin{figure}[H]
     \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
-	\caption{Resultados de la ocultación temporal en AASIST.}
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal.png}
+        \caption{Resultados de ``logit'' de la ocultación temporal en AASIST.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal_margen.png}
+        \caption{Resultados de margen de la ocultación temporal en AASIST.}
+    \end{subfigure}
 \end{figure}
 
-Siguiento en relación con las frecuencias, simulamos como sería la salida de la capa sinc-convolution que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``heatmap'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
+Con las gráficas frecuenciales, podemos ver en que frecuencias ocurren.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_frecuencial.png}
+        \caption{Resultados de ``logit'' de la ocultación frecuencial en AASIST.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_frecuencial_margen.png}
+        \caption{Resultados de margen de la ocultación frecuencial en AASIST.}
+    \end{subfigure}
+\end{figure}
+
+Siguiento en relación con las frecuencias, simulamos como sería la salida de la capa ``\textbf{sinc-convolution}'' que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``\textbf{heatmap}'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
 
 Hemos creado dos mapas filtro-tiempo, el de la izquierda sería el más fiel al modelo y el de la derecha normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
 
@@ -115,34 +139,120 @@ Hemos creado dos mapas filtro-tiempo, el de la izquierda sería el más fiel al 
     \centering
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{AASIST_heatmap.png}
+        \includegraphics[width=\linewidth]{imagenes/AASIST_heatmap.png}
         \caption{Mapa filtro-tiempo de la capa sinc-convolution.}
         \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.45\textwidth}
         \centering
-        \includegraphics[width=\linewidth]{AASIST_heatmap_normalizado.png}
+        \includegraphics[width=\linewidth]{imagenes/AASIST_heatmap_normalizado.png}
+        \caption{Mapa filtro-tiempo de la capa sinc-convolution normalizado.}
+    \end{subfigure}
+\end{figure}
+
+Con estos mapas, podemos ver que filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más.
+
+La siguiente técnica que vamos a aplicar es \textbf{Integrated Gradients}. Para medir el error usando esta técnica usamos la métrica ``\textbf{delta}'' que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
+Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. Para ello, usamos la clase \textbf{LayerIntegratedGradients} porque analizamos solo una capa concreta del modelo y nos devuelve la salida en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Esta clase usa los siguientes parámetros:
+\begin{itemize}
+    \item \textbf{inputs}: el tensor del propio audio.
+    \item \textbf{baselines}: utilizamos un vector silencio ya que la entrada es un audio.
+    \item \textbf{target}: la clase objetivo
+    \item \textbf{n\_steps}: número de saltos entre el baseline y la entrada real
+    \item \textbf{return\_convergence\_delta}: si es ``True'' nos devuelve la métrica delta.
+    \item \textbf{attribute\_to\_layer\_input}: si es ``False'' las atribuciones se calculan sobre las activaciones que salen de esta capa.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa.png}
+        \caption{Mapa filtro-tiempo generado por IG.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_normalizado.png}
+        \caption{Mapa filtro-tiempo normalizado generado por IG.}
+    \end{subfigure}
+\end{figure}
+
+A diferencia de los mapas filtro-tiempo anteriores, aquí representamos las zonas que más \textbf{contribuyen} al ``logit'' final.
+Sin embargo, igual que antes, representamos una gráfica normalizada para apreciar más detalle y una sin normalizar para ver el mapa puro.
+
+Para mostrar esto de manera más visual, generamos dos gráficas. En la izquierda, vemos los filtros en el eje x, proporcionandos información sobre los más excitados. Sin embargo, en la derecha mostramos los resultados de manera temporal, resumiendo todos los filtros en cada instante y hacemos una curva temporal viendo que instantes han sido más relevantes.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_frecuencial.png}
+        \caption{Mapa filtro-tiempo de la capa sinc-convolution.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_temporal.png}
         \caption{Mapa filtro-tiempo normalizado.}
     \end{subfigure}
 \end{figure}
 
-Con estos mapas, volvemos a observar que los filtros más activados son los de baja frecuencia, predominantemente en los primeros segundos del audio. Además, volvemos a ver una región ``vacía'' en torno a los 3,5 segundos que equivale a un silencio en el audio.
+Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.  
 
-La siguiente técnica que vamos a aplicar es Integrated Gradients, primero sobre los mapas filtro-tiempo que acabamos de ver. 
-Con este objetivo, usamos la clase LayerIntegratedGradients porque analizamos solo una capa concreta del modelo y nos devuelve la salidad en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Cabe mencionar que como baseline utilizamos un vector silencio ya que la entrada es un audio.
+Como resultado, obtenemos una gráfica de importancia temporal indicando lo importante que es cada instante según está técnica.
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=\textwidth]{imagenes/AASIST_IG_audio.png}
+	\caption{Importancia temporal según IG sobre audio.}
+\end{figure}
 
-A diferencia de los mapas filtro-tiempo anteriores, aquí representamos las zonas que más contribuyen al logit final.
-Sin embargo, igual que antes, representamos una gráfica normalizada para apreciar más detalle y una sin normalizar para ver el mapa puro.
+Como última técnica aplicamos \textbf{RISE}, y obtenemos los resultados en forma de gráfica temporal.
+Para transformar la idea de esta técnica a audio, lo primero es generar una función que genere las máscaras aleatorias. Esta función genera una primera máscara de tamaño ``grid\_size'' formada solo por 1 o 0. Cada posición de esta primera máscara tiene una probabilidad ``p\_keep'' de tener valor 1, es decir, conservar sin alteraciones esa parte de la señal. Entre cada uno de estos puntos, se realiza un escalado suave hasta tener una máscara del mismo tamaño que la señal original, evitando cambios bruscos que provoquen discontinuidades artificiales.
 
-Como podemos ver en las imágenes en este caso, los filtos que más se activarían son los de baja frecuencias.
+En cuanto a la función principal, podemos realizar los calculos de dos formas ya mencionadas anteriormente, el ``logit'' de clase objetivo o el margen entre clases. Para estos cálculos, primero creamos dos vectores de acumulación y después iteramos ``n\_mask'' veces.
+En cada iteración, generamos una nueva máscara, la aplicamos y, una vez tenemos el audio normalizado, recalculamos resultados con el modelo. Posteriormente, calculamos ambas métricas y las sumamos, multiplicadas por la máscara, a sus vectores de acumulación correspondientes.
+Esta multiplicación es la que va ir discriminando que instantes de audio son los que favorecen más a cada métrica.
 
-Para mostrar esto de manera más visual, generamos una gráfica parecida a las de occlusion pero con los filtros en el eje x.
+Por último, con el bucle acabado, aplicamos a los acumuladores una media sobre el número de máscaras multiplicado por el valor ``p\_keep''.
 
-Para mostrar estos mapas de manera temporal, resumimos todos los filtros en cada instante y hacemos una curva temporal viendo que instantes han sido más relevantes.
+Mostramos las gráficas de ambas métricas para poder compararlas como se ha mencionado anteriormente.
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/AASIST_RISE.png}
+        \caption{Resultados de ``logit'' usando RISE.}
+        \end{subfigure}
+    \hfill
+\end{figure}
 
-Siguiendo con IG, ahora lo aplicamos sobre el audio crudo, usando, a diferencia de con los mapas, la clase IntegratedGradients. Como resultado, obtenemos una gráfica de importancia temporal indicando lo importante que es cada instante según está técnica.
+El último modelo de XAI que hemos aplicado en AASIST es \textbf{SHAP}. Sin embargo, no hemos podido aplicar directamente debido a dos razones principales. En primer lugar, el modelo recibe como entrada un audio crudo lo que se traduce en muchísimas variables que gestionar para esta técnica. En segundo lugar, la arquitectura de AASIST no encaja con los explicadores de SHAP. Para evitar este problema, hemos creado un modelo surrogate que a partir de un archivo .csv con las características intente imitar el comportamiento de AASIST. 
 
-Como última técnica aplicamos RISE, y obtenemos los resultados en forma de gráfica temporal.
+Para medir la precisión del surrogate a la hora de imitar correctamente usamos la metrica  $R^2$. En este contexto, $R^2$ mide que tan bien el modelo del surrogate reproduce correctamente la salida original de AASIST: 
+
+\[R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}\]
+
+donde $y_i$ es el valor real, $\hat{y}_i$ el valor predicho por el surrogate, $\bar{y}$ el media de los valores reales
+
+Esta fórmula se puede presentar de forma más intuitiva como: 
+\[
+R^2 = 1 - \frac{\text{error del surrogate}}{\text{variabilidad total de la salida}}
+\]
+
+Por tanto, cuanto más cercano sea $R^2$ a 1, mejor será la capacidad del surrogate para imitar el comportamiento de AASIST. En cambio, un valor cercano a 0 indica que el modelo apenas mejora una predicción basada simplemente en la media.
+
+Como se puede observar en la salida de la celda donde se entrena el surrogate, obtenemos un $R^2$ al testear cercano a 0 lo cual supone que los resultados son muy limitados a la hora de asociarlos a explicabilidad de AASIST. Sin embargo, vamos a explicar brevemente como hemos construido esta sección de código.
+
+En primer lugar, combinamos el csv de características de los audios y el csv de resultados de AASIST. Para ello, hacemos un merge de ambos archivos poniendo especial atención en que las rutas coinciden y para ellos creamos una función de normalización que unifica su formato.
+
+Cabe mencionar que transformamos el score del segundo csv a ``logit'' con la intención de intentar hacer mejorar la imitación del modelo ya que los valores en ``logit'' crecen de manera más lineal y no están cerrados entre 0 y 1.
+
+Posteriormente, eliminamos del conjunto resultante aquellas columnas de características que no queremos que se usen en la entrada del surrogate como el nombre de cada archivo y realizamos una división del dataset. Esta tarea la realizamos a mano para que los archivos de train y test coincidan con los que se usaron a la hora de entrenar AASIST.
+
+Como modelo de surrogate hemos escogido \textbf{XGBRegressor}. Esta decisión se fundamenta en su capacidad para modelar regiones no lineales, su flexibilidad a la hora de ajustar y opciones para controlar el sobreajuste. Para estos dos últimos objetivos, podemos ir variando los valores los parámetros que recibe la clase como ``n\_estimators'', número de árboles, ``max\_depth'', máxima profundidad de cada árbol, y ``subsample'', porcentaje de audios que usa cada árbol, entre muchos otros. Probamos distintas combinaciones de estos hiperparámetros con el objetivo de mejorar la métrica R² pero no se obtuvieron mejoras significativas.
+
+Por último, aplicamos SHAP sobre el modelo para generar las gráficas.
+
 
 
 

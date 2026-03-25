@@ -1,0 +1,22 @@
+\newpage
+\subsubsection{Germán Bravo Quintián}
+
+\begin{itemize}
+    \item En cuanto a mi investigación inicial sobre la detección de voz generada por IA, leí tres papers.
+    \begin{enumerate}
+        \item Paper sobre AASIST:  la motivación principal para desarrollar el modelo es porque algunos ataques de spoofing dejan huellas espectrales, otros temporales; y los modelos generalmente no miran ambos tipos.
+        \item Paper sobre RawNEt2: aunque Rawnet2 fue diseñado originalmente para la verificación del hablante, en el paper proponen una adaptación de este modelo para el ámbito de la detección de spoofing. La motivación es crear un modelo que trabaje directamente sobre la onda cruda de audio para que pueda aprender características generales, reduciendo su dependencia sobre artefactos ya conocidos.
+        \item Paper sobre ASVspoof2021: sobre la tarea Logical Access(LA), el paper introduce este dataset como mejora de los anteriores añadiendo mejoras como condiciones de transmisión, codificación y comprensión.
+    \end{enumerate}
+    \item Además, del dataset del último paper, investigue otros dos datasets que nos sirvieran para entrenar nuestros modelos. El primero, es “In-the-wild”, dataset en inglés, con audios reales y falsos que incluye voces de 58 personas famosas. El segundo es odss(Open Dataset of Synthetic Speech), que incluye 158 voces en inglés, alemán y español en el que cada audio falso tiene su correspondiente versión real.
+    \item Creación de nuestro propio dataset de prueba teniendo en cuenta los datasets investigados por mis compañeros y los recién mencionados.
+    \item Investigué sobre transcriptores de audio, intentando implementar el paquete de python de Whisper pero debido a dificultades en la tarea lo descarté. Finalmente, implementé “vosk”, creando una función que usando su modelo devolviera la transcripción.
+    \item Paper de AASIST2: se centra en intentar solventar el problema de que al modelo le cuestan los audios cortos, esto se debe porque al haber menos información, hay menos nodos y menos relaciones por tanto. Cambios princiaples: usan Res2Net blocks, DCS y ALMFT.
+    \item Paper de AASIST3:  cambios principales: redes Kolmogorov-Arnold, permiten modelar funciones complejas multivariadas; características de aprendizaje supervisado; más bloques residuales y técnicas de regularización.
+    \item Paper de AASIST con "Speaker-Aware": da contexto sobre el peligro de la suplantación de voz, los distintos tipos de ataques y habla de los datasets de ASVspoof.
+    \item ASVspoof 2019: A large-scale public database of synthesized, converted and replayed speech: ofrece contexto sobre el peligro de la suplantación de voz, los distintos tipos de ataques y habla de los datasets de ASVspoof.
+    \item Paper sobre Integrated Gradients: explican los axiomas en lo que se basa, presentados como fundamentales para cualquier XAI; definen los fundamentos matématicas de la técnica y ofrece pruebas de IG sobre varias aplicaciones.
+    \item Paper sobre Occlusion: el apartado 4.2 introduce el concepto de occlusion, aunque lo use para imágenes, lo usé como base para aplicarlo a AASIST..
+    \item Paper sobre RISE: propone RISE como un modelo que solo necesita acceder a la entrada y a la salida sin tener en cuenta gradientes, pesos internos... Como para Occlusion, en el paper, se aplcia solo a imaágenes y he reconvertido la idea.
+    \item En relación al uso de modelos, he creado todo el código para el uso de AASIST, además, de realizar todas las pruebas mencionadas en su apartado de metedologías. También, he desarrollado el código relacionado con su explicabilidad, es decir, la implementación de RISE, Integrated Gradients, Occlusion y el mostrado de ciertos niveles internos de la arquitectura. Por último, realicé el intento fallido de aplicar SHAP a un surrogate que imite a AASIST para intendar dar explicaciones a nivel de características.
+\end{itemize}
