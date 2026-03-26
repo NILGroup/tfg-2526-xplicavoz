@@ -1,7 +1,10 @@
-RISE(Randomized Input Sampling for Explanation) se basa en generar nuevos resultados aplicando máscaras aleatorias que tapan parcial o completamente segmentos de la entrada. La importancia de cada segmento se calcula como la media del score del modelo de todas las entradas enmascaradas en las que el segmento permanece visible, es decir, con máscara distinta de 0. Aunque la técnica fue ideada para imágenes, hemos reconvertido la idea para audio. 
+\subsubsection{RISE}
+RISE (\textit{Randomized Input Sampling for Explanation}) es un método de explicabilidad basado en perturbaciones aleatorias de la entrada. Su funcionamiento consiste en generar múltiples versiones enmascaradas de la señal mediante máscaras aleatorias que ocultan total o parcialmente distintas regiones de la entrada. La importancia de cada segmento se estima a partir de la media del \textit{score} del modelo sobre todas aquellas entradas enmascaradas en las que dicho segmento permanece visible, es decir, en las que el valor de la máscara en esa posición es distinto de cero. Aunque esta técnica fue propuesta originalmente para imágenes, en este trabajo se ha adaptado su planteamiento al dominio de audio.
 
-La fórmula para cada segmento sería: 
- 
+La importancia de cada segmento puede expresarse mediante la siguiente aproximación:
+
+\[
 S_{I,f}(\lambda) \approx \frac{1}{N \cdot \mathbb{E}[M]} \sum_{i=1}^{N} f(I \odot M_i)\, M_i(\lambda)
+\]
 
-siendo I la entrada original, N el número total de máscaras,  E[M] la fracción media de píxeles que queda visible en cada máscara y Mi​ la máscara aleatoria i.
+donde \(I\) es la entrada original, \(N\) es el número total de máscaras generadas, \(\mathbb{E}[M]\) representa la fracción media de posiciones visibles en cada máscara, y \(M_i\) es la máscara aleatoria \(i\)-ésima. Además, \(f(I \odot M_i)\) corresponde al \textit{score} asignado por el modelo a la entrada enmascarada, mientras que \(M_i(\lambda)\) indica si el segmento \(\lambda\) permanece visible en dicha máscara.
