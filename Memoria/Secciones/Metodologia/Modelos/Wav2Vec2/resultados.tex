@@ -1,0 +1,19 @@
+\subsubsection*{Resultados del Wav2Vec2}
+
+Una vez hecho el entrenamiento, podemos mostrar los resultados del modelo.
+
+Comenzando con sus métricas de evaluación: 
+
+\begin{enumerate}
+ \item Accuracy = 0,9: Porcentaje de aciertos.
+ \item F1-Score = 0,909: Balance precisión-recall.
+ \item Roc-Auc = 0,92: Capacidad discriminativa.
+\end{enumerate}
+
+Como podemos ver las métricas no son perfectas pero siguen siendo unas métricas bastante buenas.
+
+Ahora vamos a procesar la salida del modelo para hacerla más interpretable y entendible ya que ahora el modelo devuelve una tupla con dos valores de pertenencia a las distintas clases y lo que vamos a hacer es transformar eso en un número entre 0 y 1 que nos indique el grado de pertenencia del modelo a la clase generado siendo que cuanto más cerca del 1, más seguro está el modelo de que el audio es generado, cuanto más cerca del 0, más seguro está de que es real. Si el valor está alrededor del 0,5 significa que el modelo no ha podido decidir a que categoría pertenece ese audio.
+
+Para ello vamos a usar un clasificador fuzzy que procesará la salida del modelo convirtiendo los logits en scores para la categoría de generado calculando los grados de pertenencia fuzzy a esa categoría en función también de un alpha que buscará maximizar el roc-auc.
+
+Por último estos nuevos resultados se guardarán en un dataframe que servirá para aplicar luego modelos de XAI.

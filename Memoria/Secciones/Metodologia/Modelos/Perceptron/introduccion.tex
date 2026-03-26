@@ -1,0 +1,75 @@
+\subsubsection{Perceptrón multicapa}
+
+Los perceptrones multicapa son modelos de redes neuronales empleados para la aproximación de funciones complejas, entre las que se incluyen tareas de clasificación binaria.
+
+\subsubsection*{Justificación del modelo}
+
+El motivo de probar un MLP para esta tarea de clasificación fue, sobre todo, explorar qué posibles opciones tenemos a la hora de abordarla.
+
+La idea inicial fue comprobar qué conseguíamos con los modelos más simples, ya que contamos con un dataset muy reducido.
+
+\subsubsection*{Planificación del trabajo}
+
+El tratamiento del perceptrón se divide en varias etapas:
+
+\begin{enumerate}
+ \item Tratamiento de los datos: En esta etapa se adaptarán los audios a los requisitos del modelo y se dividirán en conjuntos de entrenamiento y prueba.
+ \item Creación y entrenamiento del modelo: Se creará y configurará el modelo, que posteriormente será entrenado en la tarea de clasificación.
+ \item Obtención y análisis de resultados: En esta fase se analizarán los resultados obtenidos por el modelo.
+\end{enumerate}
+
+\subsubsection*{Tratamiento de los datos}
+
+El proceso de tratamiento de datos comienza extrayendo las características de los audios y agrupándolas en un único dataset. También se obtendrán los espectrogramas de cada audio.
+
+A continuación, emplearemos un MLP y una CNN de PyTorch, que reciben como entrada tensores de datos.
+
+El objetivo de estas dos redes auxiliares es obtener vectores de \textit{embeddings} a partir de los audios.
+
+Para la CNN, tomaremos los espectrogramas y los convertiremos en tensores 2D con las mismas dimensiones. Para ello, extenderemos los audios de forma que todos tengan la longitud del más largo. Posteriormente, estos tensores se procesarán mediante la CNN para obtener vectores de \textit{embeddings} de los espectrogramas de 128 dimensiones.
+
+Para el MLP, se sigue un procedimiento análogo, pero utilizando las características extraídas. Estas se transformarán en tensores 1D de las mismas dimensiones y se procesarán mediante el MLP para obtener vectores de \textit{embeddings} de 64 dimensiones.
+
+A continuación, se concatenan ambos vectores en un único vector de \textit{embeddings} que combina características y espectrograma. Estos vectores resultantes constituirán los datos de entrada del perceptrón encargado de clasificar los audios.
+
+Por último, se divide el dataset en conjuntos de entrenamiento (80\% de los datos) y prueba (20\% de los datos).
+
+\subsubsection*{Creación y entrenamiento del modelo}
+
+En esta fase se construirá el modelo encargado de la clasificación. Para ello, se debe tener en cuenta que no se busca una decisión binaria (0 o 1), sino un grado de pertenencia a la clase (real o generada) en un entorno continuo. Para ello, se empleará un MLP con coeficientes de regularización inspirados en lógica difusa.
+
+Teniendo esto en cuenta, el modelo constará de las siguientes partes. Durante el entrenamiento, también se le proporcionarán al modelo las etiquetas correspondientes a la clasificación de los audios.
+
+La red neuronal principal del modelo tiene las siguientes capas:
+
+\begin{enumerate}
+ \item Entrada - Primera capa lineal: Recibe un vector de 192 dimensiones y lo transforma en uno de 128 dimensiones; sus neuronas aprenden los pesos asociados.
+ \item Capa ReLU: Introduce no linealidad activando únicamente los valores positivos.
+ \item Capa de normalización (128): Normaliza los 128 valores para que tengan media 0 y desviación estándar 1, mejorando la estabilidad del entrenamiento.
+ \item Segunda capa lineal: Similar a la primera, pero transforma de 128 a 64 dimensiones.
+ \item Capa ReLU: Igual que la anterior.
+ \item Capa de normalización (64): Igual que la anterior capa de normalización.
+ \item Salida - Última capa lineal: Produce un logit escalar por cada muestra, que representa la evidencia del modelo antes de convertirla en un valor difuso.
+ \item Salida: Aplicación de la función de pertenencia difusa.
+\end{enumerate}
+
+El modelo también presenta los siguientes parámetros difusos:
+
+\begin{enumerate}
+ \item Centro: Valor de referencia que separa la evidencia baja de la alta.
+ \item Temperatura: Controla cuán suave es la transición entre evidencias bajas y altas.
+\end{enumerate}
+
+Su función \textit{forward} devuelve el grado de pertenencia difuso como predicción probabilística del modelo, el logit (útil para la interpretabilidad) y la temperatura (útil para ajustes posteriores).
+
+Por último, se define una función de pérdida que ajusta los coeficientes \textit{reg\_center} y \textit{reg\_temperature}, los cuales controlan la penalización de grandes desviaciones en los parámetros de centro y temperatura.
+
+En cuanto al entrenamiento, se emplea la siguiente configuración:
+
+\begin{enumerate}
+ \item Batch size = 10: Número de muestras procesadas simultáneamente.
+ \item Num\_batches = 100: Número de iteraciones por época.
+ \item Epochs = 10: Número total de épocas de entrenamiento.
+ \item Criterion = MSELoss: Función de pérdida principal. Dado que se trabaja en un entorno de etiquetas continuas, se emplea el error cuadrático medio (MSE).
+ \item Optimizer = Adam: Algoritmo de optimización basado en gradientes que combina momentum con tasas de aprendizaje adaptativas para cada parámetro.
+\end{enumerate}

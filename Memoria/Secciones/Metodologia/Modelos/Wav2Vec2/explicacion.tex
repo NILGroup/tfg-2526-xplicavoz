@@ -1,4 +1,4 @@
-\subsubsection{XAI Wav2Vec2}
+\subsubsection*{Implementación de modelos de XAI para la interpretabilidad del modelo Wav2Vec2 fine-tuneado}
 
 Ahora que tenemos el resultado del modelo (el Wav2Vec2 fine-tuneado), vamos a explicar que características y que parte del espectrograma de Mel del audio son las más influyentes y en que sentido.
 
@@ -32,8 +32,8 @@ En este ejemplo concreto tenemos que tener en cuenta que los valores del audio p
  %Hacerlo tabla
  \begin{enumerate}
   \item rms: 0,019 - Esto nos indica que el audio tiene un volumen muy bajo, algo por debajo del rango típico de voz estándar pero coherente con voces sin procesar.
-  \item zcr: 0,097 - Esto es un valor típico de voz hablada.
-  \item silence_ratio: 0,760 - Esto nos dice que el 76 por ciento del audio es silencio.
+\item silence\_ratio: 0.760 - Esto nos dice que el 76\% del audio es silencio.
+\item skewness: -0.494 - Esto muestra que el audio tiene una ligera asimetría negativa.
   \item skewness: -0,494 - Esto muestra que el audio tiene una ligera asimetría negativa.
   \item kurtosis: 28,548 - Esto es un curtosis extremadamente alta que encaja con voz intermitente o silencios largos junto con palabras puntuales.
  \end{enumerate}
@@ -318,7 +318,7 @@ INTEGRATED GRADIENTS
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/ig_global_espectrogramas_wav2vec2.png}
-	\caption{Lime general de los espectrogramas}
+	\caption{Integrated gradients general de los espectrogramas}
 	\label{fig:Wav2Vec2}
 \end{figure}
 
@@ -345,7 +345,7 @@ GRAD CAM
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/gc_global_espectrogramas_wav2vec2.png}
-	\caption{Lime general de los espectrogramas}
+	\caption{Grad cam general de los espectrogramas}
 	\label{fig:Wav2Vec2}
 \end{figure}
 
