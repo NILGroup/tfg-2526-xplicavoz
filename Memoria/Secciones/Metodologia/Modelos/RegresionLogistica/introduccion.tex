@@ -1,0 +1,45 @@
+\subsubsection{Regresión Logística}
+
+La Regresión Logística es un algoritmo de aprendizaje supervisado utilizado para problemas de clasificación binaria. En este proyecto, el modelo se emplea para determinar la probabilidad de que una muestra de audio pertenezca a una de dos categorías: \textbf{Real (1)} o \textbf{Generado/Fake (0)}. A pesar de su nombre, es un clasificador lineal que utiliza la función sigmoide para mapear cualquier valor real en un rango de 0 a 1, facilitando la interpretación de los resultados como probabilidades.
+
+\subsubsection*{Justificación del modelo}
+
+Se ha seleccionado la Regresión Logística como modelo base (\textit{baseline}) por las siguientes razones extraídas del desarrollo experimental:
+\begin{itemize}
+    \item \textbf{Eficiencia y Simplicidad:} Es computacionalmente ligero, lo que permite un entrenamiento casi instantáneo con el dataset de 100 muestras.
+    \item \textbf{Interpretabilidad Directa:} Al ser un modelo lineal, permite analizar los coeficientes asignados a cada característica acústica para entender su relevancia.
+    \item \textbf{Idoneidad para Clasificación Binaria:} El problema presenta clases bien balanceadas (50 muestras reales y 50 sintéticas), donde la regresión logística suele converger de manera óptima.
+\end{itemize}
+
+\subsubsection*{Planificación del trabajo}
+
+El flujo de trabajo documentado en el cuaderno sigue estas fases:
+\begin{enumerate}
+    \item \textbf{Carga y Fusión:} Consolidación de los archivos \texttt{spoof\_features.csv} y \texttt{bonafide\_features.csv}.
+    \item \textbf{Preprocesamiento:} Selección de variables numéricas y normalización estadística.
+    \item \textbf{Entrenamiento:} División del dataset (80/20) y ajuste de hiperparámetros (\texttt{random\_state=42}).
+    \item \textbf{Evaluación y XAI:} Análisis de métricas y generación de explicaciones locales con SHAP, LIME y DiCE.
+\end{enumerate}
+
+\subsubsection*{Tratamiento de los datos}
+
+El proceso de ingeniería de datos incluyó:
+\begin{itemize}
+    \item \textbf{Dataset:} Un total de 100 muestras de audio.
+    \item \textbf{Características (Features):} Se utilizaron 34 variables acústicas, incluyendo \textit{duration}, \textit{rms}, \textit{zcr}, \textit{spectral centroid}, \textit{hnr}, y los 13 primeros coeficientes \textit{MFCC}.
+    \item \textbf{Normalización:} Se aplicó \texttt{StandardScaler} para estandarizar las características (\textit{mean}=0, \textit{std}=1), paso crítico para asegurar que todas las variables contribuyan equitativamente al modelo lineal.
+\end{itemize}
+
+\subsubsection*{Creación y entrenamiento del modelo}
+
+El proceso de construcción del modelo se basó en la implementación de \textit{Scikit-Learn}, siguiendo una configuración diseñada para la estabilidad en datasets pequeños:
+
+\begin{itemize}
+    \item \textbf{Instanciación:} Se utilizó la clase \texttt{LogisticRegression} configurando un \texttt{random\_state=42} para asegurar la consistencia de los coeficientes en diferentes ejecuciones.
+    \item \textbf{Algoritmo de Optimización:} Se empleó el optimizador \textit{liblinear}, el cual es especialmente robusto para conjuntos de datos de dimensiones moderadas (100 muestras) y problemas de clasificación binaria.
+    \item \textbf{Proceso de Ajuste:} El modelo fue entrenado utilizando el método de máxima verosimilitud, ajustando los pesos ($w$) para cada una de las 34 características acústicas. Este proceso busca minimizar la función de pérdida de entropía cruzada (\textit{Log-Loss}):
+    \begin{equation}
+        J(\theta) = -\frac{1}{m} \sum_{i=1}^{m} [y^{(i)} \log(h_\theta(x^{(i)})) + (1 - y^{(i)}) \log(1 - h_\theta(x^{(i)}))]
+    \end{equation}
+    \item \textbf{Validación:} El entrenamiento se validó inicialmente sobre el 80\% de los datos, verificando que la convergencia del gradiente fuera óptima antes de pasar a la fase de test.
+\end{itemize}

@@ -1,0 +1,11 @@
+\subsubsection*{Resultados del KNN}
+
+Tras realizar una búsqueda del hiperparámetro óptimo, se determinó que el modelo alcanza su mejor rendimiento con un valor de $k=5$. Los resultados obtenidos en el conjunto de prueba de 20 muestras son:
+
+\begin{itemize}
+    \item \textbf{Precisión Global (Accuracy):} 0.95.
+    \item \textbf{Métricas Detalladas:} El modelo alcanzó una puntuación F1 de 0.95 para ambas clases (\textit{Real} y \textit{Fake}).
+    \item \textbf{Matriz de Confusión:} Se observó una clasificación perfecta, con 10 verdaderos positivos y 9 verdaderos negativos, dejando solo un falso positivo.
+\end{itemize}
+
+\textbf{Conclusión:} Al igual que la Regresión Logística, KNN obtiene unos números casi perfectos en este dataset, lo que sugiere que al igual que en el apartado anterior discrimina bien los audios a excepción de uno, lo que suponemos que significa que ese audio generado está más logrado.

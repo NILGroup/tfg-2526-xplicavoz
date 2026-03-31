@@ -1,0 +1,10 @@
+\subsubsection*{Explicabilidad de la Regresion Logística}
+
+Se aplicaron tres técnicas para auditar las decisiones del modelo:
+
+\begin{itemize}
+    \item \textbf{SHAP:} SHAP permite identificar qué características usa para clasificar cada instancia en una clase u otra, en este caso vemos que la más discriminativa es el spectral flatness seguido del f3 mean y el mfcc 1 mean.
+    \item \textbf{LIME:} Se analizó el conunto entero y se descubrió que los datos que más discriminan para na clase u otra son el spectral flatness y el spectral bandwith por lo que confirma lo mostrado por shap en una instancia.
+    \item \textbf{DiCE:} Se generaron contraejemplos donde vemos que para que una instancia cambie de clase hay que modificar el valor de spectral flatness siguiendo la linea de las otras explicaciones.
+\end{itemize}
+\textbf{Conclusión XAI:} como podemos observar las tres técnicas coinciden en que el dato más discriminante para clasificar es el spectral flatness. Al verlo en las tres técnicas confirmamos que no es algo puntual y que el dataset entero se clasifica en base a ese dato.
