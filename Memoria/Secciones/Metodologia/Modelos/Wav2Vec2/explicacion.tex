@@ -240,8 +240,6 @@ Ahora pasamos al sexto surrogate model, una CNN muy simple que se compone solo d
 
 Para los espectrogramas usaremos cuatro modelos de XAI siendo estos Shap, Lime, Integrated Gradients y Grad Cam. Para las cuatro técnicas la explicación local se mostrará superponiendo la salida del modelo de XAI con el espectrograma de Mel del audio y la explicación global se mostrará la gráfica con las bandas de frecuencia y los instantes de tiempo y según el color se verá que partes del espectrograma influyen más en las decisiones del modelo.
 
-(ALERTA, ZONA EN PROCESO PORQUE NO ME FIO DE LO LAS EXPLICACIONES SOBRE LOS ESPECTROGRAMAS)
-
 SHAP
 
 \begin{figure}[H]
@@ -259,7 +257,7 @@ SHAP
     \end{subfigure}
 \end{figure}
 
-% Análisis foto
+Aquí podemos ver en las imágenes cómo la parte del audio que más influye en la predicción es la parte final del audio, correspondiente a las bandas de mel entre 25 y 45, que simbolizan frecuencias medio-altas. Estas bandas contienen las formantes F2 y F3, así como elementos clave para la inteligibilidad del habla. Si nos fijamos en el espectrograma, esto coincide con el final, donde parece que el audio está distorsionado. Esto se aprecia claramente al escuchar el audio (I\_12\_N: audio 12 natural en inglés), donde la última palabra es ``next'', y ese final que parece distorsionado corresponde al sonido de la pronunciación del grupo consonántico ``xt''. También se puede observar cómo la parte donde ya no hay espectrograma, en la explicación de SHAP, no tiene prácticamente influencia.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_global_espectrogramas_wav2vec2.png}
@@ -267,7 +265,7 @@ SHAP
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-% Análisis foto
+En esta imagen sobre la influencia global del shap podemos ver como las partes que más influyen en la clasificación del audio son el principio y el final del audio. Comparando esta gráfica con la anterior podemos confirmar la importancia que tienen las bandas de mel medias. También podemos ver como el audio elegido para la explicación global no es representativo de la explicación global ya que esta última si que usa mucho la parte final del audio para la explicación.
 
 LIME
 
@@ -286,7 +284,7 @@ LIME
     \end{subfigure}
 \end{figure}
 
-%Análisis foto
+En esta imagen se muestra la explicación local de lime sobre mismo audio que en el shap. En ella podemos ver como, al igual que en el shap, las bandas medias son las más relevantes y la pronunciación final es lo que más mueve la predicción hacia la clase real. Por último podemos ver como en estas bandas medias al principio estas empujan la predicción hacia generado, esto se puede deber a que el audio tarda en comenzar y a como pronuncia el principio de la primera palabra ``what''.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/lime_global_espectrogramas_wav2vec2.png}
@@ -294,8 +292,7 @@ LIME
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-%Análisis foto
-
+Aquí a diferencia de en shap, según lime, el modelo toma las decisiones principalmente gracias al principio de los audios aunque el final también tiene algo de influencia.
 
 INTEGRATED GRADIENTS
 
@@ -314,7 +311,7 @@ INTEGRATED GRADIENTS
     \end{subfigure}
 \end{figure}
 
-%Análisis foto
+Aquí podemos ver como no está analizando el audio del todo bien ya que las partes más rojas son las que más influyes a una predicción hacia generado pero si vemos el espectrograma del audio, en esas partes como tal no hay nada, son zonas negras, también la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma. Si ignoramos esas partes y nos centramos solo donde si que hay evidencia de audio, podemos ver como esas son zonas más blancas - azuladas que empujan la predicción hacia real. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/ig_global_espectrogramas_wav2vec2.png}
@@ -322,7 +319,7 @@ INTEGRATED GRADIENTS
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-%Análisis foto
+En la predicción global se puede apreciar cierta similitud con las dos explicaciones generales anteriores donde las principales zonas de influencia en la clasificación son la parte inicial y la parte final de los audios en las bandas medias.
 
 GRAD CAM
 
@@ -341,7 +338,7 @@ GRAD CAM
     \end{subfigure}
 \end{figure}
 
-%Análisis foto
+Aquí, al igual que en la explicación local de integrated gradients, podemos ver que en las partes donde no hay audio son las partes que más influyen en la predicción aunque aquí si que distingue bien que la parte final donde no hay espectrograma no tiene ningún peso en la predicción. De todas formas, fijándonos donde hay audio podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/gc_global_espectrogramas_wav2vec2.png}
@@ -349,7 +346,7 @@ GRAD CAM
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-%Análisis foto
+La explicación global del grad cam se caracteriza por darle el mayor peso a los instantes iniciales del espectrograma, dándole un peso prácticamente nulo al centro del espectrograma, curiosamente donde están los audios, y otorgándole un peso relevante también al final del espectrograma.
 
 Ahora vamos a ver como se ve la agregación de los cuatro modelos de XAI sobre los espectrogramas. Esto se ha calculado para cada frame del espectrograma, se ha sacado su valor en cada una de las explicaciones globales de los distintos modelos y se ha hecho la media aritmética sobre ellos. Antes de poder hacer esto, hemos tenido que normalizar todos las explicaciones ya que estaban en diferentes escalas.
 
@@ -359,11 +356,22 @@ Ahora vamos a ver como se ve la agregación de los cuatro modelos de XAI sobre l
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-%Análisis foto
+La agregación de las explicaciones globales nos deja claro donde se encuentran las zonas más influyentes siendo el principio y el final del espectrograma dejando al centro con un peso mucho menos relevante.
 
+Como conclusiones podemos sacar que a la vista de los modelos de explicación, parece que el modelo Wav2Vec2 se fija más en los alrededores del audio que en el audio en sí mismo. Esto puede explicartes gracias a las siguitentes propiedades de los espectrogramas de voz:
 
-Análisis de resultados y conclusiones
+\begin{enumerate}
 
-Cosas que faltan por hacer:
+ \item Coarticulación: Este es un fenómeno típico de la voz humana donde esta no esta formada por unidades aisladas, es decir, cada sonido depende de los anteriores y posteriores. Esto hace que las transiciones entre fonemas contengan más información que el fonema en sí haciendo que lo que está alrededor del audio tenga más peso.
+ 
+ \item Dinámica espectro-temporal: Las partes centrales de los audios tienden a ser más estables y redundantes mientras que las zonas de cambio contienen mayor variabilidad lo que hace que contengan la mayoría de la información discriminativa del audio.
+ 
+ \item Estructura de formantes y transiciones: Las trayectorias de las formantes, claves para identificar fonemas, suelen estar en los bordes de los segmentos por lo que las zonas de alrededor del audio contienen más información 	dinámica de las formantes.
+ 
+ \item Efectos de ventana del espectrograma: Como el espectrograma se calcula usando ventanas, cada punto del espectrograma mezcla información de un intervalo temporal siendo que en los bordes del espectrograma se incluyen partes de dos sonidos distintos haciendo que estos sean más informativos al incluir mezclas de contextos.
+ 
+ \item Relación señal-ruido: En muchos audios el inicio y el final de los mismos pueden tener cambios de energía o ruido de fondo que el modelo puede usar como señales útiles.
+ 
+ \item Información prosódica: Los elementos como la entonación, el ritmo o el énfasis no están concentrados en un punto sino que ocurren durante las transiciones.
 
-Combinación los espectrogramas con las características y sacar la correlación entre las explicaciones.
+\end{enumerate}
