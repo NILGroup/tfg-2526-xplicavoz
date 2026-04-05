@@ -1,5 +1,182 @@
-\input{Secciones/Metodologia/Modelos/LightGBM/introduccion}
+\subsubsection{LightGBM}
 
-\input{Secciones/Metodologia/Modelos/LightGBM/resultados}
+Como hemos comentado antes, a diferencia de Random Forest, que construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
 
-\input{Secciones/Metodologia/Modelos/LightGBM/explicacion}
+\subsubsection*{Justificación del modelo}
+
+Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea de detección de deepfakes de audio, como pueden ser su eficiencia computacional para grandes volúmenes de datos o su regulación itegrada con los parámetros L1 y L2.
+
+\subsubsection*{Configuración experimental}
+
+El proceso experimental para LightGBM se estructuró en tres fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, y (3) optimización de hiperparámetros mediante búsqueda sistemática.
+
+\subsubsection*{Preparación de datos}
+A diferencia de otros algoritmos, LightGBM puede manejar directamente datos sin normalización, aunque requiere que no existan valores nulos.
+
+\subsubsection*{Modelo baseline con LightGBM}
+Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento:
+
+\begin{itemize}
+	\item \textbf{objective}: binary.
+	\item \textbf{metric}: binary logloss.
+	\item \textbf{boosting\_type}: gbdt.
+	\item \textbf{num\_leaves}: 31.
+	\item \textbf{learning\_rate \(\eta\)}: 0,05.
+	\item \textbf{feature\_fraction}: 0,9.
+	\item \textbf{bagging\_fraction}: 0,8.
+	\item \textbf{bagging\_freq}: 5.
+	\item \textbf{random\_state}: 12.
+	\item \textbf{is\_unbalanced}: True.
+\end{itemize}
+
+El parámetro \texttt{is\_unbalance=True} activa la compensación automática para clases desbalanceadas, ajustando los pesos de forma inversamente proporcional a la frecuencia de cada clase. 
+
+Tras ello entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
+
+\begin{itemize}
+	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán. En este caso, 1000 es el límite superior, pero el early\_stopping puede detener el proceso antes si no hay mejoras.
+	\item \textbf{callbacks}: funciones que se ejecutan durante el entrenamiento para controlar el proceso. En este caso mostramos información del entrenamiento cada 100 iteraciones y paramos si no mejora por 50 iteraciones.
+\end{itemize}
+
+\subsubsection*{Early stopping}
+Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento cuando añadir más árboles no mejora el rendimiento en validación. Esto:
+\begin{itemize}
+    \item Previene el sobreajuste (overfitting)
+    \item Ahorra tiempo computacional
+    \item Determina automáticamente el número óptimo de iteraciones
+\end{itemize}
+
+\subsubsection*{Validación cruzada estratificada}
+
+Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras crear el modelo aplicamos la validación cruzada donde mezclamos los datos de entrenamiento y dividimos en 5 conjuntos, donde en cada paso se entrena al modelo con 4 y se evalúa con el restante, cambiando el conjunto de evaluación en cada etapa. Finalmente evaluamos con accuracy, f1 y ROC-AUC.  
+
+La validación cruzada proporciona una estimación más robusta del rendimiento, reportándose la media y la desviación estándar de las métricas.
+
+\subsubsection*{Optimización de hiperparámetros}
+
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento:
+
+\begin{itemize}
+	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.
+	\item \textbf{learning\_rate}: Probamos 0,01, 0,05 y 0,1.
+	\item \textbf{n\_estimators}: Probamos 100, 200 y 300.
+	\item \textbf{min\_child samples}: Probamos 20, 50 y 100.
+	\item \textbf{subsample}: Probamos 0,6, 0,8 y 1.
+	\item \textbf{colsample\_bytree}: Probamos 0,6, 0,8 y 1.
+	\item \textbf{reg\_alpha}: Probamos 0, 0,1 y 0,5.
+	\item \textbf{reg\_lambda}: Probamos 0, 0,1 y 0,5.
+\end{itemize}
+
+Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
+
+% RESULTADOS
+\subsubsection*{Resultados del LightGBM}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+
+\subsubsection*{Modelo baseline}
+
+EVALUACIÓN: LightGBM - Baseline
+
+MÉTRICAS PRINCIPALES:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy & - & - & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de LightGBM baseline}
+\end{table}
+
+ANÁLISIS DE ERRORES:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien.
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+Resultados Validación Cruzada (5 folds):
+\begin{itemize}
+	\item Accuracy: 0.9875 (+/- 0.0500)
+	\item F1-Score: 0.9882 (+/- 0.0471)
+	\item AUC-ROC:  1.0000 (+/- 0.0000)
+\end{itemize}
+   
+Estos resultados arrojan una pequeña desviación en exactitud y en f1, lo cual puede indicar que en el modelo baseline el split con el que se entrenó era ``fácil'' y por eso lo hace tan bien, ya que no en todos los splits lo hace perfecto.
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+
+\begin{itemize}
+	\item num\_leaves: 15
+	\item learning\_rate: 0.01
+	\item n\_estimators: 100
+	\item min\_child\_samples: 20
+	\item subsample: 0.6
+	\item colsample\_bytree: 0.6
+	\item reg\_alpha: 0
+	\item reg\_lambda: 0
+\end{itemize}
+
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+
+ EVALUACIÓN: LightGBM - Optimizado
+
+MÉTRICAS PRINCIPALES:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+CLASSIFICATION REPORT:
+              precision    recall  f1-score   support
+
+    Real (1)     1.0000    1.0000    1.0000        10
+      IA (0)     1.0000    1.0000    1.0000        10
+
+    accuracy                         1.0000        20
+   macro avg     1.0000    1.0000    1.0000        20
+weighted avg     1.0000    1.0000    1.0000        20
+
+
+ANÁLISIS DE ERRORES:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+
+% Añadir explicacion
