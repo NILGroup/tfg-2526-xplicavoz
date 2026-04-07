@@ -1,0 +1,58 @@
+\subsubsection{KNN}
+
+El algoritmo K-Nearest Neighbors (KNN) se ha seleccionado como una alternativa no paramétrica para la clasificación de audios. A diferencia de la Regresión Logística, KNN no asume una relación lineal entre las características, sino que clasifica cada muestra basándose en la proximidad geométrica de sus vecinos más cercanos en el espacio de características.
+
+\subsubsection*{Justificación del modelo}
+
+La elección de KNN se fundamenta en:
+\begin{itemize}
+    \item \textbf{Naturaleza No Lineal:} Es capaz de capturar fronteras de decisión complejas que un modelo lineal podría pasar por alto.
+    \item \textbf{Simplicidad Conceptual:} No requiere una fase de entrenamiento pesada, ya que "memoriza" el conjunto de datos, lo que lo hace útil para conjuntos de datos de tamaño moderado.
+    \item \textbf{Sensibilidad Local:} Es muy eficaz cuando las muestras de una misma clase tienden a presentar firmas acústicas muy similares entre sí.
+\end{itemize}
+
+\subsubsection*{Planificación del trabajo}
+
+El desarrollo del clasificador KNN siguió estas etapas:
+\begin{enumerate}
+    \item \textbf{Carga y Limpieza:} Integración de los vectores de características de audios \textit{bonafide} y \textit{spoof}.
+    \item \textbf{Optimización de Hiperparámetros:} Uso de validación cruzada para determinar el número óptimo de vecinos ($k$).
+    \item \textbf{Entrenamiento y Evaluación:} Ajuste del modelo con la métrica de distancia euclídea y evaluación de su capacidad de generalización.
+\end{enumerate}
+
+\paragraph{División de datos}
+El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
+
+\paragraph{Modelo baseline}
+Se estableció una configuración inicial con hiperparámetros por defecto para obtener una referencia de rendimiento:
+
+\begin{itemize}
+	\item \textbf{n\_estimators}: 100.
+	\item \textbf{max\_depth}: 10.
+	\item \textbf{min\_samples\_split}: 5.
+	\item \textbf{min\_samples\_leaf}: 2.
+	\item \textbf{max\_features}: sqrt.
+	\item \textbf{random\_state}: 12.
+	\item \textbf{class\_weight}: balanced.
+\end{itemize}
+
+\subsubsection*{Tratamiento de los datos}
+Debido a que KNN se basa en distancias, el tratamiento de datos fue crítico:
+\begin{itemize}
+    \item \textbf{Escalado:} Se aplicó \texttt{StandardScaler} a las 34 características acústicas. Sin este paso, las variables con rangos mayores (como \textit{spectral\_rolloff}) dominarían la métrica de distancia sobre otras como el \textit{RMS}.
+    \item \textbf{División Estratificada:} Se mantuvo la proporción de clases en el 80\% de entrenamiento y 20\% de test para evitar sesgos por cercanía.
+\end{itemize}
+
+\subsubsection*{Creación y entrenamiento del modelo (KNN)}
+
+A diferencia de los modelos paramétricos, la creación del modelo KNN se centró en la optimización del espacio de búsqueda y la métrica de proximidad:
+
+\begin{itemize}
+    \item \textbf{Búsqueda del Hiperparámetro $k$:} Se implementó un ciclo de iteración para evaluar el rendimiento del modelo con valores de $k$ entre 1 y 20. Se utilizó la técnica de \textbf{Validación Cruzada (\textit{Cross-Validation})} con 5 iteraciones (\textit{cv=5}) para garantizar que el valor de $k$ elegido no fuera fruto del azar.
+    \item \textbf{Selección de K Óptimo:} Basándose en la puntuación media de precisión, se seleccionó $k=5$ (o el valor que refleje tu gráfica de error), ya que ofrecía el mejor equilibrio entre sesgo y varianza.
+    \item \textbf{Métrica de Distancia:} Se configuró el modelo para utilizar la \textbf{distancia Euclídea}, calculada en el espacio n-dimensional de características normalizadas:
+    \begin{equation}
+        d(x, y) = \sqrt{\sum_{i=1}^{n} (x_i - y_i)^2}
+    \end{equation}
+    \item \textbf{Almacenamiento:} El modelo final (\texttt{KNeighborsClassifier}) se entrenó con el set completo de entrenamiento, indexando las 80 muestras para permitir una búsqueda rápida de vecinos durante la fase de evaluación.
+\end{itemize}

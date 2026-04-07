@@ -1,0 +1,11 @@
+\subsubsection*{Explicabilidad del KNN}
+
+Para entender el comportamiento de un modelo basado en distancias como KNN, se aplicaron las siguientes técnicas de IA explicable:
+
+\begin{itemize}
+    \item \textbf{Análisis de Contribución (SHAP):} Aunque KNN no tiene coeficientes, SHAP permite identificar qué características usa para clasificar cada instancia en una clase u otra, en este caso vemos que la más discriminativa es el spectral flatness seguido del f3 mean y el mfcc 3 mean.
+    \item \textbf{Explicación Local (LIME):} Se analizó el conunto entero y se descubrió que los datos que más discriminan para na clase u otra son el spectral flatness y el spectral bandwith por lo que confirma lo mostrado por shap en una instancia.
+    \item \textbf{Contrafactuales (DiCE):} Se generaron contraejemplos donde vemos que para que una instancia cambie de clase hay que modificar el valor de spectral latness siguiendo la linea de las otras explicaciones.
+\end{itemize}
+
+\textbf{Conclusión XAI:} como podemos observar las tres técnicas coinciden en que el dato más discriminante para clasificar es el spectral flatness. Al verlo en las tres técnicas confirmamos que no es algo puntual y que el dataset entero se clasifica en base a ese dato.
