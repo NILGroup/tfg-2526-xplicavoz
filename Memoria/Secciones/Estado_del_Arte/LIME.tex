@@ -1,4 +1,4 @@
 \subsubsection{LIME}
-LIME aproxima localmente la superficie de decisión de un modelo de caja negra mediante un modelo lineal interpretable. En el dominio del audio, el proceso se define mediante la perturbación de la entrada $x$ (espectrogramas o marcos temporales) para observar las variaciones en la salida $f(x)$. La explicación $g$ se obtiene minimizando:
+LIME aproxima localmente la superficie de decisión de un modelo de caja negra mediante un sustituto interpretable, generalmente una regresión lineal, aunque se pueden emplear otros modelos como árboles de decisión. En el dominio del audio, el proceso se define mediante la perturbación de la entrada $x$ (espectrogramas o marcos temporales) para observar las variaciones en la salida $f(x)$. La explicación $g$ se obtiene minimizando:
 $$ \xi(x) = \arg\min_{g \in G} L(f, g, \pi_x) + \Omega(g) $$
-donde $L$ es la pérdida de fidelidad, $\pi_x$ define la vecindad de la muestra y $\Omega(g)$ mide la complejidad del modelo sustituto.
+donde $L$ es la pérdida de fidelidad, $\pi_x$ define la vecindad de la muestra y $\Omega(g)$ mide la complejidad del modelo sustituto. La explicación resultanto corresponde a los parámetros del modelo interpetrable, el caso de una regresión lineal, estos parámetros son sus coeficientes, que representan la importancia de cada característica en la predicción de una muestra concreta.
