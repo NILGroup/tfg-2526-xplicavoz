@@ -31,16 +31,20 @@ Por último, modelos como \textbf{Wav2Vec2} y \textbf{AASIST} procesan la señal
 
 La adopción de modelos de aprendizaje profundo ha permitido alcanzar una precisión sin precedentes en la detección de audio sintético. Sin embargo, estos sistemas operan frecuentemente como ``cajas negras'', lo que dificulta su aplicación en ámbitos críticos como en forense o ciberseguridad. La Inteligencia Artificial Explicable (XAI) surge como la solución técnica para dotar a estos modelos de transparencia, permitiendo a los expertos entender el ``por qué'' de cada clasificación.
 
-A continuación, se describen las técnicas de explicabilidad actuales, organizados según el siguiente enfoque técnico:
+A continuación, se describen las técnicas de explicabilidad, organizados según el siguiente enfoque técnico:
 
 \begin{itemize}
-    \item \textbf{Métodos de Atribución y Perturbación}: Se analizan técnicas post-hoc como \textbf{SHAP} y \textbf{LIME}, que permiten identificar qué características acústicas individuales son determinantes para el modelo, así como \textbf{Grad-CAM} e \textbf{Integrated Gradients}, fundamentales para visualizar la relevancia en el plano tiempo-frecuencia.
+    \item \textbf{Métodos de Atribución y Perturbación}: Se analizan técnicas post-hoc, es decir, que no dependen del modelo al que se aplican, como \textbf{SHAP} y \textbf{LIME}, que permiten identificar qué características acústicas individuales son determinantes para el modelo; métodos basados en perturbaciones,como \textbf{Occlusion} y \textbf{RISE}, que miden la importancia de regiones modificando de forma controlada la entrada; y métodos basados en gradientes, como \textbf{Grad-CAM} e \textbf{Integrated Gradients}, fundamentales para visualizar la relevancia en el plano tiempo-frecuencia.
 
-    \item \textbf{Razonamiento Contrafáctico:} Se explora el modelo \textbf{DiCE}, una herramienta que permite entender la frontera de decisión mediante la creación de escenarios hipotéticos (``¿qué cambios harían que este audio fake pareciera real?'').
+    \item \textbf{Razonamiento Contrafáctico:} Los modelos contrafactuales generan ejemplos alternativos a una muestra original que permiten entender la frotera de decisión del modelo estudiado (``¿qué cambios harían que este audio fake pareciera real?''). Como ejemplo de este tipo de enfoque, se explora el modelo \textbf{DiCE} que es uno de los más representativos para datos tabulares.
 
     \item \textbf{Modelos Interpretables por Diseño (Ante-hoc):} Se profundiza en arquitecturas cuya transparencia es intrínseca, como \textbf{SincNet}, que utiliza filtros con significado físico, y \textbf{ProtoPNet}, que basa su decisión en la comparación con prototipos o ejemplos conocidos.
 \end{itemize}
 
+Además de esa clasificación, en interpretabilidad, los métodos suelen clasificarse según qué alcance tiene la explicación, a qué conjuntos de modelos se pueden aplicar y en qué momento aparece la interpretabilidad dentro del proceso de aprendizaje. 
+Por un lado, pueden distinguirse según el alcance de la explicación en métodos \textbf{locales}, \textbf{globales} o de \textbf{cohortes}: los locales explican una predicción concreta para una muestra individual; los globales describen el comportamiento del modelo sobre el conjunto total de datos; y los ``cohort explanations'' analizan el comportamiento del modelo sobre un subconjunto de muestras que comparten cierta característica. 
+Por otro lado, según a qué modelos se aplican, existen métodos ``\textbf{model-agnostic}'', que pueden aplicarse a cualquier modelo porque solo necesitan acceder a sus entradas y salidas; métodos ``\textbf{model-specific}'', diseñados para modelos concretos; y métodos ``model-class-specific'', aplicables a una familia de modelos que comparten una estructura común, como árboles, redes neuronales o modelos lineales. 
+Por último, también pueden clasificarse en ``ante-hoc'' y ``post-hoc'': los métodos ``\textbf{ante-hoc}'' son aquellos en los que la interpretabilidad viene incorporada en el diseño del propio modelo, mientras que los ``\textbf{post-hoc}'' generan explicaciones una vez entrenado el modelo, sin necesidad de que este sea interpretable desde un primer momento.
 \hspace{.7cm} 
 \input{Secciones/Estado_del_Arte/SHAP.tex}
 

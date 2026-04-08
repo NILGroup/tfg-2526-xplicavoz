@@ -1,11 +1,11 @@
 \subsubsection{Integrated Gradients}
-Integrated Gradients (IG) se basa en integrar los gradientes de la función del modelo a lo largo de una trayectoria que conecta una entrada de referencia (``baseline'') x' con la entrada real x. Este modelo permite capturar cómo varía la sensibilidad del modelo respecto a cada característica a lo largo del recorrido, evitando problemas como la saturación del gradiente en el punto de entrada.
+Integrated Gradients (IG) es una técnica de carácter local, de interpretabilidad post-hoc y model-class-specific, ya que requiere acceder a los gradientes del modelo sobre el que se aplica. Se basa en integrar los gradientes de la función del modelo a lo largo de una trayectoria que conecta una entrada de referencia (``baseline'') x' con la entrada real x. Este método permite capturar cómo varía la sensibilidad del modelo respecto a cada característica a lo largo del recorrido, evitando problemas como la saturación del gradiente en el punto de entrada.
 
-Siendo $F$ la función del modelo, $i$ una característica específica que se está observando, $x'$ el ``baseline'' y $\alpha$ que parametriza el camino continuo entre $x$ y $x'$:
+Siendo $f$ la función del modelo, $i$ una característica específica que se está observando, $x'$ el ``baseline'' y $\alpha$ que parametriza el camino continuo entre $x$ y $x'$:
 
 $$ IG_i(x) = (x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial f(x' + \alpha(x - x'))}{\partial x_i} d\alpha $$
 
-Tres propiedas clave de IG que justifican teoricamente su uso son:
+Tres propiedades clave de IG que justifican teoricamente su uso son:
 \begin{itemize}
             \item \textbf{Sensibilidad}: si x y x' difieren únicamente en una característica y la predicción varía, entonces esa característica debe tener una atribución no nula.
             \item \textbf{Invariancia de implementación}: si dos modelos implementan la misma función aunque varien las arquitecturas o la organización de parámetros, entonces las atribuciones de IG serán iguales. 
