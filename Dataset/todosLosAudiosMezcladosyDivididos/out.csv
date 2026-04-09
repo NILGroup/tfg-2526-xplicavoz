@@ -1,21 +1,21 @@
 audio_id,score,decision_fuzzy,label_real
-0,0.37823838,posiblemente real,0
-1,0.71498334,posiblemente IA,1
-2,0.33863166,posiblemente real,0
-3,0.71035093,posiblemente IA,0
-4,0.71441114,posiblemente IA,1
-5,0.6257453,posiblemente IA,1
-6,0.3466234,posiblemente real,0
-7,0.31925088,posiblemente real,0
-8,0.72027296,posiblemente IA,1
-9,0.70500165,posiblemente IA,1
-10,0.32509455,posiblemente real,0
-11,0.61754656,posiblemente IA,1
-12,0.7263741,posiblemente IA,1
-13,0.32385188,posiblemente real,0
-14,0.37273097,posiblemente real,0
-15,0.40383905,indeciso pero más real,0
-16,0.6801454,posiblemente IA,1
-17,0.71816057,posiblemente IA,1
-18,0.69376636,posiblemente IA,0
-19,0.70625514,posiblemente IA,1
+I_32_N,0.37823838,posiblemente real,0
+E_47_G,0.71498334,posiblemente IA,1
+I_12_N,0.33863166,posiblemente real,0
+I_3_N,0.71035093,posiblemente IA,0
+E_7_G,0.71441114,posiblemente IA,1
+I_2_G,0.6257453,posiblemente IA,1
+E_11_N,0.3466234,posiblemente real,0
+E_23_N,0.31925088,posiblemente real,0
+E_16_G,0.72027296,posiblemente IA,1
+I_6_G,0.70500165,posiblemente IA,1
+I_49_N,0.32509455,posiblemente real,0
+I_5_G,0.61754656,posiblemente IA,1
+E_35_G,0.7263741,posiblemente IA,1
+I_41_N,0.32385188,posiblemente real,0
+E_37_N,0.37273097,posiblemente real,0
+E_2_N,0.40383905,indeciso pero más real,0
+E_40_G,0.6801454,posiblemente IA,1
+E_41_G,0.71816057,posiblemente IA,1
+I_2_N,0.69376636,posiblemente IA,0
+E_43_G,0.70625514,posiblemente IA,1

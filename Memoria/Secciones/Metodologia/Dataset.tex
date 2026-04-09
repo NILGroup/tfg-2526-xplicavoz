@@ -15,3 +15,14 @@ El dataset por el que nos hemos decantado se llama \href{https://www.ai4europe.e
 
 \hspace{.7cm}
 Con todo esto mencionado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. De estos 100 audios entrenaremos con 80 audios y probaremos los modelos con 20, de cambiar la partición lo mencionaremos explícitamente, pero un 80-20 será lo normal. Más adelante, probaremos a usar más cantidad de audios y compararemos el rendimiento.
+
+\subsubsection*{Análisis del dataset}
+
+De este subset de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los mfcc's que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
+
+\begin{itemize}
+  \item \textbf{Datos tabulares}: La mayoría de los datos sobre las características del audio.
+  \item \textbf{Series temporales}: Muestran la evolución de las formantes o los mfcc's a lo largo del audio.
+  \item \textbf{Datos de audio}: Se corresponde con el archivo de audio (en la práctica es la ruta al archivo de audio).
+  \item \textbf{Datos de texto}: Se corresponde con las transcripciones de los audios.
+\end{itemize}
