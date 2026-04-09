@@ -20,7 +20,7 @@ El tratamiento del perceptrón se divide en varias etapas:
 
 \subsubsection*{Preprocesamiento de los datos}
 
-El proceso de tratamiento de datos comienza extrayendo del dataset las las características globales de los audios, es decir, los que representan una media. También se obtendrán los espectrogramas de cada audio.
+El proceso de tratamiento de datos comienza extrayendo del dataset las características globales de los audios, es decir, los que representan una media. También se obtendrán los espectrogramas de cada audio.
 
 A continuación, emplearemos un MLP y una CNN de PyTorch, que reciben como entrada tensores de datos.
 
@@ -28,14 +28,14 @@ El objetivo de estas dos redes auxiliares es obtener vectores de \textit{embeddi
 
 \subsubsection*{Embeddings de los espectrogramas}
 
-Para sacar los \textit{embeddings} de los espectrogramas emplearemos una CNN de la librería de \textit{Pytorch.nn y Pytorch.nn.functional} que recibirá el vector y lo convertirá en un tensor 2D de 128 dimensiones. Para esta tarea la red se definirá de la siguiente manera:
+Para sacar los \textit{embeddings} de los espectrogramas emplearemos una CNN de la librería de \textit{Pytorch.nn} y \textit{Pytorch.nn.functional} que recibirá el vector y lo convertirá en un tensor 2D de 128 dimensiones. Para esta tarea la red se definirá de la siguiente manera:
 
 \begin{itemize}
-	\item \textbf{Primera capa convolucional}: Conv2d(in_channels = 1 , out_channels = 32, kernel_size=3, padding=1). 
+	\item \textbf{Primera capa convolucional}: Conv2d(in\_channels = 1 , out\_channels = 32, kernel\_size=3, padding=1). 
 	  \begin{itemize}
-	 	\item \textbf{in_channels = 1}: La imagen tiene un único canal
-	 	\item \textbf{out_channels = 32}: Genera 32 mapas de características, es decir, aprende 32 filtros distintos.
-	 	\item \textbf{Kernel_size = 3}: Indica que cada filtro es de tamaño 3x3
+	 	\item \textbf{in\_channels = 1}: La imagen tiene un único canal
+	 	\item \textbf{out\_channels = 32}: Genera 32 mapas de características, es decir, aprende 32 filtros distintos.
+	 	\item \textbf{Kernel\_size = 3}: Indica que cada filtro es de tamaño 3x3
 	 	\item \textbf{padding = 1}: Añade un borde de un píxel alrededor de la imagen para mantener su tamaño espacial
 	   \end{itemize}
 	
@@ -44,35 +44,36 @@ Para sacar los \textit{embeddings} de los espectrogramas emplearemos una CNN de 
 	\item \textbf{Primera capa de normalización}: BatchNorm2d(32). Para cada uno de los 32 canales de entrada que espera, calculará:
 	  \begin{itemize}
 	 	\item \textbf{Media y varianza}
-	 	\item \textbf{Normalizará los valores}: x_{\text{norm}} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}
-	 	\item \textbf{Aplica una transformación aprendible}: y = \gamma \, x_{\text{norm}} + \beta
+	 	\item \textbf{Normalizará los valores}: $x_{\text{norm}} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}$
+	 	\item \textbf{Aplica una transformación aprendible}: $y = \gamma \, x_{\text{norm}} + \beta$
 	  \end{itemize}
 	
-	\item \textbf{Primera capa de pooling}: MaxPool2d(kernel_size = 2, stride = 2).
+	\item \textbf{Primera capa de pooling}: MaxPool2d(kernel\_size = 2, stride = 2).
 	  \begin{itemize}
-	 	\item \textbf{kernel_size = 2}: Ventana de tamaño 2x2
+	 	\item \textbf{kernel\_size = 2}: Ventana de tamaño 2x2
 	 	\item \textbf{stride = 2}: La ventana se desplaza de 2 en 2 bloques sin solaparse.
 	  \end{itemize}
 	  Esta capa reduce cada mapa de características en bloques de 2x2 donde cada bloque se queda con el valor máximo. Esta capa no cambia el número de canales, lo que hace es reducir el alto y el ancho a la mitad.
 	   
-	\item \textbf{Segunda capa convolucional}: Conv2d(in_channels = 32, out_channels = 64, kernel_size=3, padding=1).
+	\item \textbf{Segunda capa convolucional}: Conv2d(in\_channels = 32, out\_channels = 64, kernel\_size=3, padding=1).
 	
 	\item \textbf{Segunda capa de normalización}: BatchNorm2d(64).
 	
-	\item \textbf{Segunda capa de pooling}: MaxPool2d(kernel_size = 2, stride = 2).
-	\item \textbf{Tercera capa convolucional}: Conv2d(in_channels = 64, out_channels = 128, kernel_size=3, padding=1).
+	\item \textbf{Segunda capa de pooling}: MaxPool2d(kernel\_size = 2, stride = 2).
+	
+	\item \textbf{Tercera capa convolucional}: Conv2d(in\_channels = 64, out\_channels = 128, kernel\_size=3, padding=1).
 	
 	\item \textbf{Tercera capa de normalización}: BatchNorm2d(128).
 	
 	\item \textbf{Capa de pooling adaptativo}: AdaptiveAvgPool2d(1).
 	Reduce cada mapa de características a un tamaño fijo, en este caso 1x1. Esta capa toma cada canal completo (toda la imagen) y calcula su valor promedio colapsando toda la información espacial en un solo número por canal en este caso.
 	
-	\item \textbf{Capa totalmente conectada}: Linear(in_features = 128, out_features = 128). Toma un vector de \textit{in_features} y lo transforma en otro de \textit{out_features}. Esto lo hace aplicando la siguiente fórmula: y = W x + b donde
+	\item \textbf{Capa totalmente conectada}: Linear(in\_features = 128, out\_features = 128). Toma un vector de \textit{in\_features} y lo transforma en otro de \textit{out\_features}. Esto lo hace aplicando la siguiente fórmula: $y = W x + b$ donde
 	\begin{itemize}
-	  \item	\textbf{y}: Vector de salida
-	  \item	\textbf{W}: Matriz de pesos
-	  \item	\textbf{x}: Vector de entrada
-	  \item	\textbf{b}: Vector de sesgo
+	  \item \textbf{y}: Vector de salida
+	  \item \textbf{W}: Matriz de pesos
+	  \item \textbf{x}: Vector de entrada
+	  \item \textbf{b}: Vector de sesgo
 	\end{itemize}
 \end{itemize}
 
@@ -85,11 +86,11 @@ Al concluir todo este proceso tendremos el embedding de 128 dimensiones final qu
 Para las características definiremos el siguiente perceptrón multicapa:
 
 \begin{itemize}
-	\item \textbf{Primera capa totalmente conectada}: Linear(in_features = 29, out_features = 128). 
+	\item \textbf{Primera capa totalmente conectada}: Linear(in\_features = 29, out\_features = 128). 
 	  \begin{itemize}
 	 	\item \textbf{Primera capa relu}: ReLU().
 	 	\item \textbf{Capa de normalización}: BatchNorm1d(128).
-	 	\item \textbf{Segunda capa totalmente conectada}: Linear(in_features = 128, out_features = 64).
+	 	\item \textbf{Segunda capa totalmente conectada}: Linear(in\_features = 128, out\_features = 64).
 	 	\item \textbf{Segunda capa relu}: ReLU().
 	   \end{itemize}
 \end{itemize}
@@ -100,7 +101,7 @@ Este proceso acabará devolviendo un \textit{embedding} de características de 6
 
 A continuación, se concatenan ambos vectores en un único vector de \textit{embeddings} que combina características y espectrograma. Estos vectores resultantes constituirán los datos de entrada del perceptrón encargado de clasificar los audios.
 
-Por último, se divide el dataset en conjuntos de entrenamiento (80\% de los datos) y prueba (20\% de los datos).
+Por último, se divide el dataset en conjuntos de entrenamiento (80\%) y prueba (20\%).
 
 \subsubsection*{Creación y entrenamiento del modelo}
 
@@ -108,48 +109,34 @@ En esta fase se construirá el modelo encargado de la clasificación. Para ello,
 
 Teniendo esto en cuenta, el modelo constará de las siguientes partes. Durante el entrenamiento, también se le proporcionarán al modelo las etiquetas correspondientes a la clasificación de los audios.
 
-La red neuronal principal del modelo tiene las siguientes capas:
-
 \begin{enumerate}
- \item Entrada - Primera capa lineal - Linear(input_dim, 128): Recibe un vector de 192 dimensiones y lo transforma en uno de 128 dimensiones; sus neuronas aprenden los pesos asociados.
- 
- \item Capa ReLU - ReLU(): Introduce no linealidad activando únicamente los valores positivos.
- 
- \item Capa de normalización - LayerNorm(128): Normaliza los 128 valores para que tengan media 0 y desviación estándar 1, mejorando la estabilidad del entrenamiento.
- 
- \item Segunda capa lineal - Linear(128, 64): Similar a la primera, pero transforma de 128 a 64 dimensiones.
- 
- \item Capa ReLU - ReLU(): Igual que la anterior capa ReLU.
- 
- \item Capa de normalización - LayerNorm(64): Igual que la anterior capa de normalización.
- 
- \item Última capa lineal - Linear(64, 1): Produce un logit escalar por cada muestra, que representa la evidencia del modelo antes de convertirla en un valor difuso.
- 
- \item Salida: Aplicación de la función de pertenencia difusa.
+ \item Entrada - Primera capa lineal - Linear(input\_dim, 128)
+ \item Capa ReLU - ReLU()
+ \item Capa de normalización - LayerNorm(128)
+ \item Segunda capa lineal - Linear(128, 64)
+ \item Capa ReLU - ReLU()
+ \item Capa de normalización - LayerNorm(64)
+ \item Última capa lineal - Linear(64, 1)
+ \item Salida: Aplicación de la función de pertenencia difusa
 \end{enumerate}
 
 El modelo también presenta los siguientes parámetros difusos:
 
 \begin{enumerate}
- \item Centro: Valor de referencia que separa la evidencia baja de la alta.
- 
- \item Temperatura: Controla cuán suave es la transición entre evidencias bajas y altas.
+ \item Centro
+ \item Temperatura
 \end{enumerate}
 
-Su función \textit{forward} devuelve el grado de pertenencia difuso como predicción probabilística del modelo, el logit (útil para la interpretabilidad) y la temperatura (útil para ajustes posteriores).
+Su función \textit{forward} devuelve el grado de pertenencia difuso como predicción probabilística del modelo, el logit y la temperatura.
 
-Por último, se define una función de pérdida que ajusta los coeficientes \textit{reg\_center} y \textit{reg\_temperature}, los cuales controlan la penalización de grandes desviaciones en los parámetros de centro y temperatura.
+Por último, se define una función de pérdida que ajusta los coeficientes \textit{reg\_center} y \textit{reg\_temperature}.
 
 En cuanto al entrenamiento, se emplea la siguiente configuración:
 
 \begin{enumerate}
- \item Batch size = 10: Número de muestras procesadas simultáneamente.
- 
- \item Num\_batches = 100: Número de iteraciones por época.
- 
- \item Epochs = 10: Número total de épocas de entrenamiento.
- 
- \item Criterion = MSELoss: Función de pérdida principal. Dado que se trabaja en un entorno de etiquetas continuas, se emplea el error cuadrático medio (MSE).
- 
- \item Optimizer = Adam: Algoritmo de optimización basado en gradientes que combina momentum con tasas de aprendizaje adaptativas para cada parámetro.
+ \item Batch size = 10
+ \item Num\_batches = 100
+ \item Epochs = 10
+ \item Criterion = MSELoss
+ \item Optimizer = Adam
 \end{enumerate}
