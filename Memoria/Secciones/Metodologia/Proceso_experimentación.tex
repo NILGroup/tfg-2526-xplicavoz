@@ -1,0 +1,17 @@
+\subsection{Proceso común de experimentación}
+
+En este apartado vamos a hablar de los procesos comunes que vamos a usar en varios (dos o más) modelos, para evitar repetir explicarlos múltiples veces.
+
+\subsubsection{División de los datos}
+
+Sobre el dataset que ya hemos comentado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. De estos 100 audios entrenaremos con 80 audios y probaremos los modelos con 20, de cambiar la partición lo mencionaremos explícitamente, pero un 80-20 será lo normal. Más adelante, probaremos a usar más cantidad de audios y compararemos el rendimiento.
+
+\subsection{Validación Cruzada y Grid Search}
+
+En algunos modelos aplicamos Validación Cruzada Estratificada y/o Grid Search para ver la estabilidad de un modelo y buscar los mejores parámetros de un modelo, respectivamente.
+
+La Validación Cruzada Estratificada, también llamada \textit{stratified k-fold}, lo que hace es dividir los datos en k conjuntos o \textit{folds}. Entonces entrena el modelo que le hayamos pasado con k-1 conjuntos, y lo evalúa con el conjunto restante según una métrica que le hayamos pasado a la función de validación cruzada. Hace esto k veces, una por cada conjunto (cada conjunto pasa por validación exactamente 1 vez y por entrenamiento exactamente k-1 veces). Al acabar los k entrenamientos se promedian los resultados y se calcula la desviación típica de los mismos, devolviendo estos valores para ver el rendimiento del modelo. En general, si la desviación típica es baja, significa que el modelo es estable en los distintos conjuntos que ha creado de los datos. No son resultados absolutos, ya que hay muchos más conjuntos posibles, pero es una mejor aproximación que un único conjunto de entrenamiento y test.
+
+El Grid Search lo que hace es buscar la mejor combinación de parámetros de un modelo. Tenemos que definir previamente un diccionario o \textit{grid} donde las claves son los parámetros del modelo y los valores arrays con los posibles valores que dicho parámetro puede tomar. Una vez definido dicho diccionario y un modelo base, se entrena el modelo de grid search con la partición de datos (fija) que le pasemos. Esto entrena un modelo con cada posible combinación de parámetros, y devuelve el mejor modelo (mejor combinación) según una métrica que le hayamos definido previamente. 
+
+Hay que tener en cuenta que estos procesos toman bastante tiempo, ya que tienen que entrenar múltiples veces, por lo que es posible que solo los apliquemos a modelos cuyo entrenamiento base no tarde tanto, como Random Forest, o LightGBM
