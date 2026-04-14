@@ -4,7 +4,7 @@ El modelo elegido fue Wav2Vec2, un modelo de aprendizaje profundo para el proces
 
 \subsubsection*{Justificación del modelo}
 
-El propósito de realizar un \textit{fine-tuning} de este modelo para adaptarlo a nuestra tarea se basa en que, al contar con un dataset de audio muy reducido, es necesario partir de un modelo previamente entrenado con grandes volúmenes de datos. Aunque dicho entrenamiento previo no esté orientado a clasificación, permite reutilizar el conocimiento aprendido y adaptar el modelo a nuestra tarea mediante reentrenamiento.
+El propósito de realizar un \textit{fine-tuning} de este modelo para adaptarlo a nuestra tarea se basa en que, al contar con un dataset de audio muy reducido, es necesario partir de un modelo previamente entrenado con grandes volúmenes de datos. Aunque dicho entrenamiento previo no esté orientado a clasificación, permite reutilizar el conocimiento aprendido y adaptar el modelo a nuestra tarea mediante su reentrenamiento.
 
 \subsubsection*{Planificación del trabajo}
 
@@ -16,7 +16,7 @@ El proceso de \textit{fine-tuning} de este modelo se divide en varias etapas:
  \item Análisis de resultados: Evaluación de los resultados obtenidos.
 \end{enumerate}
 
-Antes de comenzar con el tratamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}, \textit{TrainingArguments}, \textit{Wav2Vec2ForSequenceClassification} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de \textit{Pandas}.
+Antes de comenzar con el preprocesamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}, \textit{TrainingArguments}, \textit{Wav2Vec2ForSequenceClassification} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de la librería \textit{Pandas}.
 
 \subsubsection*{Preprocesamiento de los datos}
 

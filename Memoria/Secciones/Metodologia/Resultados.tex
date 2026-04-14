@@ -1,0 +1,406 @@
+\subsection{Resultados}
+
+\subsubsection{Random Forest}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+
+\subsubsection*{Modelo baseline}
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de Random Forest baseline}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien.
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+Resultados Validación Cruzada (5 folds):
+\begin{itemize}
+	\item Accuracy: 1.0000 (+/- 0.0000)
+	\item F1-Score: 1.0000 (+/- 0.0000)
+	\item AUC-ROC:  1.0000 (+/- 0.0000)
+\end{itemize}
+
+% RESULTADOS
+Estos resultados nos dicen que el modelo funciona bien en los 5 folds, aunque no podemos descartar que hubiera algún fold más ``difícil'' en el cual no tuviera 100\% de precisión.
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+
+\begin{itemize}
+	\item n\_estimators: 100
+	\item max\_depth: 5
+	\item min\_samples\_split: 2
+	\item min\_samples\_leaf: 1
+	\item max\_features: sqrt
+\end{itemize}
+
+% RESULTADOS
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de Random Forest óptimo}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+
+\subsubsection*{Implementación de SHAP para la interpretabilidad del modelo Random Forest}
+
+Para complementar el análisis predictivo y dotar de interpretabilidad al modelo Random Forest, se implementaron explicaciones basadas en SHAP (SHapley Additive exPlanations). Esta sección describe la implementación práctica realizada sobre el modelo optimizado.
+
+\subsubsection{LightGBM}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+
+\subsubsection*{Modelo baseline}
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de LightGBM baseline}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien.
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica} \\
+\midrule
+Accuracy & 0.9875 & +/- 0.0500 \\
+F1-Score & 0.9882 & +/- 0.0471 \\
+AUC-ROC & 1 & +/- 0 \\
+\bottomrule
+\end{tabular}
+\caption{Resultados Validación Cruzada}
+\end{table}
+
+% RESULTADOS
+Estos resultados arrojan una pequeña desviación en exactitud y en f1, lo cual puede indicar que en el modelo baseline el split con el que se entrenó era ``fácil'' y por eso lo hace tan bien, ya que no en todos los splits lo hace perfecto.
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+
+\begin{itemize}
+	\item num\_leaves: 15
+	\item learning\_rate: 0.01
+	\item n\_estimators: 100
+	\item min\_child\_samples: 20
+	\item subsample: 0.6
+	\item colsample\_bytree: 0.6
+	\item reg\_alpha: 0
+	\item reg\_lambda: 0
+\end{itemize}
+
+% RESULTADOS
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+
+Veamos entonces el rendimiento de dicho modelo.
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de LightGBM óptimo}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+
+\subsubsection{Support Vector Machine}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+
+\subsubsection*{Modelo baseline con kernel lineal}
+
+ EVALUACIÓN: SVM - Lineal
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de SVM con kernel lineal}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Podemos ver que, pese a ser un modelo baseline, y tener un kernel lineal (que suelen ser peores que los no lienales) ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien. Vamos a ver si el kernel no lineal consigue los mismos resultados.
+
+\subsubsection*{Modelo baseline con kernel no lineal}
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de SVM con kernel no lineal}
+\end{table}
+
+Análisis no errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+Vemos que sí, ambos modelos baseline obtienen unos resultados perfectos. Vamos a ver la validación cruzada sobre el modelo de kernel no lineal.
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica} \\
+\midrule
+Accuracy & 1 & +/- 0 \\
+F1-Score & 1 & +/- 0 \\
+AUC-ROC & 1 & +/- 0 \\
+\bottomrule
+\end{tabular}
+\caption{Resultados Validación Cruzada}
+\end{table}
+   
+% RESULTADOS
+Estos resultados nos dicen que el modelo funciona bien en los 5 folds, aunque no podemos descartar que hubiera algún fold más ``difícil'' en el cual no tuviera 100\% de precisión.
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+
+\begin{itemize}
+	\item C: 1
+	\item gamma: 0.01
+	\item kernel: rbf
+\end{itemize}
+
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+
+Métricas principales:
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1 & 1 & 1 & 10 \\
+IA (0) & 1 & 1 & 1 & 10 \\
+accuracy &  &  & 1 & 20 \\
+macro avg & 1 & 1 & 1 & 20 \\
+weighted avg & 1 & 1 & 1 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de SVM con kernel no lineal}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 0
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% RESULTADOS
+Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+
+\subsubsection{AASIST}
+
+\subsubsection{Perceptrón Multicapa}
+
+\subsubsection{Wav2Vec2}
+
+\subsubsection{Regresión Logística}
+
+\subsubsection{KNN}

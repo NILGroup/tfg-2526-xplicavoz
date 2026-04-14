@@ -5,6 +5,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.ensemble import RandomForestClassifier
+import lightgbm as lgbm
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import SVC
+from sklearn.pipeline import Pipeline
 
 import shap
 
@@ -190,7 +194,7 @@ def show(model, i, shap_values, save=False):
         else:
             model(shap_values[j])
         
-def explica_shap(modelo, X_train, X_test, n_show, local, save=False):
+def explica_shap(modelo, X_train, X_test, n_show, local, save=False, ret=False):
     # Generamos explicaciones
     explainer = shap.Explainer(modelo.predict, X_train)
     shap_values = explainer(X_test)
@@ -213,7 +217,7 @@ def explica_shap(modelo, X_train, X_test, n_show, local, save=False):
     # Por último devolvemos y_pred por si evaluamos el modelo
     y_pred = modelo.predict(X_test)
     y_pred_proba = modelo.predict_proba(X_test)[:, 1]
-    return y_pred, y_pred_proba
+    if ret: return y_pred, y_pred_proba
 
 def drop_features_explica_shap(modelo, model_name, X_train, y_train, X_test, y_test, feats, n_show, 
                                evalua_modelo=False, local=True, save=False):
@@ -224,11 +228,19 @@ def drop_features_explica_shap(modelo, model_name, X_train, y_train, X_test, y_t
     # Entrenamos el modelo de nuevo (las características han cambiado)
     params = modelo.get_params()
     
-    modelo = RandomForestClassifier(**params)
+    if model_name == 'Random Forest':
+        modelo = RandomForestClassifier(**params)
+    elif model_name == 'LightGBM':
+        modelo = lgbm.LGBMClassifier(**params)
+    elif model_name == 'SVM':
+        modelo = Pipeline([
+            ('scaler', StandardScaler()),
+            ('svm', SVC(**params))
+        ])
     modelo.fit(X_train_new, y_train)
     
     # Generamos las explicaciones como antes
-    y_pred, y_pred_proba = explica_shap(modelo=modelo, X_train=X_train_new, X_test=X_test_new, n_show=n_show, local=local, save=save)
+    y_pred, y_pred_proba = explica_shap(modelo=modelo, X_train=X_train_new, X_test=X_test_new, n_show=n_show, local=local, save=save, ret=True)
     
     # Evaluamos el modelo
     if evalua_modelo: evaluacion_modelo(model_name=model_name, y_true=y_test, y_pred=y_pred, y_pred_proba=y_pred_proba)

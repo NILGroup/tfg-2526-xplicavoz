@@ -16,4 +16,35 @@ Ahora vamos a procesar la salida del modelo para hacerla más interpretable y en
 
 Para ello vamos a usar un clasificador fuzzy que procesará la salida del modelo convirtiendo los logits en scores para la categoría de generado calculando los grados de pertenencia fuzzy a esa categoría en función también de un alpha que buscará maximizar el roc-auc.
 
-Por último estos nuevos resultados se guardarán en un dataframe que servirá para aplicar luego modelos de XAI.
+Por último estos nuevos resultados se guardarán en un dataframe que servirá para aplicar luego modelos de XAI. Este dataframe tendrá el nombre del audio, el valor devuelto por el modelo y la categoría binaria a la que pertenece.
+
+\begin{table}[]
+\begin{tabular}{lll}
+Name     & Score      & Label \\
+I\_32\_N & 0.37823838 & 0     \\
+E\_47\_G & 0.71498334 & 1     \\
+I\_12\_N & 0.33863166 & 0     \\
+I\_3\_N  & 0.71035093 & 0     \\
+E\_7\_G  & 0.71441114 & 1     \\
+I\_2\_G  & 0.6257453  & 1     \\
+E\_11\_N & 0.3466234  & 0     \\
+E\_23\_N & 0.31925088 & 0     \\
+E\_16\_G & 0.72027296 & 1     \\
+I\_6\_G  & 0.70500165 & 1     \\
+I\_49\_N & 0.32509455 & 0     \\
+I\_5\_G  & 0.61754656 & 1     \\
+E\_35\_G & 0.7263741  & 1     \\
+I\_41\_N & 0.32385188 & 0     \\
+E\_37\_N & 0.37273097 & 0     \\
+E\_2\_N  & 0.40383905 & 0     \\
+E\_40\_G & 0.6801454  & 1     \\
+E\_41\_G & 0.71816057 & 1     \\
+I\_2\_N  & 0.69376636 & 0     \\
+E\_43\_G & 0.70625514 & 1    
+\end{tabular}
+\end{table}
+
+Cabe recalcar que en los nombres la primera letra es el idioma (E:español, I:inglés), el número es su identificador y la última letra es si es natural (N) o generado (G). 
+
+Podemos ver en los resultados de las predicciones como el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse debido a ruido o a otras imperfecciones en los audios.
+
