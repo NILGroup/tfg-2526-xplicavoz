@@ -109,7 +109,7 @@ Hemos creado dos mapas filtro-tiempo, el de la izquierda sería el más fiel al 
     \end{subfigure}
 \end{figure}
 
-Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más
+Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más. Asimismo, es importante mencionar que se está representando magnitud absoluta de atribución, no signo.
 
 \subsubsection*{Occlusion}
 A continuación, vamos a aplicar ``\textbf{occlusion}'' tanto al ámbito espectral como al temporal. Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver cómo cambia el ``logit'' final con estas variaciones para ver qué tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
@@ -169,33 +169,24 @@ Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. P
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa.png}
-        \caption{Mapa filtro-tiempo generado por IG.}
+        \caption{Mapa filtro-tiempo generado con IG.}
         \end{subfigure}
     \hfill
     \begin{subfigure}[t]{0.49\textwidth}
         \centering
         \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_normalizado.png}
-        \caption{Mapa filtro-tiempo normalizado generado por IG.}
+        \caption{Mapa filtro-tiempo normalizado generado con IG.}
     \end{subfigure}
 \end{figure}
 
 A diferencia de los mapas filtro-tiempo mostrados anteriormente, aquí representamos las zonas que más \textbf{contribuyen} al ``logit'' final.
 Sin embargo, igual que antes, representamos una gráfica normalizada para apreciar más detalle y una sin normalizar para ver el mapa puro.
 
-Para mostrar esto de manera más visual, generamos dos gráficas. En la izquierda, vemos los filtros en el eje x, proporcionandos información sobre los más excitados. Sin embargo, en la derecha mostramos los resultados de manera temporal, resumiendo todos los filtros en cada instante y hacemos una curva temporal viendo qué instantes han sido más relevantes.
+Para mostrar esto de manera más visual, generamos una gráfica donde vemos los filtros en el eje x, proporcionando información sobre los más excitados. 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_frecuencial.png}
-        \caption{Mapa filtro-tiempo de la capa sinc-convolution.}
-        \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_temporal.png}
-        \caption{Mapa filtro-tiempo normalizado.}
-    \end{subfigure}
+    \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_frecuencial.png}
+    \caption{Gráfica filtro-tiempo de la capa sinc-convolution.}
 \end{figure}
 
 Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.  
