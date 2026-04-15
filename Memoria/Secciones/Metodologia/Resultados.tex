@@ -113,6 +113,7 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 
 \subsubsection*{Resultados de explicación}
 
+% SHAP
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_local.png}
 	\caption{Explicación local con SHAP}
@@ -221,12 +222,14 @@ Análisis de errores:
 	\item Error tipo II (Falsos Negativos): 50.00%
 \end{itemize}
 
+% LIME
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/lime_rf.png}
 	\caption{Explicación local con LIME}
 	\label{fig:lime_rf}
 \end{figure}
 
+% DiCE
 \begin{table}[H]
 \centering
 \begin{tabular}{lccccc}
@@ -366,7 +369,7 @@ Análisis de errores:
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
 
 \subsubsection*{Resultados de explicación}
-
+% SHAP
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local.png}
 	\caption{Explicación local con SHAP}
@@ -475,6 +478,14 @@ Análisis de errores:
 	\item Error tipo II (Falsos Negativos): 10.00%
 \end{itemize}
 
+% LIME
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_lgbm.png}
+	\caption{Explicación local con LIME}
+	\label{fig:lime_lgbm}
+\end{figure}
+
+% DiCE
 \begin{table}[H]
 \centering
 \begin{tabular}{lcccc}
@@ -606,6 +617,7 @@ En primer lugar veamos cuáles son los mejores parámetros del grid que hemos de
 	\item kernel: rbf
 \end{itemize}
 
+% RESULTADOS
 Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
 
 Métricas principales:
@@ -648,7 +660,7 @@ Análisis de errores:
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
 
 \subsubsection*{Resultados de explicacion}
-
+% SHAP
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local.png}
 	\caption{Explicación local con SHAP}
@@ -758,6 +770,11 @@ Análisis de errores:
 \end{itemize}
 
 % LIME
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_svm.png}
+	\caption{Explicación local con LIME}
+	\label{fig:lime_svm}
+\end{figure}
 
 % DiCE
 

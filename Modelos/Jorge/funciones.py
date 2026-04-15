@@ -263,7 +263,8 @@ def drop_features_explica(modelo, model_name, X_train, y_train, X_test, y_test, 
     elif model_name == 'LightGBM':
         modelo = lgbm.LGBMClassifier(**params)
     elif model_name == 'SVM':
-        modelo = Pipeline([
+        params = modelo.named_steps['svm'].get_params()
+        modelo = Pipeline([     
             ('scaler', StandardScaler()),
             ('svm', SVC(**params))
         ])

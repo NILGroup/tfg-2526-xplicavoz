@@ -66,8 +66,3 @@ LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a l
 	\item \textbf{reg\_alpha}: Probamos 0, 0,1 y 0,5.
 	\item \textbf{reg\_lambda}: Probamos 0, 0,1 y 0,5.
 \end{itemize}
-
-Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
-
-
-% Añadir explicacion

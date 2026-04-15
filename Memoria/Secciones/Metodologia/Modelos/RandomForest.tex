@@ -44,8 +44,6 @@ Se realizó una búsqueda sistemática de hiperparámetros mediante \texttt{Grid
 	\item \textbf{max\_features}: Probamos ``sqrt'' y ``log2''. Este último toma el logaritmo en base 2 del número de características.
 \end{itemize}
 
-Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
-
 \subsubsection*{Implementación de SHAP para la interpretabilidad del modelo Random Forest}
 
 Para complementar el análisis predictivo y dotar de interpretabilidad al modelo Random Forest, se implementaron explicaciones basadas en SHAP (SHapley Additive exPlanations). Esta sección describe la implementación práctica realizada sobre el modelo optimizado.
@@ -53,10 +51,6 @@ Para complementar el análisis predictivo y dotar de interpretabilidad al modelo
 \subsection*{Implementación de LIME para la interpretabilidad local del modelo}
 
 Como complemento a SHAP, se incorporó LIME (Local Interpretable Model-agnostic Explanations) para obtener explicaciones locales de las predicciones del modelo Random Forest. LIME genera explicaciones interpretables aproximando localmente el modelo complejo mediante un modelo simple (lineal) en la vecindad de la instancia a explicar.
-
-\subsubsection*{Funciones implementadas para explicaciones LIME}
-
-Para integrar LIME en el flujo de trabajo, se implementó un procedimiento que permite generar explicaciones visualmente claras y personalizar su presentación para facilitar su inclusión en informes y memorias.
 
 % EXPLICACION
 \subsubsection*{Interpretación de las explicaciones LIME}
@@ -71,20 +65,6 @@ La visualización generada por LIME muestra:
     \item \textbf{Contribución de cada característica}: Barras horizontales que indican si la característica apoya la clase IA (color naranja/rojo) o la clase Real (color azul), junto con la magnitud de su contribución.
     
     \item \textbf{Valor de la característica}: Se muestra el valor concreto que tenía esa característica en el audio explicado.
-\end{itemize}
-
-\subsubsection*{Consideraciones sobre la implementación}
-
-Durante la implementación se tuvieron en cuenta los siguientes aspectos:
-
-\begin{itemize}
-    \item \textbf{Formato de datos}: LIME requiere los datos en formato numpy array (\texttt{.values}) en lugar de DataFrame de pandas, por lo que se realiza la conversión explícita.
-    
-    \item \textbf{Función de predicción}: Se utiliza \texttt{predict\_proba} en lugar de \texttt{predict} para obtener las probabilidades, lo que permite a LIME capturar la confianza del modelo y no solo la clase final.
-    
-    \item \textbf{Número de características}: Se limitó a 8-10 características por explicación para mantener la legibilidad, aunque el parámetro es configurable.
-    
-    \item \textbf{Personalización visual}: La limpieza de estilos CSS garantiza que las explicaciones LIME mantengan una apariencia profesional y consistente con el resto de la memoria, evitando problemas de contraste o colores no deseados.
 \end{itemize}
 
 \subsection*{Implementación de DiCE para la generación de explicaciones contrafactuales}
@@ -106,18 +86,4 @@ La visualización generada por \texttt{visualize\_as\_dataframe(show\_only\_chan
     \end{itemize}
     
     \item \textbf{Diversidad}: DiCE genera contrafactuales diversos, mostrando diferentes formas de lograr el mismo cambio de clasificación (por ejemplo, modificando diferentes combinaciones de formantes o MFCC).
-\end{itemize}
-
-La salida para la primera instancia es:
-
-\subsubsection*{Interpretación en el contexto de detección de deepfakes}
-
-Las explicaciones contrafactuales permiten responder preguntas como:
-
-\begin{itemize}
-    \item \textbf{Para un audio clasificado como IA}: "¿Qué características acústicas deberían cambiar para que el modelo lo considere voz real, y en qué magnitud?"
-    
-    \item \textbf{Para un audio clasificado como real}: "¿Qué modificaciones lo harían ser clasificado como generado por IA?"
-    
-    \item \textbf{Vías alternativas}: DiCE muestra múltiples formas de lograr el cambio, revelando si hay ``caminos'' principales (modificar ciertos formantes) o alternativos (modificar MFCC específicos).
 \end{itemize}
