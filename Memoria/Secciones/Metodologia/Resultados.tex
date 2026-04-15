@@ -111,9 +111,139 @@ Análisis de errores:
 % RESULTADOS
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
 
-\subsubsection*{Implementación de SHAP para la interpretabilidad del modelo Random Forest}
+\subsubsection*{Resultados de explicación}
 
-Para complementar el análisis predictivo y dotar de interpretabilidad al modelo Random Forest, se implementaron explicaciones basadas en SHAP (SHapley Additive exPlanations). Esta sección describe la implementación práctica realizada sobre el modelo optimizado.
+% SHAP
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_local.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:shap_rf_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_global.png}
+	\caption{Explicación global con SHAP}
+	\label{fig:shap_rf_global}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_rf_local_sin_specflat}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_rf_local_sin_specflat}
+\end{figure}
+
+\textbf{Resultados tras quitar la característica spectral flatness:}
+\begin{itemize}
+	\item Accuracy:  0.9500  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    0.9000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  0.9474  (Balance precision-recall)
+	\item AUC-ROC:   0.9900  (Capacidad discriminativa)
+	\item MCC:       0.9045  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 0.9091 & 1 & 0.9524 & 10 \\
+IA (0) & 1 & 0.9000 & 0.9474 & 10 \\
+accuracy &  &  & 0.9500 & 20 \\
+macro avg & 0.9545 & 0.9500 & 0.9499 & 20 \\
+weighted avg & 0.9545 & 0.9500 & 0.9499 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de Random Forest sin spectral flatness}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 9
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 1
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 10.00%
+\end{itemize}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\label{fig:shap_rf_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\label{fig:shap_rf_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\textbf{Resultados tras quitar las características spectral flatness, mfcc1 y spectral bandwith:}
+\begin{itemize}
+	\item Accuracy:  0.6500  (Porcentaje total de aciertos)
+	\item Precision: 0.7143  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    0.5000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  0.5882  (Balance precision-recall)
+	\item AUC-ROC:   0.8600  (Capacidad discriminativa)
+	\item MCC:       0.3145  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 0.6154 & 0.8000 & 0.6957 & 10 \\
+IA (0) & 0.7143 & 0.7143 & 0.5882 & 10 \\
+accuracy &  &  & 0.6500 & 20 \\
+macro avg & 0.6648 & 0.6500 & 0.6419 & 20 \\
+weighted avg & 0.6648 & 0.6500 & 0.6419 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 8
+	\item Verdaderos Positivos (IA bien clasificados): 5
+	\item Falsos Positivos (Reales clasificados como IA): 2
+	\item Falsos Negativos (IA clasificados como Reales): 5
+	\item Error tipo I (Falsos Positivos): 20.00%
+	\item Error tipo II (Falsos Negativos): 50.00%
+\end{itemize}
+
+% LIME
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_rf.png}
+	\caption{Explicación local con LIME}
+	\label{fig:lime_rf}
+\end{figure}
+
+% DiCE
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Instancia} & \textbf{RMS} & \textbf{spectral centroid} & \textbf{spectral flatness} & \textbf{mfcc 8} & \textbf{Etiqueta} \\
+\midrule
+Explicada & 0.05813733488321304 & 1271.831787109375 & 0.11064121127128601 & -9.581953048706055 & 0 \\
+Counter factual 1 &  &  & 0.0085693521 & -19.0127779 & 1 \\
+Counter factual 2 &  & 1769.708 & 0.0140804753 &  & 1 \\
+Counter factual 3 & 0.063278444 &  & 0.0182716957 &  & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Counter factuals generados por DiCE}
+\end{table}
 
 \subsubsection{LightGBM}
 
@@ -238,6 +368,139 @@ Análisis de errores:
 % RESULTADOS
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
 
+\subsubsection*{Resultados de explicación}
+% SHAP
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:shap_lgbm_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_global.png}
+	\caption{Explicación global con SHAP}
+	\label{fig:shap_lgbm_global}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_lgbm_local_sin_specflat}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_lgbm_local_sin_specflat}
+\end{figure}
+
+\textbf{tras quitar la característica spectral flatness:}
+\begin{itemize}
+	\item Accuracy:  0.8000  (Porcentaje total de aciertos)
+	\item Precision: 0.8750  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    0.7000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  0.7778  (Balance precision-recall)
+	\item AUC-ROC:   0.9600  (Capacidad discriminativa)
+	\item MCC:       0.6124  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 0.7500 & 0.9000 & 0.8182 & 10 \\
+IA (0) & 0.8750 & 0.7000 & 0.7778 & 10 \\
+accuracy &  &  & 0.8000 & 20 \\
+macro avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
+weighted avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de LightGBM sin spectral flatness}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 9
+	\item Verdaderos Positivos (IA bien clasificados): 7
+	\item Falsos Positivos (Reales clasificados como IA): 1
+	\item Falsos Negativos (IA clasificados como Reales): 3
+	\item Error tipo I (Falsos Positivos): 10.00%
+	\item Error tipo II (Falsos Negativos): 30.00%
+\end{itemize}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
+	\label{fig:shap_lgbm_local_sin_sflat_mfcc1}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
+	\label{fig:shap_lgbm_local_sin_sflat_mfcc1}
+\end{figure}
+
+\textbf{tras quitar la característica spectral flatness:}
+\begin{itemize}
+	\item Accuracy:  0.8500  (Porcentaje total de aciertos)
+	\item Precision: 0.8889  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    0.8000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  0.8421  (Balance precision-recall)
+	\item AUC-ROC:   0.9400  (Capacidad discriminativa)
+	\item MCC:       0.7035  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 0.8182 & 0.9000 & 0.8571 & 10 \\
+IA (0) & 0.8889 & 0.8000 & 0.8421 & 10 \\
+accuracy &  &  & 0.8500 & 20 \\
+macro avg & 0.8535 & 0.8500 & 0.8496 & 20 \\
+weighted avg & 0.8535 & 0.8500 & 0.8496 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de LightGBM sin spectral flatness y mfcc 1}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 9
+	\item Falsos Positivos (Reales clasificados como IA): 0
+	\item Falsos Negativos (IA clasificados como Reales): 1
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 10.00%
+\end{itemize}
+
+% LIME
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_lgbm.png}
+	\caption{Explicación local con LIME}
+	\label{fig:lime_lgbm}
+\end{figure}
+
+% DiCE
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 1} & \textbf{mfcc 5} & \textbf{Etiqueta} \\
+\midrule
+Explicada & 0.11064121127128601 & -330.396484375 & 6.072022438049316 & 0 \\
+Counter factual 1 & 0.0170038721 &  &  & 1 \\
+Counter factual 2 & 0.0270864069 & -382.50071 &  & 1 \\
+Counter factual 3 & 0.0294502619 &  & 13.439346927 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Counter factuals generados por DiCE}
+\end{table}
+
 \subsubsection{Support Vector Machine}
 
 En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
@@ -354,6 +617,7 @@ En primer lugar veamos cuáles son los mejores parámetros del grid que hemos de
 	\item kernel: rbf
 \end{itemize}
 
+% RESULTADOS
 Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
 
 Métricas principales:
@@ -394,6 +658,125 @@ Análisis de errores:
 
 % RESULTADOS
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+
+\subsubsection*{Resultados de explicacion}
+% SHAP
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_local.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:shap_svm_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_global.png}
+	\caption{Explicación global con SHAP}
+	\label{fig:shap_svm_global}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_svm_local_sin_specflat}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:shap_svm_local_sin_specflat}
+\end{figure}
+
+\textbf{tras quitar la característica spectral flatness:}
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1.0000 & 1.0000 & 1.0000 & 10 \\
+IA (0) & 1.0000 & 1.0000 & 1.0000 & 10 \\
+accuracy &  &  & 1.0000 & 20 \\
+macro avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
+weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de SVM sin spectral flatness}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 10
+	\item Falsos Negativos (IA clasificados como Reales): 10
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\label{fig:shap_svm_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\label{fig:shap_svm_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\textbf{tras quitar la característica spectral flatness:}
+\begin{itemize}
+	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
+	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
+	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
+	\item F1-Score:  1.0000  (Balance precision-recall)
+	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
+	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
+\midrule
+Real (1) & 1.0000 & 1.0000 & 1.0000 & 10 \\
+IA (0) & 1.0000 & 1.0000 & 1.0000 & 10 \\
+accuracy &  &  & 1.0000 & 20 \\
+macro avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
+weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de SVM sin spectral flatness}
+\end{table}
+
+Análisis de errores:
+\begin{itemize}
+	\item Verdaderos Negativos (Reales bien clasificados): 10
+	\item Verdaderos Positivos (IA bien clasificados): 10
+	\item Falsos Positivos (Reales clasificados como IA): 10
+	\item Falsos Negativos (IA clasificados como Reales): 10
+	\item Error tipo I (Falsos Positivos): 0.00%
+	\item Error tipo II (Falsos Negativos): 0.00%
+\end{itemize}
+
+% LIME
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_svm.png}
+	\caption{Explicación local con LIME}
+	\label{fig:lime_svm}
+\end{figure}
+
+% DiCE
 
 \subsubsection{AASIST}
 

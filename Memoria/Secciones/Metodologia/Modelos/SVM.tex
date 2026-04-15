@@ -64,25 +64,9 @@ SVM con kernel RBF tiene dos hiperparámetros críticos que determinan su rendim
 	\item \textbf{kernel}: Probamos únicamente el kernel no lineal ``rbf''.
 \end{itemize}
 
-Tras esto instanciamos el GridSearchCV (búsqueda de parámetros (search) probando todas las combinaciones (grid) con validación cruzada (CV)) poniendo un modelo base de Random Forest con el estado aleatorio 12 y el peso de clases balanceado, como antes. A dicho grid search le ponemos el grid de parámetros que comentamos arriba, la validación cruzada de 5-folds que hicimos antes, y la métrica a optimizar de f1. Por último entrenamos el modelo con los datos de entrenamiento sin escalar.
-
-La elección de optimizar el F1-score responde a la necesidad de balancear precisión y sensibilidad en un problema donde ambos tipos de error (falsos positivos y falsos negativos) son relevantes.
-
 \subsubsection*{Análisis de vectores de soporte}
 
 Una característica única de SVM es la identificación de los \textbf{vectores de soporte}: las muestras críticas que determinan la frontera de decisión. Su análisis proporciona información sobre la complejidad del problema:
-
- \begin{lstlisting}[language=Python, caption=Análisis de vectores de soporte]
- # Obtenemos el modelo del pipeline
- svm_model = svm_optimized.named_steps['svm']
- n_support_vectors = svm_model.n_support_
- support_vectors_count = sum(n_support_vectors)
-
- print(f"Total de vectores de soporte: {support_vectors_count}")
- print(f"Porcentaje del dataset: {support_vectors_count/len(X_train)*100:.2f}%")
- print(f"Vectores clase Real (0): {n_support_vectors[0]}")
- print(f"Vectores clase IA (1): {n_support_vectors[1]}")
- \end{lstlisting}
 
 La interpretación de estos valores es reveladora:
 \begin{itemize}
