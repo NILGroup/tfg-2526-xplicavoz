@@ -1,6 +1,6 @@
 \subsubsection{Wav2Vec2}
 
-El modelo elegido fue Wav2Vec2, un modelo de aprendizaje profundo para el procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente a partir de la señal de audio cruda, sin necesidad de extraer características manualmente. Fue propuesto por Meta en 2020.
+El modelo elegido fue Wav2Vec2, un modelo de aprendizaje profundo para el procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente a partir de la señal de audio cruda, sin necesidad de extraer características manualmente. 
 
 \subsubsection*{Justificación del modelo}
 
@@ -30,8 +30,10 @@ A continuación, los datos se procesan mediante una serie de funciones para adap
 
 \begin{enumerate}
  \item Extractor de características: Define cómo se introduce el audio en el modelo, recibiendo señal cruda, normalizándola y aplicando \textit{padding} para convertirla al formato esperado.
+ 
  \item Función de preprocesamiento: Recibe el audio, la longitud máxima, la frecuencia de muestreo y el extractor de características, y devuelve los tensores listos para el modelo.
- \item Colector de datos: Agrupa los tensores de entrada y las etiquetas, devolviendo un diccionario con los datos en formato de tensores de PyTorch.
+ 
+ \item Colector de datos: Recoge todos las datos del dataframe (valores de entrada y etiquetas) y devuelve un diccionario de esos datos transformados a tensores de pytorch.
 \end{enumerate}
 
 \subsubsection*{Configuración y entrenamiento del modelo}
@@ -40,48 +42,41 @@ En esta fase se emplean las clases restantes de la librería \textit{transformer
 
 Esta clase permite cargar el modelo base Wav2Vec2, configurar el número de salidas y definir la tarea. En nuestro caso, el modelo se configura para clasificación binaria (\textit{single-label classification}) con dos salidas.
 
-Dado que el conjunto de entrenamiento contiene únicamente 160 audios, se opta por congelar el extractor de características para evitar el sobreajuste de los filtros del modelo.
+Para el entrenamiento de este modelo se han usado los 200 audios del dataset (100 en español y 100 en inglés) divididos como se mencionó anteriormente (80-10-10). Dado que son pocos audios para efectuar esta tarea, optamos por congelar el extractor de características para evitar el sobreajuste de los filtros del modelo.
 
 A continuación, se definen las métricas de evaluación. En este caso, debido al posterior postprocesado de las salidas, se emplean la precisión (\textit{accuracy}), el \textit{F1-score} y el área bajo la curva ROC (ROC-AUC).
 
 Posteriormente, se utiliza la clase \textit{TrainingArguments} para configurar el entrenamiento del modelo:
 
-\begin{lstlisting}[language=Python, caption=Configuración de entrenamiento del modelo, label=code:Training_config]
-
-training_args = TrainingArguments(
-    output_dir="./wav2vec2-deepfake", # Carpeta que guarda los checkpoints, logs y el mejor modelo
-    eval_strategy="steps", # Evaluacion cada cierto numero de pasos
-    save_strategy="steps", # Guardado cada cierto numero de pasos
-    logging_steps=50, # Cada 50 pasos calcula el loss, la tasa de aprendizaje y las metricas si corresponde
-    save_steps=500, # Guarda cada 500 pasos
-    eval_steps=500, # Evalua cada 500 pasos
-    learning_rate=1e-5, # Tasa de aprendizaje
-    per_device_train_batch_size=4,  
-    per_device_eval_batch_size=4, 
-    gradient_accumulation_steps=2, 
-    num_train_epochs=5, # Numero de epocas de entrenamiento
-    fp16=True, 
-    load_best_model_at_end=True, # Carga el modelo con mejor metrica AUC
-    metric_for_best_model="auc",
-    report_to="none"
-)
-
-\end{lstlisting}
+\begin{itemize}
+ \item output_dir = ./wav2vec2-deepfake: Carpeta que guarda los checkpoints, logs y el mejor modelo.
+ \item eval_strategy = steps: Evaluación cada x pasos.
+ \item save_strategy = steps: Guardado cada x pasos
+ \item logging_steps = 50: Cada 50 pasos calcula el loss, la tasa de aprendizaje y las métricas si toca evaluar.
+ \item save_steps = 500: Evalua cada 500 pasos.
+ \item eval_steps = 500: Guarda cada 500 pasos.
+ \item learning_rate = 1e-5: Tasa de aprendizaje. Es tan baja ya que se trata de una tarea de fine-tunning.
+ \item per_device_train_batch_size = 4: Batch-size del entrenamiento.
+ \item per_device_eval_batch_size = 4: Batch-size de la evaluación.
+ \item gradient_accumulation_steps = 2: Acumula gradientes durante 2 pasos antes de actualizar los pesos.
+ \item num_train_epochs = 5: Épocas de entrenamiento
+ \item fp16 = True: Precisión de 16 bits para optimizar memoria y mejorar la velocidad de entrenamiento.
+ \item metric_for_best_model = auc: Métrica que determinará cual es el mejor modelo.
+ \item load_best_model_at_end = True: Carga el modelo con mejor métrica auc.
+ \item report_to = none: Desactiva la integración con herramientas externas.
+\end{itemize}
 
 Por último, se utiliza la clase \textit{Trainer} para ensamblar todo el pipeline y definir el proceso de entrenamiento:
 
-\begin{lstlisting}[language=Python, caption=Trainer del modelo, label=code:Trainer]
+\begin{itemize}
+ \item model = model
+ \item args = training_args
+ \item train_dataset = train_dataset["train"].
+ \item eval_dataset = train_dataset["eval"].
+ \item data_collator = data_collator.
+ \item processing_class = feature_extractor.
+ \item compute_metrics = compute_metrics.
 
-trainer = Trainer(
-    model=model,
-    args=training_args,
-    train_dataset=train_dataset["train"],
-    eval_dataset=train_dataset["eval"],
-    data_collator=data_collator,
-    processing_class=feature_extractor,
-    compute_metrics=compute_metrics
-)
-
-\end{lstlisting}
+\end{itemize}
 
 Una vez configurados todos los componentes, se procede a iniciar el entrenamiento del modelo.
