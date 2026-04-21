@@ -15,7 +15,7 @@ Para solucionar estos problemas hemos realizado dos preprocesamientos. La primer
  
  \item Formantes:  f1 mean, f2 mean, f3 mean. Este grupo son las características que describen la estructura vocal.
  
- \item MFCC: MFCC_mean del 1 al 13. Este grupo de características capturan patrones del espectro del audio.
+ \item MFCC: MFCC mean del 1 al 13. Este grupo de características capturan patrones del espectro del audio.
 	\end{enumerate}
 
 El segundo preprocesamiento que se ha hecho ha sido desarrollar modelos surrogate que imiten el comportamiento del modelo. Para esto hemos implementado 6 modelos distintos. Cinco de ellos son regresiones logísticas, uno para cada grupo de características y una CNN muy simple para los espectrogramas.
