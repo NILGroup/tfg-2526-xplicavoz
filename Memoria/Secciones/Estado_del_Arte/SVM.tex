@@ -1,4 +1,5 @@
 \subsubsection{Support Vector Machines (SVM)}
+\label{subsubsec:eda_svm}
 
 Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990 \cite{cortes1995support}. Originalmente diseñadas para clasificación binaria, las SVM se han convertido en uno de los métodos más robustos y teóricamente fundamentados del aprendizaje automático.
 
@@ -12,7 +13,7 @@ El objetivo fundamental de una SVM es encontrar un hiperplano que separe las dos
     \item Un hiperplano en dos dimensiones es simplemente una línea recta que intenta separar ambos grupos.
 \end{itemize}
 
-La clave de SVM reside en que no cualquier línea divisora es válida: el algoritmo busca aquella que maximiza la distancia (margen) entre la línea y los puntos más cercanos de cada clase. Estos puntos críticos, que ``sostienen'' el margen, reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), de donde el algoritmo toma su nombre.
+La clave de SVM reside en que no cualquier línea divisoria es válida: el algoritmo busca aquella que maximiza la distancia (margen) entre la línea y los puntos más cercanos de cada clase. Estos puntos críticos, que ``sostienen'' el margen, reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), de donde el algoritmo toma su nombre.
 
 \subsubsection*{Funcionamiento del algoritmo}
 
@@ -35,7 +36,7 @@ El \textit{truco del kernel} (\textit{kernel trick}) funciona de la siguiente ma
 \begin{itemize}
     \item Los datos originales (no separables linealmente) se transforman implícitamente a un espacio de mayor dimensionalidad mediante una función matemática.
     \item En este nuevo espacio, es posible que los datos sí sean linealmente separables.
-    \item La magia del kernel es que realiza esta transformación sin necesidad de calcular explícitamente las coordenadas en el espacio de alta dimensión, lo que sería computacionalmente costoso.
+    \item La ventaja del kernel es que realiza esta transformación sin necesidad de calcular explícitamente las coordenadas en el espacio de alta dimensión, lo que sería computacionalmente costoso.
 \end{itemize}
 
 Los kernels más comúnmente utilizados son:
@@ -45,7 +46,7 @@ Los kernels más comúnmente utilizados son:
     
     \item \textbf{Kernel polinomial}: Crea fronteras de decisión curvas mediante combinaciones polinómicas de las características originales.
     
-    \item \textbf{Kernel RBF (\textit{Radial Basis Function})}: Es el más utilizado en mcuhos problemas. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas y no lineales. Se basa en la similitud entre muestras medida por distancia euclidiana:
+    \item \textbf{Kernel RBF (\textit{Radial Basis Function})}: Es el más utilizado en muchos problemas. Proyecta los datos a un espacio de dimensionalidad infinita, permitiendo fronteras de decisión altamente complejas y no lineales. Se basa en la similitud entre muestras medida por distancia euclidiana:
 
     \[
     K(\mathbf{x}_i, \mathbf{x}_j) = \exp(-\gamma \|\mathbf{x}_i - \mathbf{x}_j\|^2)
@@ -61,9 +62,9 @@ Vamos a ver cuáles son los hiperparámetros más importantes en los SVM.
 \begin{itemize}
     \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
     
-    \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente. Los kernels más comunes son: lineal (recomendado para datos con muchas características o problemas aproximadamente lineales), polinomial (permite curvas más complejas mediante el grado del polinomio), y RBF o radial (el más utilizado por defecto, capaz de crear límites de decisión muy flexibles y adaptarse a diferentes formas de los datos). La elección del kernel determina fundamentalmente la capacidad del modelo para encontrar patrones complejos.
+    \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente. La elección del kernel determina fundamentalmente la capacidad del modelo para encontrar patrones complejos.
     
-    \item \textbf{gamma \(\gamma\)}: Específico de kernels no lineales (RBF, sigmoide o polinomial). define cuánta influencia tiene un solo punto de entrenamiento: valores bajos significan que cada punto tiene un alcance amplio, produciendo límites de decisión más suaves y generales; valores altos hacen que cada punto influya solo en su vecindario cercano, lo que puede generar límites muy ajustados a los datos de entrenamiento pero con alto riesgo de sobreajuste.
+    \item \textbf{gamma \(\gamma\)}: Específico de kernels no lineales (RBF, sigmoide o polinomial). Define cuánta influencia tiene un solo punto de entrenamiento: valores bajos significan que cada punto tiene un alcance amplio, produciendo límites de decisión más suaves y generales; valores altos hacen que cada punto influya solo en su vecindario cercano, lo que puede generar límites muy ajustados a los datos de entrenamiento pero con alto riesgo de sobreajuste.
     
     \item \textbf{degree}: Cuando se utiliza el kernel polinomial, este parámetro especifica el grado del polinomio usado para transformar los datos. Un grado mayor permite capturar relaciones más complejas y no lineales, pero también aumenta el riesgo de sobreajuste y el costo computacional. Normalmente se utilizan grados bajos (2, 3 o 4) porque valores muy altos tienden a producir modelos inestables y difíciles de generalizar.
     

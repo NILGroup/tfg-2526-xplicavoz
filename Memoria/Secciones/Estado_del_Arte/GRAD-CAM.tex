@@ -1,2 +1,3 @@
 \subsubsection{Grad-CAM}
+\label{subsubsec:eda_gradcam}
 Grad-CAM (Gradient-weighted Class Activation Mapping) es un método post-hoc, de alcance local y model-class-specific ya que se usa en modelos basados en capas convolucionales. Utiliza los gradientes de la última capa convolucional para construir un mapa de calor que resalta las regiones del espectrograma que más influyen en la clasificación. Aunque es eficaz para detectar sesgos en el conjunto de datos, su baja resolución espacial a menudo dificulta la identificación de discontinuidades de fase de micro-segundos, típicas de los vocoders neuronales, es decir, modelos que generan la señal de audio a partir de representaciones acústicas como espectrogramas.

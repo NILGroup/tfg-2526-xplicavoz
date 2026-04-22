@@ -1,4 +1,5 @@
 \subsubsection{SHAP}
+\label{subsubsec:eda_shap}
 
 Basado en la teoría de juegos cooperativos, SHAP (Shapley Additive Explanations) asigna a cada característica acústica un valor de importancia que representa su contribución marginal. El valor de Shapley $\phi_i$ para una característica $i$ se calcula como:
 $$ \phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|! (|F| - |S| - 1)!}{|F|!} [f(S \cup \{i\}) - f(S)] $$
