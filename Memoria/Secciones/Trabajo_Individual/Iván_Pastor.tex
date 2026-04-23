@@ -1,6 +1,7 @@
 \subsubsection{Iván Pastor Sacristán}
 
-\begin{enumerate}
+\begin{itemize}
+
 	\item Investigación del estado del arte: Investigué sobre el estado actual de la detección de deepfakes. Durante la investigación leí dos papers. En el primero hablaban sobre adaptación de los modelos a nuevos conjuntos de datos distintos de los que se usaron para entrenarlo y probarlo. En el segundo paper se centraban en un modelo capaz de clasificar correctamente los audios, aún y cuando los generados por IA habían sido modificados tanto en el dominio de la frecuencia como en el del tiempo para añadirles defectos característicos de los audios humanos como el ruido. %Añadir los enlaces a los papers en la bibliografía
 	
 	\item Prueba del dataset WaveFake: Hice una primera versión del extractor de características entre las que se incluyen rms, zcr, pitch, mfcc's, duración, transcripción, espectral centroid, espectral rolloff y el espectral bandwidth.
@@ -12,4 +13,6 @@
 	\item Fine-tuning Wav2Vev2: Usé el modelo desarrollado por Meta Wav2Vec2 y le hice un fine-tuning con nuestro dataset para que se enfocara en la clasificación de audios. Luego procesé la salida del modelo para pasar de la tupla que me devuelve el modelo a un valor entre 0 y 1 que indique la confianza de que un audio sea generado.
 	
 	\item XAI sobre Wav2Vec2: Sobre el modelo Wav2Vec2, no se puede aplicar directamente IA explicable ya que la entrada son embeddings, para ello lo que he hecho ha sido dividir entre las características y el espectrograma de Mel. Para las características usa Shap y Lime sobre surrogate models que imitan la salida de Wav2Vec2 y para los espectrogramas de Mel use una CNN a la que le apliqué Shap, Lime, Integrated gradients y Grad Cam.
-\end{enumerate}
+	
+	\item Aportaciones en la memoria: Mi aportación a la memoria se ha basado en volcar todo mi trabajo a la misma. Esto se puede resumir en la escritura de las secciones del perceptrón y del Wav2Vec2 en la memoria, la redacción de los experimentos con los datasets de WaveFake y ASVSpoof2021. Además me encargué de escribir el análisis del dataset final que usamos durante el proyecto.
+\end{itemize}

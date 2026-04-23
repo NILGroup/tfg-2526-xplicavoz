@@ -36,13 +36,13 @@ Para todos los modelos usaremos la instancia I\_12\_N cuyo clase es 0 (audio rea
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio (I\_12\_N) para las características de la energía son:
  
 \begin{table}[]
-\begin{tabular}{lll}
-Característica & Valor            & Interpretación                                                                                                                                  \\
-RMS            & 0.01956 & Esto nos indica que el audio tiene un volumen muy bajo, algo por debajo del rango típico de voz estándar pero coherente con voces sin procesar. \\
-Silence ratio  & 0.76056 & Esto nos dice que el 76\% del audio es silencio.                                                                                                \\
-Skewness       & -0.49481 & Esto muestra que el audio tiene una ligera asimetría negativa.                                                                                  \\
-ZCR            & 0.09770 & Esto muestra que el audio es estable y no tiene demasiado ruido donde predominan las vocales sonoras.                                           \\
-Kurtosis       & 28.54873 & Esto es una curtosis extremadamente alta que encaja con voz intermitente o silencios largos junto con palabras puntuales.                      
+\begin{tabular}{|l|l|l|}
+\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                                                                   \\
+RMS                     & 0.01956        & \begin{tabular}[c]{@{}l@{}}Esto nos indica que el audio tiene un volumen muy bajo, \\ algo por debajo del rango típico de voz estándar pero \\ coherente con voces sin procesar.\end{tabular} \\
+Silence ratio           & 0.76056        & Esto nos dice que el 76\% del audio es silencio.                                                                                                                                          \\
+Skewness                & -0.49481       & Esto muestra que el audio tiene una ligera asimetría negativa.                                                                                                                            \\
+ZCR                     & 0.09770        & \begin{tabular}[c]{@{}l@{}}Esto muestra que el audio es estable y no tiene demasiado \\ ruido donde predominan las vocales sonoras.\end{tabular}                                          \\
+Kurtosis                & 28.54873       & \begin{tabular}[c]{@{}l@{}}Esto es una curtosis extremadamente alta que encaja con voz \\ intermitente o silencios largos junto con palabras puntuales.\end{tabular}                     
 \end{tabular}
 \end{table}
  
@@ -67,13 +67,13 @@ Kurtosis       & 28.54873 & Esto es una curtosis extremadamente alta que encaja 
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las características espectrales son:
 
 \begin{table}[]
-\begin{tabular}{lll}
-Característica     & Valor      & Interpretación                                                                        \\
-Spectral centroid  & 1636.52417 & Presenta un centro de masa típico de voces habladas.                                  \\
-Spectral bandwidth & 1590.95008 & Esto indica una dispersión moderada del espectro lo que es típico de voces complejas. \\
-Spectral rolloff   & 2916.26320 & Este es un rolloff típico de voces con consonantes.                                   \\
-Spectral flatness  & 0.03462    & Esto nos muestra que es una señal altamente tonal, es decir, sin ruido.               \\
-HNR                & 11.75470   & Presenta un valor típico para las voces (entre 10 y 20)                              
+\begin{tabular}{|l|l|l|}
+\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                          \\
+Spectral centroid       & 1636.52417     & Presenta un centro de masa típico de voces habladas.                                                                             \\
+Spectral bandwidth      & 1590.95008     & \begin{tabular}[c]{@{}l@{}}Esto indica una dispersión moderada del espectro lo que es \\ típico de voces complejas.\end{tabular} \\
+Spectral rolloff        & 2916.26320     & Este es un rolloff típico de voces con consonantes.                                                                              \\
+Spectral flatness       & 0.03462        & \begin{tabular}[c]{@{}l@{}}Esto nos muestra que es una señal altamente tonal, es decir, \\ sin ruido.\end{tabular}               \\
+HNR                     & 11.75470       & Presenta un valor típico para las voces (entre 10 y 20)                                                                         
 \end{tabular}
 \end{table}
 
@@ -98,10 +98,10 @@ Con estas características espectrales, la predicción del surrogate model para 
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para el pitch son:
 
 \begin{table}[]
-\begin{tabular}{lll}
-Característica & Valor     & Interpretación                                                                                  \\
-Pitch std      & 55.34092  & Este valor muestra la variabilidad del pitch siendo en este caso un valor de variabilidad alto. \\
-Pitch mean     & 266.19288 & Este es un valor alto para el pitch lo que denota voces agudas.                                
+\begin{tabular}{|l|l|l|}
+\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                   \\
+Pitch std               & 55.34092       & \begin{tabular}[c]{@{}l@{}}Este valor muestra la variabilidad del pitch siendo en este\\ caso un valor de variabilidad alto.\end{tabular} \\
+Pitch mean              & 266.19288      & Este es un valor alto para el pitch lo que denota voces agudas.                                                                          
 \end{tabular}
 \end{table}
  
@@ -126,11 +126,11 @@ A la vista de la imagen podemos ver ambas características empujan al modelo a d
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las formantes son:
 
 \begin{table}[]
-\begin{tabular}{lll}
-Característica & Valor      & Interpretación                                                                                                                 \\
-F1 mean        & 1001.88668 & Este es un valor alta de f1, típico de las vocales abiertas (A,E,O).                                                           \\
-F2 mean        & 2104.97462 & Este es un valor típico de las vocales frontales o anteriores (E,I). Las vocales posteriores tendrían valores menores de 1200. \\
-F3 mean        & 3271.62780 & Este valor muestra una voz con un timbre bastante claro y resonante típico de voces femeninas o voces masculinas poco graves. 
+\begin{tabular}{|l|l|l|}
+\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                                                     \\
+F1 mean                 & 1001.88668     & Este es un valor alta de f1, típico de las vocales abiertas (A,E,O).                                                                                                        \\
+F2 mean                 & 2104.97462     & \begin{tabular}[c]{@{}l@{}}Este es un valor típico de las vocales frontales o anteriores (E,I). \\ Las vocales posteriores tendrían valores menores de 1200.\end{tabular}   \\
+F3 mean                 & 3271.62780     & \begin{tabular}[c]{@{}l@{}}Este valor muestra una voz con un timbre bastante claro y \\ resonante típico de voces femeninas o voces masculinas poco \\ graves.\end{tabular}
 \end{tabular}
 \end{table}
  
@@ -156,21 +156,21 @@ F3 mean        & 3271.62780 & Este valor muestra una voz con un timbre bastante 
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las características espectrales son:
 
 \begin{table}[]
-\begin{tabular}{lll}
-Característica & Valor      & Interpretación                                                         \\
-MFCC 1 mean    & -456.79852 & Es un valor bastante bajo, típico de audios con pausas frecuentes.     \\
-MFCC 2 mean    & 45.54136   & Esto indica que es una voz con más énfasis en fonemas graves y medios. \\
-MFCC 3 mean    & 2.06269    & Esto nos dice que el espectro es bastante equilibrado.                 \\
-MFCC 4 mean    & 12.16472   & Esto nos habla de la presencia de consonantes agudas.                  \\
-MFCC 5 mean    & -1.45521   & Esto muestra que es una voz natural y sin exceso de brillo.            \\
-MFCC 6 mean    & 12.41849   & Esto indica que la voz hablada es clara.                               \\
-MFCC 7 mean    & 4.94370    & Esto indica que la señal es estable y natural.                         \\
-MFCC 8 mean    & 10.45284   & Esto nos dice que la voz presenta consonantes articuladas.             \\
-MFCC 9 mean    & 8.34968    & Esto indica que la voz es clara y con información armónica preservada. \\
-MFCC 10 mean   & 3.03896    & Esto muestra que es voz natural, es decir, sin ruido blanco.           \\
-MFCC 11 mean   & 10.38782   & Esto refuerza la claridad de la voz.                                   \\
-MFCC 12 mean   & 12.44464   & Esto nos habla de que es voz articulada.                               \\
-MFCC 13 mean   & 10.57839   & Esto nos dice que la voz no presenta distorsión.                      
+\begin{tabular}{|l|l|l|}
+\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                \\
+MFCC 1 mean             & -456.79852     & Es un valor bastante bajo, típico de audios con pausas frecuentes.     \\
+MFCC 2 mean             & 45.54136       & Esto indica que es una voz con más énfasis en fonemas graves y medios. \\
+MFCC 3 mean             & 2.06269        & Esto nos dice que el espectro es bastante equilibrado.                 \\
+MFCC 4 mean             & 12.16472       & Esto nos habla de la presencia de consonantes agudas.                  \\
+MFCC 5 mean             & -1.45521       & Esto muestra que es una voz natural y sin exceso de brillo.            \\
+MFCC 6 mean             & 12.41849       & Esto indica que la voz hablada es clara.                               \\
+MFCC 7 mean             & 4.94370        & Esto indica que la señal es estable y natural.                         \\
+MFCC 8 mean             & 10.45284       & Esto nos dice que la voz presenta consonantes articuladas.             \\
+MFCC 9 mean             & 8.34968        & Esto indica que la voz es clara y con información armónica preservada. \\
+MFCC 10 mean            & 3.03896        & Esto muestra que es voz natural, es decir, sin ruido blanco.           \\
+MFCC 11 mean            & 10.38782       & Esto refuerza la claridad de la voz.                                   \\
+MFCC 12 mean            & 12.44464       & Esto nos habla de que es voz articulada.                               \\
+MFCC 13 mean            & 10.57839       & Esto nos dice que la voz no presenta distorsión.                      
 \end{tabular}
 \end{table}
  
@@ -193,7 +193,7 @@ Ahora para las características, buscando también algo que complemente la expli
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Explicación local energía Lime.}
 	\label{fig:Wav2Vec2}
  \end{figure}
 
@@ -201,7 +201,7 @@ Ahora para las características, buscando también algo que complemente la expli
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Explicación local espectrales Lime.}
 	\label{fig:Wav2Vec2}
  \end{figure}
  
@@ -209,7 +209,7 @@ Ahora para las características, buscando también algo que complemente la expli
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Explicación loca pitch Lime.}
 	\label{fig:Wav2Vec2}
  \end{figure}
  
@@ -217,7 +217,7 @@ Ahora para las características, buscando también algo que complemente la expli
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Explicación local formantes Lime.}
 	\label{fig:Wav2Vec2}
  \end{figure}
  
@@ -225,19 +225,19 @@ Ahora para las características, buscando también algo que complemente la expli
  
   \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Explicación local mfccs Lime.}
 	\label{fig:Wav2Vec2}
  \end{figure}
  
 	\end{enumerate}
 
-Ahora que ya tenemos tanto el Shap como el Lime de todas las características de los audios, vamos a agregar los resultados de los cinco modelos para ver de forma general cuales son las características más influyentes a la hora de clasificar los audios en reales o generados.
+Ahora que ya tenemos tanto Shap como Lime de todas las características de los audios, vamos a agregar los resultados de los cinco surrogate models para ver de forma general cuales son las características más influyentes a la hora de clasificar los audios en reales o generados.
 
 Para esta tarea se ha hecho lo siguiente, primero calculamos la importancia promedio de cada característica usando sus valores Shap, luego calculamos la importancia de cada grupo de características y con esto podemos promediar la importancia de cada característica entre todos los grupos de características. Por último los ordenamos de mayor a menor importancia y los mostramos.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_shap_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Ranking características Shap.}
 	\label{fig:Wav2Vec2}
 \end{figure}
 
@@ -247,25 +247,25 @@ Para Lime hacemos exactamente lo mismo.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_lime_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Ranking características Lime.}
 	\label{fig:Wav2Vec2}
 \end{figure}
 
 En esta gráfica destacan las mismas características que en la de Shap pero con ligeras variaciones de posición entre ellas.
 
-Para acabar con la explicación de las características, vamos a juntar ambas explicaciones en una sola combinada para obtener el orden global de influencia de las características. Este orden será calculado haciendo la media aritmética de su importancia en shap y lime.
+Para acabar con la explicación de las características, vamos a juntar ambas explicaciones en una sola combinada para obtener el orden global de influencia de las características. Este orden será calculado haciendo la media aritmética de su importancia en Shap y Lime.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_final_wav2vec2.png}
-	\caption{Influencia general de las características.}
+	\caption{Ranking agregado de características.}
 	\label{fig:Wav2Vec2}
 \end{figure}
 
-En esta gráfica combinada podemos ver el ranking global de las características según su importancia.
+En esta gráfica combinada podemos ver el ranking global de las características según su importancia. Podemos observar que a la hora de agregar ambas gráficas las diferencias respecto a las gráficas anteriores de los rankings de Shap y Lime no son demasiado grandes ya que ambas exponían uno similar.
 
 Ahora pasamos al sexto surrogate model, una CNN muy simple que se compone solo de una capa convolucional y una capa de pooling. Además se simplificará la entrada agrupando todas las bandas de frecuencia en 8 bandas solamente. Esto se hace para evitar que se produzca un sobreajuste ya que tenemos muy pocos audios.
 
-Para los espectrogramas usaremos cuatro modelos de XAI siendo estos Shap, Lime, Integrated Gradients y Grad Cam. Para las cuatro técnicas la explicación local se mostrará superponiendo la salida del modelo de XAI con el espectrograma de Mel del audio y la explicación global se mostrará la gráfica con las bandas de frecuencia y los instantes de tiempo y según el color se verá que partes del espectrograma influyen más en las decisiones del modelo.
+Sobre este surrogate model aplicaremos Shap, Lime, Integrated gradients y Grad cam. De cada una de estas técnicas sacaremos tres imágenes. La dos primeras se corresponderán con la actuación de la técnica de XAI sobre un audio concreto (I\_12\_N) y el espectrograma de dicho audio. La última imagen nos mostrará los patrones de actuación global de la técnica empleada. 
 
 SHAP
 
@@ -389,7 +389,7 @@ Como conclusiones podemos sacar que a la vista de los modelos de explicación, p
 
 \begin{enumerate}
 
- \item Coarticulación: Este es un fenómeno típico de la voz humana donde esta no esta formada por unidades aisladas, es decir, cada sonido depende de los anteriores y posteriores. Esto hace que las transiciones entre fonemas contengan más información que el fonema en sí haciendo que lo que está alrededor del audio tenga más peso.
+ \item Coarticulación: Este es un fenómeno típico de la voz humana donde esta no está formada por unidades aisladas, es decir, cada sonido depende de los anteriores y posteriores. Esto hace que las transiciones entre fonemas contengan más información que el fonema en sí haciendo que lo que está alrededor del audio tenga más peso.
  
  \item Dinámica espectro-temporal: Las partes centrales de los audios tienden a ser más estables y redundantes mientras que las zonas de cambio contienen mayor variabilidad lo que hace que contengan la mayoría de la información discriminativa del audio.
  
