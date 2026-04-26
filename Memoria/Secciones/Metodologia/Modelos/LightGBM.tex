@@ -14,7 +14,7 @@ El proceso experimental para LightGBM se estructuró en tres fases: (1) establec
 A diferencia de otros algoritmos, LightGBM puede manejar directamente datos sin normalización, aunque requiere que no existan valores nulos.
 
 \subsubsection*{Modelo baseline con LightGBM}
-Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento:
+Se estableció una configuración inicial utilizando la interfaz nativa de LightGBM, que ofrece un control más fino sobre el proceso de entrenamiento. Los parámetros que usamos para el modelo baseline fueron los siguientes.
 
 \begin{itemize}
 	\item \textbf{objective}: binary.
@@ -41,20 +41,18 @@ Tras ello entrenamos el modelo con los parámetros base, los datos de entrenamie
 \subsubsection*{Early stopping}
 Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento cuando añadir más árboles no mejora el rendimiento en validación. Esto:
 \begin{itemize}
-    \item Previene el sobreajuste (overfitting)
+    \item Previene el sobreajuste
     \item Ahorra tiempo computacional
     \item Determina automáticamente el número óptimo de iteraciones
 \end{itemize}
 
 \subsubsection*{Validación cruzada estratificada}
 
-Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras crear el modelo aplicamos la validación cruzada donde mezclamos los datos de entrenamiento y dividimos en 5 conjuntos, donde en cada paso se entrena al modelo con 4 y se evalúa con el restante, cambiando el conjunto de evaluación en cada etapa. Finalmente evaluamos con accuracy, f1 y ROC-AUC.  
-
-La validación cruzada proporciona una estimación más robusta del rendimiento, reportándose la media y la desviación estándar de las métricas.
+Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras esto aplicamos la validación cruzada tal y como hemos visto en \autoref{subsec:proc_exp}
 
 \subsubsection*{Optimización de hiperparámetros}
 
-LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento:
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en \autoref{subsubsec:eda_lgbm}.
 
 \begin{itemize}
 	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.

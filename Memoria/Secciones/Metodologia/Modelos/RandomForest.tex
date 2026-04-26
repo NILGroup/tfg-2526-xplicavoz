@@ -1,7 +1,7 @@
 \subsubsection{Random Forest}
 \label{subsubsec:mod_rf}
 
-Como hemos comentado sobre los Random Forest, estos construyen un conjunto o ``bosque'' de árboles de decisión donde cada árbol se entrena de forma ligeramente diferente, introduciendo aleatoriedad controlada.
+Como hemos comentado sobre los Random Forest en \autoref{subsubsec:eda_rf}, estos construyen un conjunto o ``bosque'' de árboles de decisión donde cada árbol se entrena de forma ligeramente diferente, introduciendo aleatoriedad controlada.
 
 \subsubsection*{Justificación del modelo}
 
@@ -11,10 +11,10 @@ Se seleccionó Random Forest como uno de los clasificadores base debido a su rob
 
 El proceso experimental para Random Forest se estructuró en tres fases: (1) establecimiento de un modelo baseline, (2) validación cruzada para evaluar robustez, (3) optimización de hiperparámetros mediante búsqueda sistemática.
 
-\paragraph{División de datos}
+\subsubsection*{División de datos}
 El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
 
-\paragraph{Modelo baseline}
+\subsubsection*{Modelo baseline}
 Se estableció una configuración inicial con hiperparámetros por defecto para obtener una referencia de rendimiento:
 
 \begin{itemize}
@@ -29,9 +29,7 @@ Se estableció una configuración inicial con hiperparámetros por defecto para 
 
 \subsubsection*{Validación cruzada estratificada}
 
-Para evaluar la robustez del modelo y evitar que los resultados dependan de una única partición de los datos, se realizó validación cruzada estratificada con 5 conjuntos (folds). Esto es dividir los datos en k conjuntos y entrenar un modelo con k-1 y evaluarlo con el restante, haciendo k entrenamientos (ya que cada conjunto se usa para evaluación exactamente una vez). Nosotros usamos el modelo baseline de Random Forest para aplicar la validación cruzada, mezclamos los datos de entrenamiento antes de instanciar el modelo de validación cruzada y, por último, evaluamos con accuracy, f1 y ROC-AUC.
-
-La validación cruzada proporciona una estimación más realista del rendimiento esperado en datos no vistos, reportándose la media y la desviación estándar de las métricas.
+Para evaluar la robustez del modelo y evitar que los resultados dependan de una única partición de los datos, se realizó validación cruzada estratificada con 5 folds, como se comentó en \autoref{subsec:proc_exp}.
 
 \subsubsection*{Optimización de hiperparámetros}
 
@@ -47,11 +45,11 @@ Se realizó una búsqueda sistemática de hiperparámetros mediante \texttt{Grid
 
 \subsubsection*{Implementación de SHAP para la interpretabilidad del modelo Random Forest}
 
-Para complementar el análisis predictivo y dotar de interpretabilidad al modelo Random Forest, se implementaron explicaciones basadas en SHAP (SHapley Additive exPlanations). Esta sección describe la implementación práctica realizada sobre el modelo optimizado.
+Para complementar el análisis predictivo y dotar de interpretabilidad al modelo Random Forest, se implementaron explicaciones basadas en SHAP (SHapley Additive exPlanations). 
 	
 \subsection*{Implementación de LIME para la interpretabilidad local del modelo}
 
-Como complemento a SHAP, se incorporó LIME (Local Interpretable Model-agnostic Explanations) para obtener explicaciones locales de las predicciones del modelo Random Forest. LIME genera explicaciones interpretables aproximando localmente el modelo complejo mediante un modelo simple (lineal) en la vecindad de la instancia a explicar.
+Como complemento a SHAP, se incorporó LIME (Local Interpretable Model-agnostic Explanations) para obtener explicaciones locales de las predicciones del modelo Random Forest. 
 
 % EXPLICACION
 \subsubsection*{Interpretación de las explicaciones LIME}
@@ -70,7 +68,7 @@ La visualización generada por LIME muestra:
 
 \subsection*{Implementación de DiCE para la generación de explicaciones contrafactuales}
 
-Para complementar las explicaciones basadas en atribución (SHAP y LIME), se incorporó DiCE (Diverse Counterfactual Explanations) para generar explicaciones contrafactuales. DiCE responde a la pregunta: ¿qué cambios mínimos en las características de un audio clasificado como ``a'' lo harían ser clasificado como ``b'', y viceversa?
+Para complementar las explicaciones basadas en atribución (SHAP y LIME), se incorporó DiCE (Diverse Counterfactual Explanations) para generar explicaciones contrafactuales. 
 
 \subsubsection*{Interpretación de los contrafactuales generados}
 
