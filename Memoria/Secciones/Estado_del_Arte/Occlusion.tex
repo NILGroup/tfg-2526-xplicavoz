@@ -1,4 +1,6 @@
 \subsubsection{Occlusion}
+\label{subsubsec:eda_occlusion}
+
 Occlusion, propuesta por Zeiler y Fergus, es una técnica de interpretabilidad ``model-agnostic'', ``post-hoc'', que ofrece explicaciones locales. Analiza la sensibilidad del modelo ocultando sucesivamente pequeñas regiones de la entrada y observando la variación de su salida. En imágenes, este análisis se realiza desplazando un cuadrado gris sobre la imagen; cuando la puntuación de la clase disminuye de forma notable, la región ``tapada'' se considera relevante para la decisión del clasificador. A diferencia de otros métodos, Occlusion solo necesita acceder a las predicciones del modelo.
 
 En audio, adoptamos la misma idea pero aplicada sobre ventanas temporales o sobre regiones de un espectrograma, permitiendo identificar qué zonas de la señal contienen la información más importante a la hora de clasificar muestras.

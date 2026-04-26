@@ -1,24 +1,30 @@
 \subsubsection{Wav2Vec2}
-\label{subsec:wav2vec}
-Wav2Vec2 es un modelo de aprendizaje profundo end-to-end para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de características manuales. Fue propuesto por Meta en 2020.
+\label{subsubsec:eda_wav2vec}
+Wav2Vec2 es un modelo de aprendizaje profundo end-to-end (el modelo procesa todo el flujo de datos, desde la entrada cruda hasta el resultado final) para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de las características del audio. Fue propuesto por Meta en 2020.
 
 Como parte del entrenamiento, el modelo aprende unidades de habla discreta mediante un gumbel softmax (técnica utilizada en redes neuronales para aproximar el muestreo de distribuciones categóricas discretas de forma diferenciable) para representar las representaciones latentes en la tarea contrastiva.
 
-Tras el preentrenamiento en el habla no etiquetada, el modelo se ajusta con datos etiquetados con una pérdida de Clasificación Temporal Conexionista (CTC: algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados) para ser utilizada en tareas posteriores de reconocimiento de voz.
+Tras el preentrenamiento en el habla no etiquetada, el modelo se ajusta con datos etiquetados con una pérdida de Clasificación Temporal Conexionista (CTC\textsuperscript{*}) para ser utilizada en tareas posteriores de reconocimiento de voz.
 
-El modelo se compone de un codificador de características convolucional multicapa que toma la entrada cruda de audio y devuelve representaciones latentes de voz para T instantes de tiempo. Luego son pasados a un transformer para construir representaciones capturando información de toda la secuencia.
+\noindent \textsuperscript{*}CTC es un algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados
 
-El codificador de características consiste en muchos bloques convolucionales seguidos de una capa de normalización y una función de activación GELU (Gaussian Error Linear Unit: pondera las entradas por su probabilidad bajo una distribución gaussiana suavizando su activación cerca de 0).
+El modelo se compone de un codificador de características convolucional multicapa que toma la entrada cruda de audio y devuelve representaciones latentes de voz para T instantes de tiempo. Luego son pasados a un Transformer\textsuperscript{*} para construir representaciones capturando información de toda la secuencia.
+
+\noindent \textsuperscript{*}Transformer es un modelo de aprendizaje automático usado en procesamiento de lenguaje natural diseñado para entender y generar secuencias de forma eficiente.
+
+El codificador de características consiste en muchos bloques convolucionales seguidos de una capa de normalización y una función de activación GELU (Gaussian Error Linear Unit). 
+
+GELU pondera las entradas por su probabilidad bajo una distribución gaussiana suavizando su activación cerca de 0.
 
 También realiza representaciones contextualizadas con Transformers siendo que la salida del codificador se pasa a una red que sigue la arquitectura de un Transformer, y usa una capa convolucional que actua como un embedding posicional relativo.
 
-Por último, Wav2Vec2 consta de un módulo de cuantización que discretiza la salida del codificador a un conjunto finito de representaciones del habla. Esta cuantización se hace con la técnica de Gumbel Softmax (Gumbel Softmax: técnica de reparameterización que aproxima muestras de una distribución categórica discreta mediante una función continua y diferenciable).
+Por último, Wav2Vec2 consta de un módulo de cuantización que discretiza la salida del codificador a un conjunto finito de representaciones del habla. Esta cuantización se hace con la técnica de Gumbel Softmax.
 
-El entrenamiento del modelo se basa en un preentranmiento con enmascaramiento en donde se toma la señal de audio y se transforma en representaciones latentes mediante un encoder. Esto se hace por bloques consecutivos de tamaño M que pueden solaparse.
+El entrenamiento del modelo se basa en un preentrenamiento con enmascaramiento en donde se toma la señal de audio y se transforma en representaciones latentes mediante un encoder. Esto se hace por bloques consecutivos de tamaño M que pueden solaparse.
 
 Para cada paso de tiempo enmascarado, el modelo debe identificar la representación latente cuantizada correcta. Para ello, usa una pérdida contrastiva basada en la similitud del coseno.
 
-También se realiza un fine-tuning supervisado para reconocimiento automático del habla usando CTC como función de pérdida y aplicando una versión de SpecAugment(técnica de aumento de datos diseñada específicamente para el reconocimiento automático de voz) para evitar sobreajuste.
+También se realiza un fine-tuning supervisado para reconocimiento automático del habla usando CTC como función de pérdida y aplicando una versión de SpecAugment (técnica de aumento de datos diseñada específicamente para el reconocimiento automático de voz) para evitar sobreajuste.
 
 
 

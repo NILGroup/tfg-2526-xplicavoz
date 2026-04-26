@@ -11,11 +11,11 @@ Para encontrar un dataset público que tuviera voces tanto reales como clonadas 
 \end{enumerate}
 
 \hspace{.7cm}
-El dataset por el que nos hemos decantado se llama \href{https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech}{ODSS}. Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja se le suma que ODSS ya contenía audios en Inglés y en Español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
+Finalmente, el dataset por el que nos decantamos fue \href{https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech}{ODSS}. Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja se le suma que ODSS ya contenía audios en inglés y en español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
 
 \subsubsection*{Análisis del dataset}
 
-De este subset de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los mfcc's que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
+De este subconjunto de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los mfcc's que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
 
 \begin{itemize}
   \item \textbf{Datos tabulares}: La mayoría de los datos sobre las características del audio.

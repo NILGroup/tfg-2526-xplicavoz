@@ -1,4 +1,5 @@
 \subsubsection{Random Forest}
+\label{subsubsec:eda_rf}
 
 Random Forest es un algoritmo de aprendizaje automático basado en la combinación de múltiples árboles de decisión, propuesto por Leo Breiman en 2001 \cite{breiman2001random}. Pertenece a la familia de métodos \textit{ensemble}, que mejoran el rendimiento agregando las predicciones de varios modelos más simples.
 
@@ -55,8 +56,5 @@ Vamos a hablar de los hiperparámetros que tiene Random Forest y para qué sirve
     
     \item \textbf{No requiere normalización}: A diferencia de redes neuronales o SVM, no es necesario escalar las características, lo que simplifica el pipeline.
     
-    \item \textbf{Interpretabilidad}: El algoritmo proporciona una medida de importancia de cada característica, permitiendo identificar qué parámetros acústicos son más discriminativos entre voz real y sintética.
-    
-    \item \textbf{Resistencia al overfitting}: La combinación de bagging y aleatoriedad evita que el modelo memorice el conjunto de entrenamiento.
+    \item \textbf{Resistencia al sobreajuste}: La combinación de bagging y aleatoriedad evita que el modelo memorice el conjunto de entrenamiento.
 \end{itemize}
-

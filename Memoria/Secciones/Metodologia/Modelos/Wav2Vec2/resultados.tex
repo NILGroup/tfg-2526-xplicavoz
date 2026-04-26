@@ -2,49 +2,62 @@
 
 Una vez hecho el entrenamiento, podemos mostrar los resultados del modelo.
 
-Comenzando con sus métricas de evaluación: 
+\subsubsection*{Evaluación del modelo}
 
 \begin{enumerate}
- \item Accuracy = 0,9: Porcentaje de aciertos.
- \item F1-Score = 0,909: Balance precisión-recall.
- \item Roc-Auc = 0,92: Capacidad discriminativa.
+ \item Accuracy = 0.90: Porcentaje de aciertos.
+ \item F1-Score = 0.909: Balance precisión-recall.
+ \item ROC-AUC = 0.92: Capacidad discriminativa.
 \end{enumerate}
 
-Como podemos ver las métricas no son perfectas pero siguen siendo unas métricas bastante buenas.
+Las métricas nos muestran que el modelo tiene un porcentaje de aciertos del 90\% y una capacidad discriminativa del 92\%, lo que nos permite concluir que en general es un modelo bastante preciso.
 
-Ahora vamos a procesar la salida del modelo para hacerla más interpretable y entendible ya que ahora el modelo devuelve una tupla con dos valores de pertenencia a las distintas clases y lo que vamos a hacer es transformar eso en un número entre 0 y 1 que nos indique el grado de pertenencia del modelo a la clase generado siendo que cuanto más cerca del 1, más seguro está el modelo de que el audio es generado, cuanto más cerca del 0, más seguro está de que es real. Si el valor está alrededor del 0,5 significa que el modelo no ha podido decidir a que categoría pertenece ese audio.
+Ahora vamos a procesar la salida del modelo para hacerla más interpretable, ya que actualmente el modelo devuelve una tupla con dos valores de pertenencia a las distintas clases. Lo que se busca es transformar esto en un número entre 0 y 1 que indique el grado de pertenencia del audio a la clase generada. Cuanto más cercano a 1, más pertenece ese audio a la clase generada.
 
-Para ello vamos a usar un clasificador fuzzy que procesará la salida del modelo convirtiendo los logits en scores para la categoría de generado calculando los grados de pertenencia fuzzy a esa categoría en función también de un alpha que buscará maximizar el roc-auc.
+Para lograrlo, se aplica una función sigmoide que mide qué tan mayor es $x_2$ (clase generada) con respecto a $x_1$ (clase real):
 
-Por último estos nuevos resultados se guardarán en un dataframe que servirá para aplicar luego modelos de XAI. Este dataframe tendrá el nombre del audio, el valor devuelto por el modelo y la categoría binaria a la que pertenece.
+\[
+\frac{1}{1 + e^{-(x_2 - x_1)}}
+\]
 
-\begin{table}[]
-\begin{tabular}{lll}
-Name     & Score      & Label \\
-I\_32\_N & 0.37823838 & 0     \\
-E\_47\_G & 0.71498334 & 1     \\
-I\_12\_N & 0.33863166 & 0     \\
-I\_3\_N  & 0.71035093 & 0     \\
-E\_7\_G  & 0.71441114 & 1     \\
-I\_2\_G  & 0.6257453  & 1     \\
-E\_11\_N & 0.3466234  & 0     \\
-E\_23\_N & 0.31925088 & 0     \\
-E\_16\_G & 0.72027296 & 1     \\
-I\_6\_G  & 0.70500165 & 1     \\
-I\_49\_N & 0.32509455 & 0     \\
-I\_5\_G  & 0.61754656 & 1     \\
-E\_35\_G & 0.7263741  & 1     \\
-I\_41\_N & 0.32385188 & 0     \\
-E\_37\_N & 0.37273097 & 0     \\
-E\_2\_N  & 0.40383905 & 0     \\
-E\_40\_G & 0.6801454  & 1     \\
-E\_41\_G & 0.71816057 & 1     \\
-I\_2\_N  & 0.69376636 & 0     \\
-E\_43\_G & 0.70625514 & 1    
+\noindent donde:
+\begin{itemize}
+ \item $x_1$: valor de pertenencia devuelto por el modelo a la clase 1.
+ \item $x_2$: valor de pertenencia devuelto por el modelo a la clase 2.
+\end{itemize}
+
+Por último, estos nuevos resultados se guardan en un \textit{dataframe} que servirá para aplicar posteriormente modelos de XAI. Este dataframe contiene el nombre del audio, el valor devuelto por el modelo y la categoría binaria a la que pertenece.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Name} & \textbf{Score} & \textbf{Label} \\
+\hline
+I\_32\_N & 0.34013117 & 0 \\
+E\_47\_G & 0.77316723 & 1 \\
+I\_12\_N & 0.29058788 & 0 \\
+I\_3\_N  & 0.76783361 & 0 \\
+E\_7\_G  & 0.77251038 & 1 \\
+I\_2\_G  & 0.66493000 & 1 \\
+E\_11\_N & 0.30043659 & 0 \\
+E\_23\_N & 0.26705380 & 0 \\
+E\_16\_G & 0.77921332 & 1 \\
+I\_6\_G  & 0.76163065 & 1 \\
+I\_49\_N & 0.27409548 & 0 \\
+I\_5\_G  & 0.65449655 & 1 \\
+E\_35\_G & 0.78612722 & 1 \\
+I\_41\_N & 0.27259401 & 0 \\
+E\_37\_N & 0.33313831 & 0 \\
+E\_2\_N  & 0.37300991 & 0 \\
+E\_40\_G & 0.73222093 & 1 \\
+E\_41\_G & 0.77680456 & 1 \\
+I\_2\_N  & 0.74845369 & 0 \\
+E\_43\_G & 0.76308837 & 1 \\
+\hline
 \end{tabular}
 \end{table}
 
-Cabe recalcar que en los nombres la primera letra es el idioma (E:español, I:inglés), el número es su identificador y la última letra es si es natural (N) o generado (G). 
+Cabe recalcar que en los nombres la primera letra indica el idioma (E: español, I: inglés), el número es su identificador y la última letra indica si es natural (N) o generado (G).
 
-Podemos ver en los resultados de las predicciones como el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse debido a ruido o a otras imperfecciones en los audios.
-
+Podemos ver en los resultados de las predicciones cómo el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse a ruido o a otras imperfecciones en los audios.

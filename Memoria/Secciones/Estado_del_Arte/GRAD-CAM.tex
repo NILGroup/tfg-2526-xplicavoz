@@ -1,4 +1,5 @@
 \subsubsection{Grad-CAM}
+\label{subsubsec:eda_gradcam}
 Grad-CAM (Gradient-weighted Class Activation Mapping) es una técnica de explicabilidad ``post-hoc'' utilizada principalmente en modelos basados en capas convolucionales, por lo que se considera ``model-agnostic''. Su objetivo es identificar qué regiones de la entrada, o de una representación intermedia del modelo, han contribuido en mayor medida a la clasificación de una muestra concreta.
 
 A diferencia de otras técnicas, Grad-CAM utiliza la información interna de las capas convolucionales del modelo. Estas capas generan mapas de activación que contienen los patrones detectados por el modelo en la entrada analizada. Para una clase concreta, Grad-CAM calcula cómo cambiaría la salida del modelo si variasen dichos mapas de activación. De esta forma, estima cuáles de estos mapas han tenido mayor influencia en la predicción final.
