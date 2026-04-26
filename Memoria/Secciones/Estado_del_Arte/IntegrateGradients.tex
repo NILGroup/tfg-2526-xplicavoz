@@ -1,6 +1,6 @@
 \subsubsection{Integrated Gradients}\label{subsubsec:eda_ig}
 
-Integrated Gradients (IG) es una técnica de carácter local, de interpretabilidad ``post-hoc'' y ``model-class-specific'', ya que requiere acceder a los gradientes del modelo sobre el que se aplica. Se basa en integrar los gradientes de la función del modelo a lo largo de una trayectoria que conecta una entrada de referencia (``baseline'') x' con la entrada real x. Este método permite capturar cómo varía la sensibilidad del modelo respecto a cada característica a lo largo del recorrido, evitando problemas como la saturación del gradiente en el punto de entrada.
+Integrated Gradients (IG) es una técnica de carácter local, de interpretabilidad ``post-hoc'' y ``model-class-specific'', ya que requiere acceder a los gradientes del modelo sobre el que se aplica \cite{2017integratedgradients}. Se basa en integrar los gradientes de la función del modelo a lo largo de una trayectoria que conecta una entrada de referencia (``baseline'') x' con la entrada real x. Este método permite capturar cómo varía la sensibilidad del modelo respecto a cada característica a lo largo del recorrido, evitando problemas como la saturación del gradiente en el punto de entrada.
 
 Siendo $f$ la función del modelo, $i$ una característica específica que se está observando, $x'$ el ``baseline'' y $\alpha$ que parametriza el camino continuo entre $x$ y $x'$:
 
