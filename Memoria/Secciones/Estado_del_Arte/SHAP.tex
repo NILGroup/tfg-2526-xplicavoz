@@ -1,7 +1,15 @@
 \subsubsection{SHAP}
 
-Basado en la teoría de juegos cooperativos, SHAP (Shapley Additive Explanations) asigna a cada característica acústica un valor de importancia que representa su contribución marginal. El valor de Shapley $\phi_i$ para una característica $i$ se calcula como:
-$$ \phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|! (|F| - |S| - 1)!}{|F|!} [f(S \cup \{i\}) - f(S)] $$
-Se trata de un método post-hoc, generalmente model-agnostic, que ofrece explicaciones locales para muestras concretas aunque usando agregación de resultados, también se pueden conseguir explicaciones globales o por cohortes. Este método es preferido en el análisis forense debido a su consistencia matemática y su capacidad para ofrecer tanto explicaciones locales como  globales. Mientras que las explicaciones locales proporcionan información sobre la influencia de cada característica sobre el resultado de una muestra concreta, las explicaciones globales ofrecen una visión de la relevancia media de las características sobre el conjunto total de datos.
+Basado en la teoría de juegos cooperativos, SHAP (Shapley Additive Explanations) es una técnica cuyo objetivo es cuantificar la contribución de cada característica a la decisión final de un modelo. Su fundamento teórico proviene de los valores de Shapley, método utilizado para repartir de manera justa los beneficios obtenidos entre los distintos jugadores que participan en un juego. 
 
-SHAP, aunque se pueda aplicar sobre varios tipos de datos como imágenes o texto, se utiliza principalmente sobre datos tabulares como MFCC o pitch en el caso del audio.
+Trasladado al contexto de la detección de audios generados, la idea principal de SHAP consiste en medir cuánto aporta cada característica acústica cuando se usa junto a distintas combinaciones del resto de variables. De este modo, no se evalúa únicamente la contribución aislada de una característica, sino también el impacto de cada característica en presencia de otras, permitiendo captar mejor las relaciones entre variables. A partir de esta idea, SHAP asigna a cada característica un valor que representa su contribución marginal a la predicción del modelo. Entonces, una variable con un valor positivo empuja la clasificación hacia valores altos respecto a un valor de referencia, mientras que un valor negativo provoca lo contrario.
+
+
+El valor de Shapley $\phi_i$ para una característica $i$ se calcula como:
+$$ \phi_i = \sum_{S \subseteq F \setminus \{i\}} \frac{|S|! (|F| - |S| - 1)!}{|F|!} [f(S \cup \{i\}) - f(S)] $$
+
+donde $F$ es el conjunto total de características, $S$ es un subconjunto de $F$ que no contiene a $i$, y $f(S)$ representa la predicción del modelo al considerar únicamente las características de $S$.
+
+Se trata de un método ``post-hoc'', generalmente ``model-agnostic'', que ofrece explicaciones locales para muestras concretas aunque usando agregación de resultados, también se pueden conseguir explicaciones globales o por cohortes. Este método es especialmente valorado en el análisis forense debido a su consistencia matemática y su capacidad para ofrecer tanto explicaciones locales como globales. Mientras que las explicaciones locales proporcionan información sobre la influencia de cada característica sobre el resultado de una muestra concreta, las explicaciones globales ofrecen una visión de la relevancia media de las características sobre el conjunto total de datos.
+
+SHAP, aunque se pueda aplicar sobre varios tipos de datos como imágenes o texto, se utiliza principalmente sobre datos tabulares. En el caso del audio, esto se corresponde con características acústicas previamente extraídas como MFCC o pitch. 

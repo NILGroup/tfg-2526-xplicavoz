@@ -1,4 +1,20 @@
 \subsubsection{LIME}
-LIME (Local Interpretable Model-agnostic Explanations) es un método post-hoc, generalmente considerado agnostic, que aproxima, en el entorno de una muestra local, la superficie de decisión de un modelo de caja negra mediante un sustituto interpretable, generalmente una regresión lineal, aunque se pueden emplear otros modelos como árboles de decisión. Puede aplicarse a varios tipos de datos como datos tabulares, imágenes o audio, siempre que la entrada pueda representarse mediante características interpretables. En el dominio del audio, el proceso se define mediante la perturbación de la entrada $x$ (espectrogramas o marcos temporales) para observar las variaciones en la salida $f(x)$. La explicación $g$ se obtiene minimizando:
-$$ \xi(x) = \arg\min_{g \in G} L(f, g, \pi_x) + \Omega(g) $$
-donde $L$ es la pérdida de fidelidad, $\pi_x$ define la vecindad de la muestra y $\Omega(g)$ mide la complejidad del modelo sustituto. La explicación resultanto corresponde a los parámetros del modelo interpetrable, el caso de una regresión lineal, estos parámetros son sus coeficientes, que representan la importancia de cada característica en la predicción de una muestra concreta.
+LIME (Local Interpretable Model-agnostic Explanations) es una técnica de explicabilidad ``post-hoc'' cuyo objetivo es explicar predicciones individuales mediante aproximaciones locales interpretables. Se considera agnóstico del modelo, ya que solo necesita observar las salidas para las nuevas muestras perturbadas.
+
+Para conseguir esta explicación, LIME parte de una muestra concreta $x$ cuya predicción se quiere interpretar. A partir de ella, se generan múltiples versiones perturbadas modificando o eliminando parcialmente algunas de sus características. Cada una de estas muestras perturbadas se introduce en el modelo original $f$, obteniendo un conjunto de predicciones que permiten evaluar cómo cambia la salida del modelo cuando varía la entrada.
+
+Una vez obtenidas estas predicciones, LIME calcula la similitud entre cada muestra perturbada y la muestra original mediante una función de proximidad $\pi_x$. Las muestras más parecidas a $x$ reciben un peso mayor, ya que son las que mejor representan el comportamiento local del modelo alrededor de la instancia analizada. En cambio, las muestras más alejadas tienen menor influencia en la explicación, puesto que se consideran menos relevantes para interpretar esa predicción concreta.
+
+A continuación, se entrena un modelo interpretable $g$ utilizando las muestras perturbadas y sus correspondientes predicciones, ponderadas según la función de proximidad $\pi_x$. Este modelo sustituto no pretende imitar el comportamiento global del modelo sobre el que se aplica LIME, sino aproximar su funcionamiento únicamente en una región local alrededor de $x$. De esta forma, LIME facilita la interpretación de un modelo complejo, obteniendo el análisis de un modelo más sencillo y comprensible.
+
+La explicación $\xi(x)$ se obtiene resolviendo: 
+
+$$
+\xi(x) = \arg\min_{g \in G} \mathcal{L}(f, g, \pi_x) + \Omega(g)
+$$
+
+donde $G$ es la familia de modelos interpretables considerados, $\mathcal{L}(f, g, \pi_x)$ mide la pérdida de fidelidad entre el modelo original y el modelo sustituto en el entorno de $x$,y $\Omega(g)$ controla la complejidad del modelo interpretable.
+
+En el contexto de la detección de audios generados, LIME puede aplicarse sobre distintas representaciones del audio. Si se trabaja con características acústicas previamente extraídas, como MFCC o pitch, las perturbaciones se realizan sobre dichas variables para analizar cómo afectan a la predicción del modelo.
+
+La explicación resultante corresponde a los parámetros del modelo interpretable aprendido localmente. En el caso de una regresión lineal, estos parámetros son sus coeficientes, que indican la importancia y dirección de influencia de cada característica en la predicción de una muestra concreta. Por tanto, un coeficiente positivo indica que la característica contribuye a aumentar la salida analizada del modelo, mientras que un coeficiente negativo indica que contribuye a reducirla.

@@ -1,2 +1,20 @@
 \subsubsection{Grad-CAM}
-Grad-CAM (Gradient-weighted Class Activation Mapping) es un método post-hoc, de alcance local y model-class-specific ya que se usa en modelos basados en capas convolucionales. Utiliza los gradientes de la última capa convolucional para construir un mapa de calor que resalta las regiones del espectrograma que más influyen en la clasificación. Aunque es eficaz para detectar sesgos en el conjunto de datos, su baja resolución espacial a menudo dificulta la identificación de discontinuidades de fase de micro-segundos, típicas de los vocoders neuronales, es decir, modelos que generan la señal de audio a partir de representaciones acústicas como espectrogramas.
+Grad-CAM (Gradient-weighted Class Activation Mapping) es una técnica de explicabilidad ``post-hoc'' utilizada principalmente en modelos basados en capas convolucionales, por lo que se considera ``model-agnostic''. Su objetivo es identificar qué regiones de la entrada, o de una representación intermedia del modelo, han contribuido en mayor medida a la clasificación de una muestra concreta.
+
+A diferencia de otras técnicas, Grad-CAM utiliza la información interna de las capas convolucionales del modelo. Estas capas generan mapas de activación que contienen los patrones detectados por el modelo en la entrada analizada. Para una clase concreta, Grad-CAM calcula cómo cambiaría la salida del modelo si variasen dichos mapas de activación. De esta forma, estima cuáles de estos mapas han tenido mayor influencia en la predicción final.
+
+El proceso comienza seleccionando una clase objetivo $c$, generalmente la predicha por el modelo. A continuación, se utiliza el modelo para obtener la puntuación asociada a dicha clase. Posteriormente, para una capa convolucional seleccionada, se calcula el gradiente de esa puntuación respecto a los mapas de activación, cada uno de los cuales está formado por múltiples valores internos correspondientes a posiciones espaciales dentro del mapa. Estos gradientes indican la sensibilidad de la salida del modelo respecto a cada activación individual $A_{ij}^k$, es decir, cómo cambiaría la puntuación de la clase objetivo si se alterase una posición concreta.
+
+Para obtener la importancia de cada mapa de activación, Grad-CAM calcula $\alpha_k^c$ mediante el promedio espacial de los gradientes:
+
+$$\alpha_k^c = \frac{1}{Z} \sum_i \sum_j \frac{\partial y^c}{\partial A_{ij}^k}$$
+
+donde $y^c$ representa la salida del modelo para la clase $c$, $A^k$ es el mapa de activación $k$ de la capa convolucional seleccionada, y $Z$ es el número total de posiciones espaciales.
+
+Una vez calculados estos pesos, se combinan los mapas de activación mediante una suma ponderada y se aplica una función ReLU:
+
+$$L_{\text{Grad-CAM}}^c = \text{ReLU}\left(\sum_k \alpha_k^c A^k\right)$$
+
+La función ReLU permite conservar únicamente las regiones que contribuyen positivamente a la clase analizada. El resultado es un mapa de calor que señala las zonas más relevantes para la predicción del modelo.
+
+En el contexto de la detección de audios generados, Grad-CAM puede aplicarse sobre representaciones tiempo-frecuencia, como espectrogramas, o sobre mapas de activación internos obtenidos a partir de capas convolucionales del modelo. De este modo, permite identificar qué regiones temporales o frecuenciales han influido más en la clasificación de una muestra. Por ejemplo, en un espectrograma, las zonas con mayor intensidad en el mapa resultante indicarían las regiones que el modelo ha considerado más relevantes para tomar su decisión.
