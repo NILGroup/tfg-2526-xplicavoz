@@ -4,7 +4,7 @@ Como hemos comentado antes, a diferencia de Random Forest, que construye árbole
 
 \subsubsection*{Justificación del modelo}
 
-Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea de detección de deepfakes de audio, como pueden ser su eficiencia computacional para grandes volúmenes de datos o su regulación itegrada con los parámetros L1 y L2.
+Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea de detección de deepfakes de audio, como pueden ser su eficiencia computacional para grandes volúmenes de datos o su regulación integrada con los parámetros L1 y L2.
 
 \subsubsection*{Configuración experimental}
 
@@ -31,19 +31,11 @@ Se estableció una configuración inicial utilizando la interfaz nativa de Light
 
 El parámetro \texttt{is\_unbalance=True} activa la compensación automática para clases desbalanceadas, ajustando los pesos de forma inversamente proporcional a la frecuencia de cada clase. 
 
-Tras ello entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
+Tras ello, entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
 
 \begin{itemize}
-	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán. En este caso, 1000 es el límite superior, pero el early\_stopping puede detener el proceso antes si no hay mejoras.
+	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán. En este caso, 1000 es el límite superior, pero el early\_stopping puede detener el proceso antes si no hay mejoras. Este úlitmo permite prevenir el sobreajuste, ahorrar tiempo computacional y determinar automáticamente el número óptimo de iteraciones.
 	\item \textbf{callbacks}: funciones que se ejecutan durante el entrenamiento para controlar el proceso. En este caso mostramos información del entrenamiento cada 100 iteraciones y paramos si no mejora por 50 iteraciones.
-\end{itemize}
-
-\subsubsection*{Early stopping}
-Una ventaja importante de LightGBM es la capacidad de detener el entrenamiento cuando añadir más árboles no mejora el rendimiento en validación. Esto:
-\begin{itemize}
-    \item Previene el sobreajuste
-    \item Ahorra tiempo computacional
-    \item Determina automáticamente el número óptimo de iteraciones
 \end{itemize}
 
 \subsubsection*{Validación cruzada estratificada}
