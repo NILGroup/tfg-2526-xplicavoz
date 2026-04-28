@@ -5,9 +5,15 @@ El interés reside en poder detectar voces falsas (spoofed) para poder evitar es
 El pipeline del repositorio se encuentra en la carpeta "Modelos" y para ejecutarlo: RELLENAR
 
 En cuanto a la estructuración del repositorio, tenemos 3 carpetas principales:
-- Dataset: tenemos dos archivos ".ipynb", para extraer características de cada audio y gráficas del dataset en su conjunto. Sobre la divisón de subcarpetas tenemos: "Features", para guardar las características del extractor subdivida por idioma; "Generado", con los audios "spoof" del dataset; "Natural", con los audios "bona fide" del dataset.
+- Dataset: tenemos dos archivos ".ipynb", para extraer características de cada audio y gráficas del dataset en su conjunto. Sobre la divisón de subcarpetas tenemos: "Features", para guardar las características del extractor subdivida por idioma; "Generado", con los audios "spoof" del dataset; "Natural", con los audios "bona fide" del dataset. Además, existe la carpeta "todosLosAudiosMezcladosyDivididos" que contempla una posible división en entrenamiento, evaluación y validación.
 - Memoria: tenemos organizado por subcarpetas todo lo contenido en memoria.
 - Modelos: tenemos "pipeline.ipynb","funciones.py" y "datos_entrenamiento.csv" para poder ejecutar el pipeline del repositorio. Además, una carpeta con el nombre de cada integrante con ".ipynb" para ejecutar cada modelo usado por él y demás archivos necesarios para esta actividad.
+- Modelos/German:
+    - aasist_results.csv: resultados de analizar el dataset con el modelo; features.csv: características del dataset para entrenar los modelos surrogate; features_with_aasist.csv: unión de los .csv anteriores.
+    - AASIST.py: archivo sacado del repositorio de AASIST. Contiene la clase model.
+    - AASIST.ipynb: código para usar AASIST y la explicabilidad diseñada para el modelo.
+    - aasist_full.pt: archivo que contiene al modelo ya entrenado para poder recuperarlo desde el pipiline.
+    - igsc_maps.pkl: archivo que contiene los resultados de aplicar los modelos de XAI de AASIST.ipynb al dataset.
 
 # Autores
 - Jorge Aured Zarzoso

@@ -775,6 +775,41 @@ Análisis de errores:
 % DiCE
 
 \subsubsection{AASIST}
+Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
+Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
+
+Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de \textbf{épocas: 10, 20, 40 o 80}. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
+Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios ``bonafide'' y 10 ``spoof'', entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
+
+A la hora de evaluar, hemos usado 4 medidas:
+
+\textbf{Accuracy}%: proporción de las muestras clasificadas correctamente sobre el total de muestras.
+
+    %$\text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN}$
+\textbf{Precision}%: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof.
+
+ %$\text{Precision}=\frac{TP}{TP+FP}$
+\textbf{Recall}%: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof.
+
+ %$\text{Recall}=\frac{TP}{TP+FN}$
+
+\textbf{F1}%: media armónica entre precision y recall.
+
+ %$\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
+
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/AASIST_resultados_preentrenamientos.png}
+	\caption{Resultados del preentrenamiento en AASIST.}
+    \label{fig:AASIST_resultados_preentrenamiento}
+\end{figure}
+Lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica claramente mejor los audios en español ya que todas las métricas, a excepción de precisión en 40 épocas, tienen valores superiores. Esta diferencia explica el por qué la partición mixta lo hace peor que la que solo tiene muestras en inglés y permite deducir que ejecutar ambos idiomas juntos no le ayuda a clasificarlos mejor. 
+
+En lo referido a las épocas, lo más destacable es que superar las 40 épocas empeora la predicción por lo que podemos suponer que está ocurriendo un fenómeno de sobreaprendizaje. También, podemos observar que en la partición en inglés, el aumento del valor de este parámetro no equivale en términos generales a una subida en la mejora de la predicción, fenómeno que no ocurre con la partición en español.
+
+\subsubsection*{Resultados de explicación}
+
+\input{Secciones/Metodologia/Modelos/AASIST/resultados.tex}
 
 \subsubsection{Perceptrón Multicapa}
 

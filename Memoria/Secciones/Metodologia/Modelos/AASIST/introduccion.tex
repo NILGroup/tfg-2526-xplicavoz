@@ -1,5 +1,5 @@
 \subsubsection{AASIST}
-AASIST (\textit{Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks})  es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
+\nameref{subsubsec:eda_aasist} (\textit{Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks})  es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
 Como este modelo produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios. 
 
 Después, se lee el contenido del \textbf{archivo .conf} del modelo. Para ello, hemos creado una función que busca el elemento pasado por parámetro y devuelve el bloque superior que contiene ese elemento junto con los elementos al mismo nivel. Esto nos permite construir una variable, que vamos a llamar args, con los siguientes campos:
@@ -21,39 +21,6 @@ Con esto preparado, las tres funciones de inferencia las creamos para ver si con
 \end{itemize}
 Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nombre del audio, la probabilidad de que sea ``bonafide'' y su duración. Para esto, se recorre cada audio del dataset, se le aplica una de las funciones de inferencia y se escribe la información en el csv.
 
-\subsubsection*{Resultados y análisis}
-
-Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
-Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
-
-Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de \textbf{épocas: 10, 20, 40 o 80}. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
-Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios ``bonafide'' y 10 ``spoof'', entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
-
-A la hora de evaluar, hemos usado 4 medidas:
-
-\textbf{Accuracy}%: proporción de las muestras clasificadas correctamente sobre el total de muestras.
-
-    %$\text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN}$
-\textbf{Precision}%: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof.
-
- %$\text{Precision}=\frac{TP}{TP+FP}$
-\textbf{Recall}%: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof.
-
- %$\text{Recall}=\frac{TP}{TP+FN}$
-
-\textbf{F1}%: media armónica entre precision y recall.
-
- %$\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
-
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/AASIST_resultados_preentrenamientos.png}
-	\caption{Resultados del preentrenamiento en AASIST.}
-\end{figure}
-Lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica claramente mejor los audios en español ya que todas las métricas, a excepción de precisión en 40 épocas, tienen valores superiores. Esta diferencia explica el por qué la partición mixta lo hace peor que la que solo tiene muestras en inglés y permite deducir que ejecutar ambos idiomas juntos no le ayuda a clasificarlos mejor. 
-
-En lo referido a las épocas, lo más destacable es que superar las 40 épocas empeora la predicción por lo que podemos suponer que está ocurriendo un fenómeno de sobreaprendizaje. También, podemos observar que en la partición en inglés, el aumento del valor de este parámetro no equivale en términos generales a una subida en la mejora de la predicción, fenómeno que no ocurre con la partición en español.
-
 \subsubsection*{Enfoque de explicabilidad ante-hoc}
 Hemos usado las propias estructuras del modelo para empezar a explicar qué es lo que le empuja a decidir una clase a la otra. Esto nos sirve además para enseñar mejor cómo funciona AASIST por dentro.
 Lo primero que mostramos es el formato de la salida que es una tupla con dos valores, la probabilidad de que el audio sea ``spoof'' y de que sea ``bona fide'', y la estructura de los grafos que nos permite ver que se crean 23 nodos espectrales y 29 temporales. También, simulamos cómo funciona un ``pooling'' mostrando los nodos de cada tipo con mayor puntuación.
@@ -66,6 +33,7 @@ En relación a filtros de frecuencia, primero calculamos la banda de frecuencias
     \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_bandasf_filtros.png}
 	\caption{Gráfica bandas de frecuencia de los filtros.}
+    \label{fig:AASIST_bandasf_filtros}
 \end{figure}
 
 Con esta gráfica, podemos afirmar que se captan todas las frecuencias de 0 a 8000 Hz y que en las frecuencias bajas hay más solapamiento entre filtros. Esto es importante ya que cuando extraemos cuales son los filtros que más se activan durante el procesado del audio, no es raro que salgan algunos consecutivos ya que si dos filtros están observando una frecuencia muy activa, ambos responderán parecido.
@@ -85,6 +53,8 @@ Posteriormente, representamos en una gráfica los filtros que más activación h
         \includegraphics[width=\linewidth]{imagenes/AASIST_activación_top_filtros.png}
         \caption{Activación de los filtros más activados a lo largo del audio.}
     \end{subfigure}
+    \caption{Análisis de los filtros más activados en AASIST.}
+    \label{fig:AASIST_top_filtros}
 \end{figure}
 
 Como hemos mencionado anteriormente, los 5 filtros más excitados se pueden separar en dos grupos por su consecución. Además, en la gráfica de la derecha se ve claramente cómo tienen comportamientos muy parecidos. 
@@ -107,12 +77,14 @@ Hemos creado dos mapas filtro-tiempo, el de la izquierda sería el más fiel al 
         \includegraphics[width=\linewidth]{imagenes/AASIST_heatmap_normalizado.png}
         \caption{Mapa filtro-tiempo de la capa sinc-convolution normalizado.}
     \end{subfigure}
+    \caption{Mapas filtro-tiempo de la capa sinc-convolution.}
+    \label{fig:AASIST_heatmaps}
 \end{figure}
 
 Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más. Asimismo, es importante mencionar que se está representando magnitud absoluta de atribución, no signo.
 
 \subsubsection*{Occlusion}
-A continuación, vamos a aplicar ``\textbf{occlusion}'' tanto al ámbito espectral como al temporal. Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver cómo cambia el ``logit'' final con estas variaciones para ver qué tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
+A continuación, vamos a aplicar \textbf{\nameref{subsubsec:eda_occlusion}} tanto al ámbito espectral como al temporal. Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver cómo cambia el ``logit'' final con estas variaciones para ver qué tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
 
 Además, vamos a utilizar dos medidas complementarias. Por un lado, el cambio en el ``\textbf{logit}'' de la clase objetivo nos permite representar cuanto contribuye cada región a la evidencia bruta de dicha clase. Por otro, medimos el \textbf{margen} o diferencia entre los ``logits'' de ambas clases, esta métrica nos permite analizar separación entre clases durante el audio. Mientras que la primera aporta información importante sobre cierta clase, el margen resulta más valioso para entender la decisión final de AASIST ya que nos muestra si realmente una región ayuda a la clase objetivo o ayuda a ambas por igual. 
 
@@ -133,6 +105,8 @@ Aunque todavía no sabemos qué fenómenos son los determinantes si nos permite 
         \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_temporal_margen.png}
         \caption{Resultados de margen de la ocultación temporal en AASIST.}
     \end{subfigure}
+    \caption{Resultados de la ocultación temporal en AASIST.}
+    \label{fig:AASIST_hiding_temporal}
 \end{figure}
 
 Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren.
@@ -149,11 +123,13 @@ Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren.
         \includegraphics[width=\textwidth]{imagenes/AASIST_hiding_frecuencial_margen.png}
         \caption{Resultados de margen de la ocultación frecuencial en AASIST.}
     \end{subfigure}
+    \caption{Resultados de la ocultación frecuencial en AASIST.}
+    \label{fig:AASIST_hiding_frecuencial}
 \end{figure}
 
 \subsubsection*{Integrated Gradients}
 
-La siguiente técnica que vamos a aplicar es \textbf{Integrated Gradients}. Para medir el error usando esta técnica usamos la métrica ``\textbf{delta}'' que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
+La siguiente técnica que vamos a aplicar es \textbf{\nameref{subsubsec:eda_ig}}. Para medir el error usando esta técnica usamos la métrica ``\textbf{delta}'' que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
 Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. Para ello, usamos la clase \textbf{LayerIntegratedGradients} porque analizamos solo una capa concreta del modelo y nos devuelve la salida en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Esta clase usa los siguientes parámetros:
 \begin{itemize}
     \item \textbf{inputs}: el tensor del propio audio.
@@ -177,6 +153,8 @@ Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. P
         \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_normalizado.png}
         \caption{Mapa filtro-tiempo normalizado generado con IG.}
     \end{subfigure}
+    \caption{Mapas filtro-tiempo de la capa sinc-convolution generados con IG.}
+    \label{fig:AASIST_IG_mapas}
 \end{figure}
 
 A diferencia de los mapas filtro-tiempo mostrados anteriormente, aquí representamos las zonas que más \textbf{contribuyen} al ``logit'' final.
@@ -187,6 +165,7 @@ Para mostrar esto de manera más visual, generamos una gráfica donde vemos los 
     \centering
     \includegraphics[width=\linewidth]{imagenes/AASIST_IG_mapa_frecuencial.png}
     \caption{Gráfica filtro-tiempo de la capa sinc-convolution.}
+    \label{fig:AASIST_IG_grafica}
 \end{figure}
 
 Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.  
@@ -195,12 +174,13 @@ Como resultado, obtenemos una gráfica de importancia temporal indicando lo impo
 \begin{figure}[H]
     \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_IG_audio.png}
-	\caption{Importancia temporal al aplicar IG sobre audio.}
+	\caption{Importancia temporal al aplicar IG sobre onda de audio cruda.}
+    \label{fig:AASIST_IG_audio}
 \end{figure}
 
 \subsubsection*{RISE}
 
-Como última técnica aplicamos \textbf{RISE}, y obtenemos los resultados en forma de gráfica temporal.
+Como última técnica aplicamos \textbf{\nameref{subsubsec:eda_rise}}, y obtenemos los resultados en forma de gráfica temporal.
 Para transformar la idea de esta técnica a audio, lo primero es generar una función que genere las máscaras aleatorias. Esta función genera una primera máscara de tamaño ``grid\_size'' formada solo por 1 o 0. Cada posición de esta primera máscara tiene una probabilidad ``p\_keep'' de tener valor 1, es decir, conservar sin alteraciones esa parte de la señal. Entre cada uno de estos puntos, se realiza un escalado suave hasta tener una máscara del mismo tamaño que la señal original, evitando cambios bruscos que provoquen discontinuidades artificiales.
 
 En cuanto a la función principal, podemos realizar los cálculos de dos formas ya mencionadas anteriormente, el ``logit'' de clase objetivo o el margen entre clases. Para estos cálculos, primero creamos dos vectores de acumulación y después iteramos ``n\_mask'' veces.
@@ -223,11 +203,13 @@ Mostramos las gráficas de ambas métricas para poder compararlas como se ha men
         \includegraphics[width=\textwidth]{imagenes/AASIST_RISE_margin.png}
         \caption{Resultados de ``margin'' usando RISE.}
     \end{subfigure}
+    \caption{Resultados de RISE sobre AASIST.}
+    \label{fig:AASIST_RISE}
 \end{figure}
 
 \subsubsection*{SHAP}
 
-El último modelo de XAI que hemos aplicado en AASIST es \textbf{SHAP}. Sin embargo, no hemos podido aplicar directamente debido a dos razones principales. En primer lugar, el modelo recibe como entrada un audio crudo lo que se traduce en muchísimas variables, algo poco manejable para esta técnica. En segundo lugar, la arquitectura de AASIST, con técnicas como el bloque MGO, no es compatible de forma natural con los explicadores de SHAP. Incluso obviando estas razones, como resultado de aplicar SHAP sobre AASIST, obtendríamos la importancia para miles de muestras individuales del audio y no características interpretables, como es el objetivo.
+El último modelo de XAI que hemos aplicado en AASIST es \textbf{\nameref{subsubsec:eda_shap}}. Sin embargo, no hemos podido aplicar directamente debido a dos razones principales. En primer lugar, el modelo recibe como entrada un audio crudo lo que se traduce en muchísimas variables, algo poco manejable para esta técnica. En segundo lugar, la arquitectura de AASIST, con técnicas como el bloque MGO, no es compatible de forma natural con los explicadores de SHAP. Incluso obviando estas razones, como resultado de aplicar SHAP sobre AASIST, obtendríamos la importancia para miles de muestras individuales del audio y no características interpretables, como es el objetivo.
 
 Para abordar este problema, hemos usado dos modelos surrogate: ``\textbf{XGBRegressor}'' y ``\textbf{XGBClassifier}''. Se optó por utilizar ambos ya que al no poder aplicar directamente SHAP sobre AASIST, resulta útil comparar ambas aproximaciones y obtener resultados más fiables. La diferencia principal entre ambos es que intentan aproximar distintos comportamientos de nuestro modelo de clasificación. El regresor se planteó con la idea de reproducir la \textbf{salida continua}, es decir, el logit final, aportando una visión más detallada de la respuesta de AASIST. En cambio, el clasificador solo pretende imitar la \textbf{clasificación binaria} final, por lo que su entrenamiento resulta más sencillo, aunque aporta información más limitada.
 

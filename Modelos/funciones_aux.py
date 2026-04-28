@@ -66,7 +66,13 @@ def base_scores_logits(t, model, target_class=None):
     base_spoof = float(logits_ref[0, 0].item())
     base_bona  = float(logits_ref[0, 1].item())
     return base_logit, base_prob, base_spoof, base_bona, target_class
-   
+
+def group_frecs(filts, bin_size = 160):
+    num_bloques = filts.shape[1] // bin_size #agrupamos muestras en T bloques de unos 10ms cada una
+    filts_bin = filts[:, :num_bloques*bin_size].reshape(filts.shape[0], num_bloques, bin_size).mean(axis=2) #primero reorganizamos con reshape y luego hacemos la media de cada bloque(160 muestras)
+    filts_norm = filts_bin / (filts_bin.max(axis=1, keepdims=True) + 1e-8) #normalizamos cada filtro dividiendo por su valor máximo para no ocultar filtros debiles
+    return filts_bin, filts_norm
+
 def forward_logits(x, model):
     _, logits = model(x)
     return logits
@@ -87,12 +93,17 @@ def aplicar_XAI(wav_path, model):
     t = torch.from_numpy(x4).unsqueeze(0).to("cpu") 
     long_audio = len(x) 
     out = hiding_scan(t=t, x = x, model = model, long_audio=long_audio)
+    graph_occ_temp(out)
     out_freq = hiding_scan_freq(t=t, x = x, model = model, long_audio=long_audio)
+    graph_occ_freq(out_freq)
     lig = LayerIntegratedGradients(forward_logits, model.conv_time)
-    layer_attr, delta = use_IG_SC(t, lig, model)
+    layer_attr, _ = use_IG_SC(t, lig, model)
+    graph_ig_sc(layer_attr)
     ig = IntegratedGradients(forward_logits)
-    attrs, delta = use_IG_Wav(t, ig, model)
+    attrs, _ = use_IG_Wav(t, ig, model)
+    graph_ig_wav(attrs)
     saliency, saliencyM = rise(x=x, t=t, model=model)
+    graph_rise(saliency, saliencyM, long_audio)
 
 #OCCLUSION
 def hiding_scan(t, x, long_audio, model, target_class=None, occ_ms=200, hop_ms=50, fill_mode="zero"):
@@ -205,3 +216,128 @@ def rise(x, t, model, target_class=None, n_masks=1000, grid_size=100, p_keep=0.5
     saliency = saliency / (n_masks * p_keep) #hacemos una media contando la probabilidad de que cada muestra sea visible
     saliencyM = saliencyM / (n_masks * p_keep)
     return saliency.astype(np.float32), saliencyM.astype(np.float32)
+
+def graph_occ_temp(out):
+    xs = [(r["start_s"] + r["end_s"]) / 2 for r in out["results"]] #dibujamos solo el punto medio de cada tramo
+    ys = [r["inc_logit"] for r in out["results"]]
+
+    plt.figure(figsize=(10,4))
+    plt.plot(xs, ys)
+    plt.xlabel("Tiempo(s)")
+    plt.ylabel("Caída del logit al ocultar segmentos")
+    plt.title("Importancia temporal al ocultar segmentos")
+    plt.grid(True)
+    plt.show()
+
+    labels = [(r["start_s"] + r["end_s"]) / 2 for r in out["results"]] #dibujamos solo el punto medio de cada tramo
+    ys = [r["inc_margin"] for r in out["results"]]
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(labels, ys)
+    plt.xlabel("Tiempo(s)")
+    plt.ylabel("Cambio en la diferencia")
+    plt.title("Importancia temporal según variación de la diferencia(spoof - bonafide)")
+    plt.grid(True, axis="y")
+    plt.show()
+
+def graph_occ_freq(out):
+    labels = [f'{int(r["f_end"])}' for r in out["results"]]
+    ys = [r["inc_logit"] for r in out["results"]]
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(labels, ys)
+    plt.xlabel("Frecuencia máxima de cada banda(Hz)")
+    plt.ylabel("Caída del logit al ocultar banda")
+    plt.title("Importancia frecuencial al ocultar bandas")
+    plt.grid(True, axis="y")
+    plt.show()
+
+    labels = [f'{int(r["f_end"])}' for r in out["results"]]
+    ys = [r["inc_margin"] for r in out["results"]]
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(labels, ys)
+    plt.xlabel("Frecuencia máxima de cada banda(Hz)")
+    plt.ylabel("Cambio en la diferencia")
+    plt.title("Importancia frecuencial según variación de la diferencia(spoof - bonafide)")
+    plt.grid(True, axis="y")
+    plt.show()
+
+def graph_ig_sc(layer_attr):
+    M_ig = layer_attr[0].detach().cpu().numpy()
+
+    M_vis = np.abs(M_ig)
+
+    LIG_bin, LIG_norm = group_frecs(M_vis)
+
+    plt.figure(figsize=(12, 6))
+    plt.imshow(
+        LIG_norm,
+        aspect="auto",
+        origin="lower",
+        cmap="magma",
+        extent=[0, 4.0, 0, LIG_norm.shape[0]]
+    )
+    plt.colorbar(label="IG normalizado")
+    plt.xlabel("Tiempo(s)")
+    plt.ylabel("Filtro sinc")
+    plt.title("Layer Integrated Gradients sobre sinc-convolution")
+    plt.show()
+
+    plt.figure(figsize=(12, 6))
+    plt.imshow(LIG_bin,aspect="auto",origin="lower",cmap="magma",extent=[0, 4.0, 0, LIG_bin.shape[0]])
+    plt.colorbar(label="IG sin normalizar")
+    plt.xlabel("Tiempo(s)")
+    plt.ylabel("Filtro sinc")
+    plt.title("Layer Integrated Gradients sobre sinc-convolution")
+    plt.show()
+
+    ig_filt = LIG_bin.mean(axis=1)
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(np.arange(len(ig_filt)), ig_filt)
+    plt.xlabel("Índice de filtro")
+    plt.ylabel("IG medio")
+    plt.title("Importancia media por filtro según Layer IG sobre sinc-convolution")
+    plt.grid(True)
+    plt.show()
+
+def graph_ig_wav(attrs):
+    attr_audio = attrs[0].detach().cpu().numpy()   
+    attr_abs = np.abs(attr_audio)
+    #agrupamos temporalmente 
+    num_bloques = len(attr_abs) // bin_len    #num bloques
+    #primero reorganizamos con reshape y luego hacemos la media de cada bloque de 160 muestras(sr*bin_ms si se cambia)
+    attr_bin = attr_abs[:num_bloques * bin_len].reshape(num_bloques, bin_len).mean(axis=1) 
+
+    x_sec = np.arange(num_bloques) * bin_ms / 1000.0  
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(x_sec, attr_bin)
+    plt.xlabel("Tiempo(s)")
+    plt.ylabel("IG medio")
+    plt.title("Integrated Gradients sobre el audio crudo")
+    plt.grid(True)
+    plt.show()
+
+def graph_rise(saliency, saliencyM, long_audio):
+    x_sec = np.linspace(0, long_audio / sr, len(saliency))
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(x_sec, saliency)
+    plt.xlabel("Tiempo")
+    plt.ylabel("Saliency")
+    plt.title("RISE en medida del logit")
+    plt.grid(True)
+    plt.show()
+
+    sal_center = saliencyM - np.mean(saliencyM) #centrar a cero y no en la diferencia entre clases original
+    x_sec = np.linspace(0, long_audio / sr, len(saliencyM))
+
+    plt.figure(figsize=(10, 4))
+    plt.plot(x_sec, sal_center)
+    plt.xlabel("Tiempo")
+    plt.ylabel("Saliency")
+    plt.title("RISE en medida del margen entre clase")
+    plt.grid(True)
+    plt.show()
