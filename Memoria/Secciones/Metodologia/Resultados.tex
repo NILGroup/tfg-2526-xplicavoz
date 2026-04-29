@@ -172,13 +172,13 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_rf_local_sin_specflat}
+	\label{fig:1_shap_rf_local_sin_specflat}
 \end{figure}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_rf_local_sin_specflat}
+	\label{fig:2_shap_rf_local_sin_specflat}
 \end{figure}
 
 \begin{table}[H]
@@ -234,13 +234,13 @@ Error tipo II & 10\% \\
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
-	\label{fig:shap_rf_local_sin_sflat_mfcc1_sband}
+	\label{fig:1_shap_rf_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
-	\label{fig:shap_rf_local_sin_sflat_mfcc1_sband}
+	\label{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
 \begin{table}[H]
@@ -490,24 +490,31 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_lgbm_local_sin_specflat}
+	\label{fig:1_shap_lgbm_local_sin_specflat}
 \end{figure}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_lgbm_local_sin_specflat}
+	\label{fig:2_shap_lgbm_local_sin_specflat}
 \end{figure}
 
-\textbf{tras quitar la característica spectral flatness:}
-\begin{itemize}
-	\item Accuracy:  0.8000  (Porcentaje total de aciertos)
-	\item Precision: 0.8750  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    0.7000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  0.7778  (Balance precision-recall)
-	\item AUC-ROC:   0.9600  (Capacidad discriminativa)
-	\item MCC:       0.6124  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 0.8000 \\
+Precision & 0.8750 \\
+Recall & 0.7000 \\
+F1-Score & 0.7778  \\
+AUC-ROC & 0.9600 \\
+MCC & 0.6124 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de LightGBM sin spectral flatness}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -525,37 +532,51 @@ weighted avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
 \caption{Classification report de LightGBM sin spectral flatness}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 9
-	\item Verdaderos Positivos (IA bien clasificados): 7
-	\item Falsos Positivos (Reales clasificados como IA): 1
-	\item Falsos Negativos (IA clasificados como Reales): 3
-	\item Error tipo I (Falsos Positivos): 10.00%
-	\item Error tipo II (Falsos Negativos): 30.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 9 \\
+Verdaderos Positivos & 7 \\
+Falsos Positivos & 1 \\
+Falsos Negativos & 3  \\
+Error tipo I & 10\% \\
+Error tipo II & 30\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de LightGBM sin spectral flatness}
+\end{table}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
-	\label{fig:shap_lgbm_local_sin_sflat_mfcc1}
+	\label{fig:1_shap_lgbm_local_sin_sflat_mfcc1}
 \end{figure}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
-	\label{fig:shap_lgbm_local_sin_sflat_mfcc1}
+	\label{fig:2_shap_lgbm_local_sin_sflat_mfcc1}
 \end{figure}
 
-\textbf{tras quitar la característica spectral flatness:}
-\begin{itemize}
-	\item Accuracy:  0.8500  (Porcentaje total de aciertos)
-	\item Precision: 0.8889  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    0.8000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  0.8421  (Balance precision-recall)
-	\item AUC-ROC:   0.9400  (Capacidad discriminativa)
-	\item MCC:       0.7035  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 0.8500 \\
+Precision & 0.8889 \\
+Recall & 0.8000 \\
+F1-Score & 0.8421  \\
+AUC-ROC & 0.9400 \\
+MCC & 0.7035 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de LightGBM sin spectral flatness y mfcc1}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -573,15 +594,22 @@ weighted avg & 0.8535 & 0.8500 & 0.8496 & 20 \\
 \caption{Classification report de LightGBM sin spectral flatness y mfcc 1}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 9
-	\item Falsos Positivos (Reales clasificados como IA): 0
-	\item Falsos Negativos (IA clasificados como Reales): 1
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 10.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 9 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 1  \\
+Error tipo I & 0\% \\
+Error tipo II & 10\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de LightGBM sin spectral flatness y mfcc1}
+\end{table}
 
 % LIME
 \begin{figure}[H]
@@ -612,15 +640,22 @@ En este apartado vamos a mostrar los resultados y comentaremos un poco  al respe
 
 \subsubsection*{Modelo baseline con kernel lineal}
 
-Métricas principales:
-\begin{itemize}
-	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
-	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  1.0000  (Balance precision-recall)
-	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
-	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 1 \\
+Precision & 1 \\
+Recall & 1 \\
+F1-Score & 1  \\
+AUC-ROC & 1 \\
+MCC & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de SVM con kernel lineal}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -638,30 +673,44 @@ weighted avg & 1 & 1 & 1 & 20 \\
 \caption{Classification report de SVM con kernel lineal}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 10
-	\item Falsos Positivos (Reales clasificados como IA): 0
-	\item Falsos Negativos (IA clasificados como Reales): 0
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 0.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 10 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 0  \\
+Error tipo I & 0\% \\
+Error tipo II & 0\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de SVM con kernel lineal}
+\end{table}
 
 % RESULTADOS
-Podemos ver que, pese a ser un modelo baseline, y tener un kernel lineal (que suelen ser peores que los no lienales) ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien. Vamos a ver si el kernel no lineal consigue los mismos resultados.
+Podemos ver que, pese a ser un modelo baseline, y tener un kernel lineal (que suelen ser peores que los no lienales) ya clasifica correctamente entre voces generadas por IA y reales.
 
 \subsubsection*{Modelo baseline con kernel no lineal}
 
-Métricas principales:
-\begin{itemize}
-	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
-	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  1.0000  (Balance precision-recall)
-	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
-	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 1 \\
+Precision & 1 \\
+Recall & 1 \\
+F1-Score & 1  \\
+AUC-ROC & 1 \\
+MCC & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de SVM con kernel no lineal}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -679,15 +728,24 @@ weighted avg & 1 & 1 & 1 & 20 \\
 \caption{Classification report de SVM con kernel no lineal}
 \end{table}
 
-Análisis no errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 10
-	\item Falsos Positivos (Reales clasificados como IA): 0
-	\item Falsos Negativos (IA clasificados como Reales): 0
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 0.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 10 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 0  \\
+Error tipo I & 0\% \\
+Error tipo II & 0\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de SVM con kernel no lineal}
+\end{table}
+
+Como en el caso anterior, este modelo baseline clasifica correctamente entre las dos clases.
 
 \subsubsection*{Validación Cruzada Estratificada}
 
@@ -706,30 +764,45 @@ AUC-ROC & 1 & +/- 0 \\
 \end{table}
    
 % RESULTADOS
-Estos resultados nos dicen que el modelo funciona bien en los 5 folds, aunque no podemos descartar que hubiera algún fold más ``difícil'' en el cual no tuviera 100\% de precisión.
+Estos resultados nos dicen que el modelo es estable en estos 5 folds, al tener una desviación típica baja (0), y que clasifica bien, ya que la media es alta (1).
 
 \subsubsection*{Grid Search}
 
 En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
 
-\begin{itemize}
-	\item C: 1
-	\item gamma: 0.01
-	\item kernel: rbf
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{Valor}\\
+\midrule
+C & 1 \\
+gamma & 0.01 \\
+kernel & rbf \\
+\bottomrule
+\end{tabular}
+\caption{Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}
+\end{table}
 
 % RESULTADOS
-Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+Aunque este sea un Grid Search más simple, es interesante ver los valores que devuelve. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajor hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
 
-Métricas principales:
-\begin{itemize}
-	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
-	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  1.0000  (Balance precision-recall)
-	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
-	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 1 \\
+Precision & 1 \\
+Recall & 1 \\
+F1-Score & 1  \\
+AUC-ROC & 1 \\
+MCC & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de SVM óptimo}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -747,18 +820,25 @@ weighted avg & 1 & 1 & 1 & 20 \\
 \caption{Classification report de SVM con kernel no lineal}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 10
-	\item Falsos Positivos (Reales clasificados como IA): 0
-	\item Falsos Negativos (IA clasificados como Reales): 0
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 0.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 10 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 0  \\
+Error tipo I & 0\% \\
+Error tipo II & 0\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de SVM óptimo}
+\end{table}
 
 % RESULTADOS
-Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+Los resultados no varían de los anteriores, lo que es de esperar en este caso. Interesa ver que, pese a que SVM con $gamma = 0,01$ y $gamma = scale$ arrojan los mismos resultados, y el GridSearch eligió uno sobre otro, quizá al funcionar igual, en este contexto, eligió el más ``simple'' (como vimos, scale se calcula mediante una fórmula).
 
 \subsubsection*{Resultados de explicacion}
 % SHAP
@@ -768,33 +848,44 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 	\label{fig:shap_svm_local}
 \end{figure}
 
+En esta imagen podemos observar que, como hemos visto antes, la variable más importante es spectral flatness, por un orden de magnitud, seguido de spectral bandwidth y mfcc1 con el mismo valor entre sí.
+
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_global.png}
 	\caption{Explicación global con SHAP}
 	\label{fig:shap_svm_global}
 \end{figure}
 
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_svm_local_sin_specflat}
-\end{figure}
+Aquí vemos que los resultados son consistentes con lo anterior respecto de spectral flatness, ya que vemos claramente que los que tienen un valor alto influyen hacia un lado de la clasificación, mientras que los de valor bajo influyen hacia el otro lado.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:shap_svm_local_sin_specflat}
+	\label{fig:1_shap_svm_local_sin_specflat}
 \end{figure}
 
-\textbf{tras quitar la característica spectral flatness:}
-\begin{itemize}
-	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
-	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  1.0000  (Balance precision-recall)
-	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
-	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:2_shap_svm_local_sin_specflat}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 1 \\
+Precision & 1 \\
+Recall & 1 \\
+F1-Score & 1  \\
+AUC-ROC & 1 \\
+MCC & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de SVM sin spectral flatness}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -812,37 +903,53 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \caption{Classification report de SVM sin spectral flatness}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 10
-	\item Falsos Positivos (Reales clasificados como IA): 10
-	\item Falsos Negativos (IA clasificados como Reales): 10
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 0.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 10 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 0  \\
+Error tipo I & 0\% \\
+Error tipo II & 0\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de SVM sin spectral flatness}
+\end{table}
+
+Podemos observar que al quitar spectral flatness, la característica que individualmente influye más es spectral bandwitdh, y que difiere bastante su importancia dependiendo de si clasifica positiva o negativamente. Vemos a su vez que las características cambian, se redistribuyen sus valores. Por último nos encontramos con que el rendimiento del modelo no ha cambiado tras quitar dicha característica, lo cual es normal cuando las importancias no difieren mucho.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
-	\label{fig:shap_svm_local_sin_sflat_mfcc1_sband}
+	\label{fig:1_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
-	\label{fig:shap_svm_local_sin_sflat_mfcc1_sband}
+	\label{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-\textbf{tras quitar la característica spectral flatness:}
-\begin{itemize}
-	\item Accuracy:  1.0000  (Porcentaje total de aciertos)
-	\item Precision: 1.0000  (De los que dije que eran reales, ¿cuántos lo eran?)
-	\item Recall:    1.0000  (De los reales, ¿cuántos detecté?)
-	\item F1-Score:  1.0000  (Balance precision-recall)
-	\item AUC-ROC:   1.0000  (Capacidad discriminativa)
-	\item MCC:       1.0000  (Coeficiente de correlación de Matthews)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor}\\
+\midrule
+Accuracy & 1 \\
+Precision & 1 \\
+Recall & 1 \\
+F1-Score & 1  \\
+AUC-ROC & 1 \\
+MCC & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -857,18 +964,27 @@ macro avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \bottomrule
 \end{tabular}
-\caption{Classification report de SVM sin spectral flatness}
+\caption{Classification report de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
 \end{table}
 
-Análisis de errores:
-\begin{itemize}
-	\item Verdaderos Negativos (Reales bien clasificados): 10
-	\item Verdaderos Positivos (IA bien clasificados): 10
-	\item Falsos Positivos (Reales clasificados como IA): 10
-	\item Falsos Negativos (IA clasificados como Reales): 10
-	\item Error tipo I (Falsos Positivos): 0.00%
-	\item Error tipo II (Falsos Negativos): 0.00%
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Tipo de predicción} & \textbf{Cantidad}\\
+\midrule
+Verdaderos Negativos & 10 \\
+Verdaderos Positivos & 10 \\
+Falsos Positivos & 0 \\
+Falsos Negativos & 0  \\
+Error tipo I & 0\% \\
+Error tipo II & 0\% \\ 
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
+\end{table}
+
+Tras quitar spectral flatness, mfcc1 y spectral bandwidth vemos que las importancias de las características en la explicación se distribuye mucho más, siendo en las clases positivas spectral rolloff la más importante con diferencia. Pese a quitar estas características, el modelo sigue clasificando bien.
 
 % LIME
 \begin{figure}[H]

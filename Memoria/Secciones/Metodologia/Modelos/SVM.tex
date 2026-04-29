@@ -20,7 +20,7 @@ Una característica crítica de SVM es su sensibilidad a la escala de las caract
 
 Sin normalización, las características con mayor magnitud dominarían el cálculo de distancias, sesgando el modelo. Por ello, se aplicó \texttt{StandardScaler} para estandarizar las características a media cero y desviación típica uno.
 
-Es crucial aplicar el escalado \textit{después} de la división train/test para evitar \textit{data leakage} (fuga de información del conjunto de prueba al entrenamiento).
+Es crucial aplicar el escalado \textit{después} de la división train/test para evitar \textit{data leakage} (aportar información extra al conjunto de prueba, proveniente del conjunto de entrenamiento).
 
 \subsubsection*{Configuración experimental}
 
