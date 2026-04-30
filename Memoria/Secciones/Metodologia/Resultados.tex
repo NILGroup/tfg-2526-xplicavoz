@@ -56,8 +56,7 @@ Error tipo II & 0\% \\
 \caption{Análisis de errores de Random Forest baseline}
 \end{table}
 
-% RESULTADOS
-Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas'', por lo que hasta un modelo simple como este ya clasifica bien.
+Observamos que este modelo baseline clasifica correctamente entre audios reales y generados. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas''.
 
 \subsubsection*{Validación Cruzada Estratificada}
 
@@ -75,8 +74,7 @@ AUC-ROC & 1 & +/- 0 \\
 \caption{Resultados de Validación Cruzada con 5 folds de Random Forest baseline}
 \end{table}
 
-% RESULTADOS
-Estos resultados nos dicen que el modelo funciona bien en los 5 folds, aunque no podemos descartar que hubiera algún fold más ``difícil'' en el cual no tuviera 100\% de precisión.
+Estos resultados revelan que el modelo es estable en los 5 folds y que, como hemos visto, clasifica bien, por su alta media.
 
 \subsubsection*{Grid Search}
 
@@ -99,7 +97,7 @@ max\_features & sqrt \\
 \end{table}
 
 % RESULTADOS
-Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, lo que es comprensible puesto la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
+Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, lo que es comprensible puesto la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor. Tenemos que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han bajado respecto de los que definimos inicialmente.
 
 \begin{table}[H]
 \centering
@@ -151,16 +149,21 @@ Error tipo II & 0\% \\
 \caption{Análisis de errores de Random Forest optimizado}
 \end{table}
 
-% RESULTADOS
-Como observamos y como la intuición nos decía, los resultados son iguales que los de antes. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
+Al igual que el modelo baseline, este modelo optimizado también clasifica correctamente entre las dos clases.
 
 \subsubsection*{Resultados de explicación}
 
 % SHAP
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_rf_local.png}
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_local_1.png}
 	\caption{Explicación local con SHAP}
-	\label{fig:shap_rf_local}
+	\label{fig:1_shap_rf_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_local_2.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:2_shap_rf_local}
 \end{figure}
 
 \begin{figure}[H]
@@ -187,12 +190,12 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 \toprule
 \textbf{Métrica} & \textbf{Valor}\\
 \midrule
-Accuracy & 0.9500 \\
-Precision & 1 \\
+Accuracy & 0.9000 \\
+Precision & 0.9000 \\
 Recall & 0.9000 \\
-F1-Score & 0.9474  \\
+F1-Score & 0.9000  \\
 AUC-ROC & 0.9900 \\
-MCC & 0.9045 \\ 
+MCC & 0.8000 \\ 
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de Random Forest sin spectral flatness}
@@ -204,11 +207,11 @@ MCC & 0.9045 \\
 \toprule
 \textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
 \midrule
-Real (1) & 0.9091 & 1 & 0.9524 & 10 \\
-IA (0) & 1 & 0.9000 & 0.9474 & 10 \\
-accuracy &  &  & 0.9500 & 20 \\
-macro avg & 0.9545 & 0.9500 & 0.9499 & 20 \\
-weighted avg & 0.9545 & 0.9500 & 0.9499 & 20 \\
+Real (1) & 0.9000 & 0.9000 & 0.9000 & 10 \\
+IA (0) & 0.9000 & 0.9000 & 0.9000 & 10 \\
+accuracy &  &  & 0.9000 & 20 \\
+macro avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
+weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de Random Forest sin spectral flatness}
@@ -220,11 +223,11 @@ weighted avg & 0.9545 & 0.9500 & 0.9499 & 20 \\
 \toprule
 \textbf{Tipo de predicción} & \textbf{Cantidad}\\
 \midrule
-Verdaderos Negativos & 10 \\
+Verdaderos Negativos & 9 \\
 Verdaderos Positivos & 9 \\
-Falsos Positivos & 0 \\
+Falsos Positivos & 1 \\
 Falsos Negativos & 1  \\
-Error tipo I & 0\% \\
+Error tipo I & 10\% \\
 Error tipo II & 10\% \\ 
 \bottomrule
 \end{tabular}
@@ -249,12 +252,12 @@ Error tipo II & 10\% \\
 \toprule
 \textbf{Métrica} & \textbf{Valor}\\
 \midrule
-Accuracy & 0.6500 \\
-Precision & 0.7143 \\
-Recall & 0.5000 \\
-F1-Score & 0.5882  \\
+Accuracy & 0.7500 \\
+Precision & 0.7778 \\
+Recall & 0.7000 \\
+F1-Score & 0.7368  \\
 AUC-ROC & 0.8600 \\
-MCC & 0.3145 \\ 
+MCC & 0.5025 \\ 
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}
@@ -266,11 +269,11 @@ MCC & 0.3145 \\
 \toprule
 \textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
 \midrule
-Real (1) & 0.6154 & 0.8000 & 0.6957 & 10 \\
-IA (0) & 0.7143 & 0.7143 & 0.5882 & 10 \\
-accuracy &  &  & 0.6500 & 20 \\
-macro avg & 0.6648 & 0.6500 & 0.6419 & 20 \\
-weighted avg & 0.6648 & 0.6500 & 0.6419 & 20 \\
+Real (1) & 0.7273 & 0.8000 & 0.7619 & 10 \\
+IA (0) & 0.7778 & 0.7000 & 0.7368 & 10 \\
+accuracy &  &  & 0.7500 & 20 \\
+macro avg & 0.7525 & 0.7500 & 0.7494 & 20 \\
+weighted avg & 0.7525 & 0.7500 & 0.7494 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}
@@ -283,11 +286,11 @@ weighted avg & 0.6648 & 0.6500 & 0.6419 & 20 \\
 \textbf{Tipo de predicción} & \textbf{Cantidad}\\
 \midrule
 Verdaderos Negativos & 8 \\
-Verdaderos Positivos & 5 \\
+Verdaderos Positivos & 7 \\
 Falsos Positivos & 2 \\
-Falsos Negativos & 5  \\
+Falsos Negativos & 3  \\
 Error tipo I & 20\% \\
-Error tipo II & 50\% \\ 
+Error tipo II & 30\% \\ 
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de Random Forest sin spectral flatness, mfcc1, y spectral bandwidth}
@@ -305,12 +308,12 @@ Error tipo II & 50\% \\
 \centering
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Instancia} & \textbf{RMS} & \textbf{spectral centroid} & \textbf{spectral flatness} & \textbf{mfcc 8} & \textbf{Etiqueta} \\
+\textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 1} & \textbf{mfcc 3} & \textbf{mfcc 8} & \textbf{Etiqueta} \\
 \midrule
-Explicada & 0.05813733488321304 & 1271.831787109375 & 0.11064121127128601 & -9.581953048706055 & 0 \\
-Counter factual 1 &  &  & 0.0085693521 & -19.0127779 & 1 \\
-Counter factual 2 &  & 1769.708 & 0.0140804753 &  & 1 \\
-Counter factual 3 & 0.063278444 &  & 0.0182716957 &  & 1 \\
+Explicada & 0.11064121127128601 & -330.396484375 & -8.681960105895996 & -9.581953048706055 & 0 \\
+Counter factual 1 & 0.0289179996 & -270.65508 &  &  & 1 \\
+Counter factual 2 & 0.0289179996 & -270.65508 &  & -7.9201774 & 1 \\
+Counter factual 3 & 0.0289179996 & -270.65508 & 14.76117919 & -7.9201774 & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Counter factuals generados por DiCE}
@@ -383,8 +386,8 @@ Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto 
 \toprule
 \textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica} \\
 \midrule
-Accuracy & 0.9875 & +/- 0.0500 \\
-F1-Score & 0.9882 & +/- 0.0471 \\
+Accuracy & 1 & +/- 0 \\
+F1-Score & 1 & +/- 0 \\
 AUC-ROC & 1 & +/- 0 \\
 \bottomrule
 \end{tabular}
@@ -406,7 +409,7 @@ En primer lugar veamos cuáles son los mejores parámetros del grid que hemos de
 \midrule
 num\_leaves & 15 \\
 learning\_rate & 0.01 \\
-n\_estimators & 100 \\
+n\_estimators & 300 \\
 min\_child\_samples & 20  \\
 subsample & 0.6 \\
 colsample\_bytree & 0.6 \\
@@ -476,9 +479,15 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 \subsubsection*{Resultados de explicación}
 % SHAP
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local.png}
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local_1.png}
 	\caption{Explicación local con SHAP}
-	\label{fig:shap_lgbm_local}
+	\label{fig:1_shap_lgbm_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local_2.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:2_shap_lgbm_local}
 \end{figure}
 
 \begin{figure}[H]
@@ -505,12 +514,12 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 \toprule
 \textbf{Métrica} & \textbf{Valor}\\
 \midrule
-Accuracy & 0.8000 \\
-Precision & 0.8750 \\
-Recall & 0.7000 \\
-F1-Score & 0.7778  \\
-AUC-ROC & 0.9600 \\
-MCC & 0.6124 \\ 
+Accuracy & 0.9000 \\
+Precision & 0.9000 \\
+Recall & 0.9000 \\
+F1-Score & 0.9000  \\
+AUC-ROC & 0.9900 \\
+MCC & 0.8000 \\ 
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de LightGBM sin spectral flatness}
@@ -522,11 +531,11 @@ MCC & 0.6124 \\
 \toprule
 \textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
 \midrule
-Real (1) & 0.7500 & 0.9000 & 0.8182 & 10 \\
-IA (0) & 0.8750 & 0.7000 & 0.7778 & 10 \\
-accuracy &  &  & 0.8000 & 20 \\
-macro avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
-weighted avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
+Real (1) & 0.9000 & 0.9000 & 0.9000 & 10 \\
+IA (0) & 0.9000 & 0.9000 & 0.9000 & 10 \\
+accuracy &  &  & 0.9000 & 20 \\
+macro avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
+weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de LightGBM sin spectral flatness}
@@ -539,15 +548,16 @@ weighted avg & 0.8125 & 0.8000 & 0.7980 & 20 \\
 \textbf{Tipo de predicción} & \textbf{Cantidad}\\
 \midrule
 Verdaderos Negativos & 9 \\
-Verdaderos Positivos & 7 \\
+Verdaderos Positivos & 9 \\
 Falsos Positivos & 1 \\
-Falsos Negativos & 3  \\
+Falsos Negativos & 1  \\
 Error tipo I & 10\% \\
-Error tipo II & 30\% \\ 
+Error tipo II & 10\% \\ 
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de LightGBM sin spectral flatness}
 \end{table}
+
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_1.png}
@@ -571,7 +581,7 @@ Accuracy & 0.8500 \\
 Precision & 0.8889 \\
 Recall & 0.8000 \\
 F1-Score & 0.8421  \\
-AUC-ROC & 0.9400 \\
+AUC-ROC & 0.9200 \\
 MCC & 0.7035 \\ 
 \bottomrule
 \end{tabular}
