@@ -1,0 +1,26 @@
+\newpage
+\section{Pipeline}
+\label{sec:pipeline}
+
+Como forma de cierre para el proyecto, hemos desarrollado un pipeline que utiliza todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline está dividido en secciones que corresponden a cada modelo que permiten ir ejecutándolos de forma independiente.
+
+Hemos diseñado un diagrama de flujo simplificado para mostrar la estructura general del pipeline. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, se han dividido los modelos en dos grupos según el tipo de entrada que utilizan, es decir, modelos que trabajan con la onda de audio cruda y modelos que trabajan con características extraídas del audio. En cada grupo, se muestran los modelos implementados y las técnicas de XAI aplicadas a cada uno de ellos.
+
+\begin{figure}[H]
+    \centering
+	\includegraphics[width=\textwidth]{imagenes/Arquitectura_pipeline.png}
+	\caption{Arquitectura del pipeline.}
+    \label{fig:Arquitectura_pipeline}
+\end{figure}
+
+Para poder usar los modelos entrenados durante el proyecto y no perder tiempo entrenándolos para cada caso, hemos utilizado diversas técnicas para guardarlos que se explicarán en el apartado de cada modelo.
+
+La primera parte del pipeline consta de una primera celda con los imports necesarios, una segunda celda donde se indica la ruta al audio que se quiere analizar y una tercera celda donde se extraen las características del audio usando la función ``\texttt{extract\_features}'' del archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección con la predicción y las explicaciones obtenidas con las técnicas de XAI aplicadas a dicho modelo.
+
+\subsubsection{AASIST}
+
+Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
+
+Una vez cargado, se usan las funciones cargadas del archivo funciones\_AASIST.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
+
+A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.

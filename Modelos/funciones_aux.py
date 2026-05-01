@@ -50,7 +50,12 @@ def score_audio(wav_path, model):
     score_bonafide = logits[0, 1].item()
     prob_bonafide = probs[0, 1].item()
 
-    return {"logits": logits, "score_bonafide": score_bonafide, "prob_bonafide": prob_bonafide, "pred_clase": int(torch.argmax(probs, dim=1).item())}
+    pred = int(torch.argmax(probs, dim=1).item())
+    if(pred == 0):
+        pred_clase = "spoof"
+    else:
+        pred_clase = "bona_fide"
+    return {"logits": logits, "score_bonafide": score_bonafide, "prob_bonafide": prob_bonafide, "pred_clase": pred_clase}
 
 #FUNCIONES AXULIARES XAI
 def ret_model(t, model):
@@ -110,7 +115,7 @@ def aplicar_XAI(wav_path, model, df):
     graph_ig_wav(attrs)
     saliency, saliencyM = rise(x=x, t=t, model=model)
     graph_rise(saliency, saliencyM, long_audio)
-    #use_surrogates_for_shap(df)
+    use_surrogates_for_shap(df)
 
 #OCCLUSION
 def hiding_scan(t, x, long_audio, model, target_class=None, occ_ms=200, hop_ms=50, fill_mode="zero"):
@@ -323,7 +328,7 @@ def graph_ig_wav(attrs):
     plt.plot(x_sec, attr_bin)
     plt.xlabel("Tiempo(s)")
     plt.ylabel("IG medio")
-    plt.title("Integrated Gradients sobre el audio crudo")
+    plt.title("Integrated Gradients sobre la onda de audio cruda")
     plt.grid(True)
     plt.show()
 
@@ -355,14 +360,15 @@ def use_surrogates_for_shap(df):
     sur = XGBRegressor()
     sur.load_model("German/xgb_sur.json")
 
-    df = df.drop(columns=["filename"])
+    df_aux = df.drop(columns=["filename"])
+    df_aux = df_aux.apply(pd.to_numeric, errors="coerce")
 
     explainer = shap.TreeExplainer(clas)
-    shap_values_clas = explainer(df)
+    shap_values_clas = explainer(df_aux)
     
-    shap.plots.waterfall(shap_values_clas)
+    shap.plots.waterfall(shap_values_clas[0])
 
     explainer = shap.Explainer(sur)
-    shap_values_sur = explainer(df)
+    shap_values_sur = explainer(df_aux)
 
-    shap.plots.waterfall(shap_values_sur)
+    shap.plots.waterfall(shap_values_sur[0])

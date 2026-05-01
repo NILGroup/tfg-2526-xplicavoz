@@ -9,7 +9,7 @@ Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto
 El modelo tiene las siguientes fases:
 
 \begin{enumerate}
-    \item Extracción de características a partir del audio crudo:
+    \item Extracción de características a partir del audio en crudo:
         \begin{itemize}
             \item Se usa un \textbf{encoder} basado en RawNet2 que acaba generando un mapa de características F, $F \in \mathbb{R}^{C \times S \times T}$ siendo C, número de canales, S, número de bins espectrales y T, longitud temporal. Este encoder permite trabajar directamente sobre la forma de onda cruda, sin necesidad de extraer previamente características, y generar representaciones de alto nivel con estructura espacio-temporal.
             \item Para ello, primero, se pasa el audio por una primera capa \textit{sinc-convolution} con 70 filtros. La diferencia frente al RawNet2 original, es que en AASIST se interpreta la salida de esta capa como una ``imagen'' 2D de 1 canal.

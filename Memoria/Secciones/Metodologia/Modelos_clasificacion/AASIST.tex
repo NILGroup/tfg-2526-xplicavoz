@@ -1,6 +1,6 @@
 \subsubsection{AASIST}
 AASIST (\textit{Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks})  es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
-Como este modelo produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios. 
+Como este modelo produce una predicción a partir de la señal de audio cruda, el primer paso es definir las rutas a los audios. 
 
 Después, se lee el contenido del \textbf{archivo .conf} del modelo. Para ello, hemos creado una función que busca el elemento pasado por parámetro y devuelve el bloque superior que contiene ese elemento junto con los elementos al mismo nivel. Esto nos permite construir una variable, que vamos a llamar args, con los siguientes campos:
 \begin{itemize}

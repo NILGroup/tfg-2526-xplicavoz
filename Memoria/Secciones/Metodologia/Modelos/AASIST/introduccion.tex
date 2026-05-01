@@ -1,5 +1,12 @@
 \subsubsection{AASIST}
-\nameref{subsubsec:eda_aasist} (\textit{Audio Anti-Spoofing using Integrated Spectro-Temporal Graph Attention Networks})  es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
+\label{subsubsec:met_aasist}
+\nameref{subsubsec:eda_aasist} es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
+
+\subsubsection*{Justificación del modelo}
+
+La elección de AASIST se justifica por tratarse de un modelo desarrollado específicamente para la detección de \textit{spoof} en audio. Su arquitectura está diseñada para explotar de forma conjunta información temporal y espectral, lo que resulta especialmente útil en un problema donde las diferencias entre señales naturales y generadas pueden ser sutiles y distribuidas. Además, su buen desempeño en tareas de \textit{anti-spoofing} lo convierte en una referencia sólida para ser utilizado en este trabajo.
+
+\subsubsection*{Aplicación del modelo}
 Como este modelo produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios. 
 
 Después, se lee el contenido del \textbf{archivo .conf} del modelo. Para ello, hemos creado una función que busca el elemento pasado por parámetro y devuelve el bloque superior que contiene ese elemento junto con los elementos al mismo nivel. Esto nos permite construir una variable, que vamos a llamar args, con los siguientes campos:
@@ -41,7 +48,7 @@ Hemos creado dos mapas filtro-tiempo, el \href{https://github.com/NILGroup/tfg-2
 
 Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más. Asimismo, es importante mencionar que se está representando magnitud absoluta de atribución, no signo.
 
-\subsubsection*{Occlusion}
+\subsubsection*{Implementación deOcclusion}
 A continuación, vamos a aplicar \textbf{\nameref{subsubsec:eda_occlusion}} tanto al ámbito espectral como al temporal. Esta técnica consiste en ir ``tapando'' fragmentos de la entrada y ver cómo cambia el ``logit'' final con estas variaciones para ver qué tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito temporal, hemos puesto silencio en la banda de frecuencia objetivo.
 
 Además, vamos a utilizar dos medidas complementarias. Por un lado, el cambio en el ``\textbf{logit}'' de la clase objetivo nos permite representar cuanto contribuye cada región a la evidencia bruta de dicha clase. Por otro, medimos el \textbf{margen} o diferencia entre los ``logits'' de ambas clases, esta métrica nos permite analizar separación entre clases durante el audio. Mientras que la primera aporta información importante sobre cierta clase, el margen resulta más valioso para entender la decisión final de AASIST ya que nos muestra si realmente una región ayuda a la clase objetivo o ayuda a ambas por igual. 
@@ -53,7 +60,7 @@ Tenemos como resultado las gráficas temporales de \href{https://github.com/NILG
 
 Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren. Asimismo, tenemos las mismas dos gráficas, una de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial.png}{``logit''} y otra de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial_margen.png}{margen}.
 
-\subsubsection*{Integrated Gradients}
+\subsubsection*{Implementación deIntegrated Gradients}
 
 La siguiente técnica que vamos a aplicar es \textbf{\nameref{subsubsec:eda_ig}}. Para medir el error usando esta técnica usamos la métrica ``\textbf{delta}'' que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
 Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. Para ello, usamos la clase \textbf{LayerIntegratedGradients} porque analizamos solo una capa concreta del modelo y nos devuelve la salida en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Esta clase usa los siguientes parámetros:
@@ -75,7 +82,7 @@ Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a di
 
 Como resultado, obtenemos una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_top_filtros.png}{gráfica} de importancia temporal indicando lo importante que es cada instante según esta técnica.
 
-\subsubsection*{RISE}
+\subsubsection*{Implementación de RISE}
 
 Como última técnica aplicamos \textbf{\nameref{subsubsec:eda_rise}}, y obtenemos los resultados en forma de gráfica temporal.
 Para transformar la idea de esta técnica a audio, lo primero es generar una función que genere las máscaras aleatorias. Esta función genera una primera máscara de tamaño ``grid\_size'' formada solo por 1 o 0. Cada posición de esta primera máscara tiene una probabilidad ``p\_keep'' de tener valor 1, es decir, conservar sin alteraciones esa parte de la señal. Entre cada uno de estos puntos, se realiza un escalado suave hasta tener una máscara del mismo tamaño que la señal original, evitando cambios bruscos que provoquen discontinuidades artificiales.
@@ -88,7 +95,7 @@ Por último, con el bucle acabado, aplicamos a los acumuladores una media sobre 
 
 Mostramos las gráficas de ambas métricas,\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_logit.png}{``logit''} y \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_margin.png}{margen}para poder compararlas como se ha mencionado anteriormente.
 
-\subsubsection*{SHAP}
+\subsubsection*{Implementación de SHAP}
 
 El último modelo de XAI que hemos aplicado en AASIST es \textbf{\nameref{subsubsec:eda_shap}}. Sin embargo, no hemos podido aplicar directamente debido a dos razones principales. En primer lugar, el modelo recibe como entrada un audio crudo lo que se traduce en muchísimas variables, algo poco manejable para esta técnica. En segundo lugar, la arquitectura de AASIST, con técnicas como el bloque MGO, no es compatible de forma natural con los explicadores de SHAP. Incluso obviando estas razones, como resultado de aplicar SHAP sobre AASIST, obtendríamos la importancia para miles de muestras individuales del audio y no características interpretables, como es el objetivo.
 
@@ -99,7 +106,7 @@ En primer lugar, combinamos el csv de características de los audios y el csv de
 
 Cabe mencionar que transformamos el score del segundo csv a ``logit'' con la intención de intentar hacer mejorar la imitación del modelo ya que los valores en ``logit'' crecen de manera más lineal y no están cerrados entre 0 y 1.
 
-Posteriormente, eliminamos del conjunto resultante aquellas columnas de características que no queremos que se usen en la entrada del surrogate como el nombre de cada archivo y realizamos una división del dataset. Esta tarea la realizamos a mano para que los archivos de train y test coincidan con los que se usaron a la hora de entrenar AASIST.
+Posteriormente, eliminamos del conjunto resultante aquellas columnas de características que no queremos que se usen en la entrada del surrogate como el nombre de cada archivo. Asimismo, hemos eliminado las columnas no númericas ya que ambos modelos requieren una entrada de solo datos númericos. Estos datos son pitch, f1, f2, f2 y los distintos MFCC. Aunque estas ausencias son importantes a la hora de interpretar los resultados, en el conjunto de datos si se encuentran derivadas de estas características como la media, por lo que el modelo si recibe información de ellas. Finalmente, realizamos la división del dataset con la función ``train\_test\_split''. 
 
 Por un lado, para estimar la fiabilidad del clasificador, hemos usado las métricas: precision, recall y F1. Como puede observarse en la salida de la celda donde utilizamos el modelo, ninguna de las métricas desciende de 0,92 al calcular la media entre ambas clases. En conjunto, estos datos sugieren que este primer modelo surrogate constituye una aproximación razonable al comportamiento de AASIST.
 
