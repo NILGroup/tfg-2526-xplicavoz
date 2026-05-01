@@ -1,3 +1,4 @@
+import joblib
 import matplotlib.pyplot as plt
 from captum.attr import LayerIntegratedGradients
 from captum.attr import IntegratedGradients
@@ -5,6 +6,11 @@ import numpy as np
 import soundfile as sf
 import librosa
 import torch
+import sys
+from pathlib import Path
+import shap
+import pandas as pd
+from xgboost import XGBClassifier, XGBRegressor
 
 #VARIABLES Y FUNCIONES AUXILIARES
 CUT = 64600 #número de muestras que espera el modelo (4.04s a 16kHz)
@@ -87,7 +93,7 @@ def pre_IG(t, model):
     return baseline, target_class
 
 #FUNCION GENERAL XAI
-def aplicar_XAI(wav_path, model):
+def aplicar_XAI(wav_path, model, df):
     x = load_mono_16k(wav_path, 16000)
     x4 = pad(x)
     t = torch.from_numpy(x4).unsqueeze(0).to("cpu") 
@@ -104,6 +110,7 @@ def aplicar_XAI(wav_path, model):
     graph_ig_wav(attrs)
     saliency, saliencyM = rise(x=x, t=t, model=model)
     graph_rise(saliency, saliencyM, long_audio)
+    #use_surrogates_for_shap(df)
 
 #OCCLUSION
 def hiding_scan(t, x, long_audio, model, target_class=None, occ_ms=200, hop_ms=50, fill_mode="zero"):
@@ -341,3 +348,21 @@ def graph_rise(saliency, saliencyM, long_audio):
     plt.title("RISE en medida del margen entre clase")
     plt.grid(True)
     plt.show()
+
+def use_surrogates_for_shap(df):
+    clas = XGBClassifier()
+    clas.load_model("German/xgb_clas.json")
+    sur = XGBRegressor()
+    sur.load_model("German/xgb_sur.json")
+
+    df = df.drop(columns=["filename"])
+
+    explainer = shap.TreeExplainer(clas)
+    shap_values_clas = explainer(df)
+    
+    shap.plots.waterfall(shap_values_clas)
+
+    explainer = shap.Explainer(sur)
+    shap_values_sur = explainer(df)
+
+    shap.plots.waterfall(shap_values_sur)

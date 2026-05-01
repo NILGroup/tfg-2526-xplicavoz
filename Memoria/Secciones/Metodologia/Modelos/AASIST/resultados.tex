@@ -2,14 +2,9 @@
 Antes de interpretar los resultados, es importante detallar la composición del conjunto de audios utilizado. Para ello, se seleccionaron 20 muestras, distribuidas de forma equilibrada según idioma y clase: 10 audios en español y 10 en inglés, de los cuales 10 son naturales y 10 generados. 
 
 \subsubsection*{Occlusion}
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_occlusion_temp_logit.png}
-	\caption{Resultados de ``logit'' de la ocultación temporal en AASIST.}
-    \label{fig:AASIST_global_occlusion_temporal_logit}
-\end{figure}
 
-En esta primera gráfica, vemos cómo ayuda cada tramo a los logits de los audios de cada clase. En lo referido a la clase ``bona'', podemos destacar tres fases: 
+
+En esta primera \autoref{fig:AASIST_global_occlusion_temporal_logit}, vemos cómo ayuda cada tramo a los logits de los audios de cada clase. En lo referido a la clase ``bona'', podemos destacar tres fases: 
 \begin{itemize}
     \item Entre \textbf{0,3 y 0,9} segundos, donde predominan valores negativos, es decir, no aporta evidencia útil al logit de la clase e incluso podría introducir información ambigua.
     \item Entre \textbf{1,0 y 1,8} segundos, donde se encuentran valores muy por encima del resto de la gráfica. Podemos deducir que es la zona donde el modelo encuentra más información importante para la clasificación de esta clase.
@@ -24,82 +19,27 @@ Sobre la clase ``spoof'', tenemos una gráfica bastante distinta con 4 regiones:
     \item Entre \textbf{3,8 y 4,0} segundos, una región negativa claramente diferenciada. Sin embargo, la precaución explicada para la clase ``bona'' también se aplica aquí.
 \end{itemize}
 
-En resumen, esta gráfica sugiere que el modelo se apoya en tramos concretos y no en toda la señal. En la clase ``bona'', la evidencia está muy localizada en la zona central, mientras que la clase ``spoof'' usa evidencia menos estable y, seguramente más basada en patrones o irregularidades locales.
-
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_occlusion_temp_margin.png}
-	\caption{Resultados de margen de la ocultación temporal en AASIST.}
-    \label{fig:AASIST_global_occlusion_temporal_margin}
-\end{figure}
+En resumen, la \autoref{fig:AASIST_global_occlusion_frecuencial_logit} sugiere que el modelo se apoya en tramos concretos y no en toda la señal. En la clase ``bona'', la evidencia está muy localizada en la zona central, mientras que la clase ``spoof'' usa evidencia menos estable y, seguramente más basada en patrones o irregularidades locales.
 
 Para interpretar esta gráfica, conviene recordar que al mostrar la variación del margen entre clases, las zonas positivas son segmentos \textbf{pro-spoof} y las negativas, \textbf{pro-bona}. Esta aclaración se aplica para ambas curvas, ya que para ambos casos calculamos el margen como la diferencia entre la salida de la clase ``spoof'' y la de la clase ``bona''.
 
 En cuanto a las regiones más relevantes, podemos señalar dos: la primera, comprendida entre \textbf{0,2 y 0,3}, la cual es pro-spoof, especialmente la curva ``spoof''. Esto significa que el modelo encuentra evidencia que le empuja la decisión hacia ``spoof''. La segunda región que se encuentra entre \textbf{1,0 y 2,0} segundos, la cual empuja la decisión claramente a ``bona''. 
 Sobre el patrón general de la gráfica, podemos intuir que los audios ``spoof'' parecen naturales la mayor parte del tiempo ya que la mayoría de valores son negativos. Sin embargo, AASIST debe encontrar patrones muy localizados que le ayudan a clasificar los audios como spoof.
 
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_occlusion_frec_logit.png}
-	\caption{Resultados de ``logit'' de la ocultación frecuencial en AASIST.}
-    \label{fig_:AASIST_global_occlusion_frecuencial_logit}
-\end{figure}
-
-En la gráfica, podemos observar claramente cómo la banda 0-500 Hz es muy dominante, e incluso, el tramo 500-1000 Hz en ``bonas''. Esto es coherente con lo que uno espera de la voz humana, ya que en las bajas frecuencias se concentra no solo la frecuencia fundamental, habitualmente situada en torno a 80-300 Hz, sino también una parte importante de la energía global de la señal y de su estructura armónica.
+En la \autoref{fig:AASIST_global_occlusion_frecuencial_logit}, podemos observar claramente cómo la banda 0-500 Hz es muy dominante, e incluso, el tramo 500-1000 Hz en ``bonas''. Esto es coherente con lo que uno espera de la voz humana, ya que en las bajas frecuencias se concentra no solo la frecuencia fundamental, habitualmente situada en torno a 80-300 Hz, sino también una parte importante de la energía global de la señal y de su estructura armónica.
 
 Asimismo, es importante mencionar, que aunque ambas curvas tienen comportamientos bastante planos en general, esto puede no significar que sean poco relevantes. Es posible que contengan información repetida de forma redundante en otras bandas.
 
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_occlusion_frec_margin.png}
-	\caption{Resultados de margen de la ocultación frecuencial en AASIST.}
-    \label{fig:AASIST_global_occlusion_frecuencial_margin}
-\end{figure}
-
-En esta gráfica podemos destacar tres regiones:
+En la \autoref{fig:AASIST_global_occlusion_frecuencial_margin} podemos destacar tres regiones:
 \begin{itemize}
     \item Tramo \textbf{0-500} Hz: en esta banda hay valores positivos lo que significa que favorece el margen hacia spoof. Aunque pueda parecer contradictorio con la gráfica anterior, una banda puede ser importante para una clase pero, sin embargo, al considerar el margen, favorecer más a la clase contraria.
     \item Tramo \textbf{500-2000} Hz: aquí encontramos curvas negativas, es decir, es una región pro-bona. Esto puede tener sentido ya que estas frecuencias se consideran muy importantes para la inteligibilidad del habla. 
     \item Tramo \textbf{5500-6500} Hz: aparece una contribución ligeramente positiva. Esto podría estar relacionado con algún patrón artificial de altas frecuencias.
 \end{itemize}
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_LIG_bonas.png}
-        \caption{Mapa filtro-tiempo generado con IG para ``bonas''.}
-        \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_LIG_spoofs.png}
-        \caption{Mapa filtro-tiempo generado con IG para ``spoofs''.}
-    \end{subfigure}
-    \caption{Mapas filtro-tiempo de la capa sinc-convolution generados con IG.}
-    \label{fig:AASIST_global_LIG_mapas}
-\end{figure}
-
-Antes de empezar a analizar, cabe recordar que mostramos la magnitud absoluta de atribución, no signo, por lo que solo podemos destacar relevancia espectral pero no si una región empuja a cierta clase.
+Antes de empezar a analizar la \autoref{fig:AASIST_global_LIG_mapas}, cabe recordar que mostramos la magnitud absoluta de atribución, no signo, por lo que solo podemos destacar relevancia espectral pero no si una región empuja a cierta clase.
 
 Interpretando los comportamientos, por un lado, observamos actividad predominantemente focalizada en los filtros bajos en el mapa de ``bonas''. Por otro lado, en el mapa de ``spoofs'', aunque también observamos esta predominancia, se observa una actividad algo mayor en las frecuencias altas. Esto podría reforzar la idea mencionada de patrones artificiales o irregularidades espectrales en frecuencias superiores.
-
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_LIG_bonas_norm.png}
-        \caption{Mapa filtro-tiempo normalizado generado con IG para ``bonas''.}
-        \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_LIG_spoofs_norm.png}
-        \caption{Mapa filtro-tiempo normalizado generado con IG para ``spoofs''.}
-    \end{subfigure}
-    \caption{Mapas filtro-tiempo de la capa sinc-convolution generados con IG normalizados.}
-    \label{fig:AASIST_global_LIG_mapas_norm}
-\end{figure}
 
 Los mapas normalizados explican mejor cómo se reparte la importancia entre filtros y a lo largo del tiempo al reducir el efecto de las bandas con mayor magnitud absoluta.
 
@@ -107,63 +47,15 @@ En ambas gráficas, seguimos observando actividad casi continua de los filtros b
 
 En el mapa de ``spoofs'', vemos una actividad más fragmentada y localizada en eventos temporales concretos, como por ejemplo entre los segundos \textbf{1 y 1,5}, y entre los segundos \textbf{3,6 y 3,9}. Ambas regiones también coinciden con las deducciones sacadas en Occlusion temporal.
 
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_LIG_grafica.png}
-	\caption{Gráfica filtro-tiempo de la capa sinc-convolution.}
-    \label{fig:AASIST_global_LIG_grafica}
-\end{figure}
+La \autoref{fig:AASIST_global_LIG_grafica} aporta información más detallada sobre las bandas de frecuencias bajas, nos señala con mayor precisión dentro de este conjunto, cuáles son las más excitadas. En particular, se observan varios picos destacados entre los filtros 5 y 20, lo que sugiere que la contribución del modelo no se distribuye de forma uniforme entre todos los filtros bajos.
 
-Esta gráfica aporta información más detallada sobre las bandas de frecuencias bajas, nos señala con mayor precisión dentro de este conjunto, cuáles son las más excitadas. En particular, se observan varios picos destacados entre los filtros 5 y 20, lo que sugiere que la contribución del modelo no se distribuye de forma uniforme entre todos los filtros bajos.
+En la \autoref{fig:AASIST_global_IG_audio}, volvemos a ver el patrón donde entre los segundos \textbf{1 y 1,8} hay una región importante para ambas clases. Posteriormente, entre los segundos \textbf{2 y 3,5}, la atribución es menor, y finalmente, sobre el segundo \textbf{3,9} un pico de relevancia de la curva ``bona'' claramente diferenciable. Este patrón refuerza la interpretación obtenida en otras gráficas temporales.
 
-\begin{figure}[H]
-    \centering
-	\includegraphics[width=\textwidth]{imagenes/AASIST_global_IG_audio.png}
-	\caption{Importancia temporal al aplicar IG sobre onda de audio cruda.}
-    \label{fig:AASIST_global_IG_audio}
-\end{figure}
-
-En esta figura temporal, volvemos a ver el patrón donde entre los segundos \textbf{1 y 1,8} hay una región importante para ambas clases. Posteriormente, entre los segundos \textbf{2 y 3,5}, la atribución es menor, y finalmente, sobre el segundo \textbf{3,9} un pico de relevancia de la curva ``bona'' claramente diferenciable. Este patrón refuerza la interpretación obtenida en otras gráficas temporales.
-
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_RISE_logit.png}
-         \caption{Resultados de ``logit'' usando RISE.}
-        \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_RISE_margen.png}
-        \caption{Resultados de ``margin'' usando RISE.}
-    \end{subfigure}
-    \caption{Resultados de RISE.}
-    \label{fig:AASIST_global_RISE}
-\end{figure}
-
-En conjunto, ambas gráficas vuelven a reforzar lo comentado sobre cómo regiones concretas influyen en mayor medida sobre el logit. Sin embargo, algo interesante de las gráficas de esta figura es que hay menos picos que en las gráficas de Occlusion, lo que sugiere que aquí se capta una relevancia más repartida por la señal.
+Analizando la \autoref{fig:AASIST_global_RISE}, en conjunto, ambas gráficas vuelven a reforzar lo comentado sobre cómo regiones concretas influyen en mayor medida sobre el logit. Sin embargo, algo interesante de las gráficas de esta figura es que hay menos picos que en las gráficas de Occlusion, lo que sugiere que aquí se capta una relevancia más repartida por la señal.
 
 Observando que curva presenta valores superiores, nos damos cuenta que en la que representa el ``logit'', la clase ``bona'' tiene mayor fuerza, mientras que en la que representa el ``margen'', ocurre lo contrario. Esto se puede deber a que en audios ``bona'', hay una evidencia relativamente estable que sostiene el logit de la clase durante el audio, mientras que en audios ``spoofs'', hay regiones que no necesariamente maximizan el logit de forma tan uniforme, pero que sin embargo, sí resultan importantes a la hora de separar la muestra respecto a ``bona''.
 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_SHAP_clas.png}
-        \caption{Agrupación de las gráficas SHAP del clasificador.}
-        \end{subfigure}
-    \hfill
-    \begin{subfigure}[t]{0.49\textwidth}
-        \centering
-        \includegraphics[width=\linewidth]{imagenes/AASIST_global_SHAP_reg.png}
-        \caption{Agrupación de las gráficas SHAP del regresor.}
-    \end{subfigure}
-    \caption{Gráficas de importancia global de SHAP para el clasificador y el regresor.}
-    \label{fig:AASIST_global_SHAP}
-\end{figure}
-
-Antes de analizar estas gráficas, conviene recordar que no representan explicaciones obtenidas directamente sobre AASIST, sino sobre modelos \textbf{surrogate}. Por ello, su interpretación debe entenderse como una explicación complementaria: no describen de forma interna el funcionamiento de AASIST, pero sí permiten identificar qué rasgos acústicos interpretables resultan más influyentes en modelos que aproximan su comportamiento.
+Antes de analizar la \autoref{fig:AASIST_global_SHAP}, conviene recordar que no representan explicaciones obtenidas directamente sobre AASIST, sino sobre modelos \textbf{surrogate}. Por ello, su interpretación debe entenderse como una explicación complementaria: no describen de forma interna el funcionamiento de AASIST, pero sí permiten identificar qué rasgos acústicos interpretables resultan más influyentes en modelos que aproximan su comportamiento.
 
 En cuanto a las figuras, la de la izquierda corresponde al modelo clasificador y la de la derecha al modelo regresor. Consideradas en conjunto, ambas muestran un patrón bastante coherente. La característica más influyente, especialmente en el clasificador, es \textbf{RMS}, es decir, la energía media del audio. Junto a ella, también destacan dos familias de variables especialmente relevantes: los \textbf{formantes} y los \textbf{MFCC}. La importancia observada en las bajas y bajas-medias frecuencias parece estar asociada, al menos en parte, a la estructura formántica y a la envolvente espectral de la voz, rasgos estrechamente relacionados con la naturalidad del habla. En este sentido, la importancia de variables como \textit{f1\_mean}, \textit{f2\_mean} o \textit{f3\_mean} refuerza la atribución que otras técnicas XAI ya sugerían para estas regiones del espectro.
 
