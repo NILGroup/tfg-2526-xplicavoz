@@ -35,16 +35,16 @@ Para todos los modelos usaremos la instancia I\_12\_N cuyo clase es 0 (audio rea
  
 En este ejemplo concreto tenemos que tener en cuenta que los valores del audio (I\_12\_N) para las características de la energía son:
  
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
+ \begin{table}[]
+ \begin{tabular}{|l|l|l|}
 \textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                                                                   \\
 RMS                     & 0.01956        & \begin{tabular}[c]{@{}l@{}}Esto nos indica que el audio tiene un volumen muy bajo, \\ algo por debajo del rango típico de voz estándar pero \\ coherente con voces sin procesar.\end{tabular} \\
 Silence ratio           & 0.76056        & Esto nos dice que el 76\% del audio es silencio.                                                                                                                                          \\
 Skewness                & -0.49481       & Esto muestra que el audio tiene una ligera asimetría negativa.                                                                                                                            \\
 ZCR                     & 0.09770        & \begin{tabular}[c]{@{}l@{}}Esto muestra que el audio es estable y no tiene demasiado \\ ruido donde predominan las vocales sonoras.\end{tabular}                                          \\
 Kurtosis                & 28.54873       & \begin{tabular}[c]{@{}l@{}}Esto es una curtosis extremadamente alta que encaja con voz \\ intermitente o silencios largos junto con palabras puntuales.\end{tabular}                     
-\end{tabular}
-\end{table}
+ \end{tabular}
+ \end{table}
  
  Con estas características de energía, la predicción del surrogate model para esta instancia es 0,52822.
  
