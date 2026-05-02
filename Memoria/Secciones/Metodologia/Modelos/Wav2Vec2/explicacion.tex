@@ -24,6 +24,8 @@ Una vez tenemos los surrogate models implementados, ahora les vamos a aplicar t�
 
 Para todos los modelos usaremos la instancia I\_12\_N cuyo clase es 0 (audio real) y el modelo predijo 0,2905.
 
+Aquí podemos ver todas las características de este audio: ~\ref{tab:caracteristicas_audio}
+
 \begin{enumerate}
  \item Energía: En este modelo podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
  
@@ -33,19 +35,6 @@ Para todos los modelos usaremos la instancia I\_12\_N cuyo clase es 0 (audio rea
 	\label{fig:Wav2Vec2}
  \end{figure}
  
-En este ejemplo concreto tenemos que tener en cuenta que los valores del audio (I\_12\_N) para las características de la energía son:
- 
- \begin{table}[]
- \begin{tabular}{|l|l|l|}
-\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                                                                   \\
-RMS                     & 0.01956        & \begin{tabular}[c]{@{}l@{}}Esto nos indica que el audio tiene un volumen muy bajo, \\ algo por debajo del rango típico de voz estándar pero \\ coherente con voces sin procesar.\end{tabular} \\
-Silence ratio           & 0.76056        & Esto nos dice que el 76\% del audio es silencio.                                                                                                                                          \\
-Skewness                & -0.49481       & Esto muestra que el audio tiene una ligera asimetría negativa.                                                                                                                            \\
-ZCR                     & 0.09770        & \begin{tabular}[c]{@{}l@{}}Esto muestra que el audio es estable y no tiene demasiado \\ ruido donde predominan las vocales sonoras.\end{tabular}                                          \\
-Kurtosis                & 28.54873       & \begin{tabular}[c]{@{}l@{}}Esto es una curtosis extremadamente alta que encaja con voz \\ intermitente o silencios largos junto con palabras puntuales.\end{tabular}                     
- \end{tabular}
- \end{table}
- 
  Con estas características de energía, la predicción del surrogate model para esta instancia es 0,52822.
  
  \begin{figure}[H]
@@ -54,182 +43,55 @@ Kurtosis                & 28.54873       & \begin{tabular}[c]{@{}l@{}}Esto es un
 	\label{fig:Wav2Vec2}
  \end{figure}
  
- A la vista de la imagen podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado. 
+ A la vista de la imagen podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado.
+ 
 
- \item Espectrales: En este modelo podemos ver como el spectral centroid es la característica dominante aunque seguida de cerca por el spectral rolloff y el spectral bandwidth. También se puede apreciar que el spectral flatness no tiene influencia en la predicción.
+ \item Espectrales: En este modelo las características más influyentes son el spectral_centroid, el spectral_rolloff y el spectral_bandwidth y la predicción del surrogate model de los espectrales fue de 0,49076.
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_wav2vec2.png}
-	\caption{Shap global espectrales.}
-	\label{fig:Wav2Vec2}
- \end{figure}
-
-En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las características espectrales son:
-
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
-\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                          \\
-Spectral centroid       & 1636.52417     & Presenta un centro de masa típico de voces habladas.                                                                             \\
-Spectral bandwidth      & 1590.95008     & \begin{tabular}[c]{@{}l@{}}Esto indica una dispersión moderada del espectro lo que es \\ típico de voces complejas.\end{tabular} \\
-Spectral rolloff        & 2916.26320     & Este es un rolloff típico de voces con consonantes.                                                                              \\
-Spectral flatness       & 0.03462        & \begin{tabular}[c]{@{}l@{}}Esto nos muestra que es una señal altamente tonal, es decir, \\ sin ruido.\end{tabular}               \\
-HNR                     & 11.75470       & Presenta un valor típico para las voces (entre 10 y 20)                                                                         
-\end{tabular}
-\end{table}
-
-Con estas características espectrales, la predicción del surrogate model para esta instancia es 0,49076.
-
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_instancia_wav2vec2.png}
-	\caption{Ejemplo concreto (I\_12\_N).}
-	\label{fig:Wav2Vec2}
- \end{figure}
+ Imágenes del shap para el surrogate model de los espectrales: ~\ref{tab:shap_espectrales_wav2vec2}
  
- A la vista de la imagen podemos ver como según estas características, este audio es más probable que sea real. 
+ \item Pitch: En este modelo hay un claro dominio por parte del pitch std en comparación con el pitch mean. La predicción del surrogate model del pitch fue de 0,48127.
  
- \item Pitch: En este modelo hay un claro dominio por parte del pitch std en comparación con el pitch mean.
+ Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_pitch_wav2vec2}
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_wav2vec2.png}
-	\caption{Shap global picth.}
-	\label{fig:Wav2Vec2}
- \end{figure}
-
-En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para el pitch son:
-
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
-\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                   \\
-Pitch std               & 55.34092       & \begin{tabular}[c]{@{}l@{}}Este valor muestra la variabilidad del pitch siendo en este\\ caso un valor de variabilidad alto.\end{tabular} \\
-Pitch mean              & 266.19288      & Este es un valor alto para el pitch lo que denota voces agudas.                                                                          
-\end{tabular}
-\end{table}
+ \item Formantes: En este modelo la f1 y la f3 tienen una influencia similar y muy superior a la de f2. La predicción del surrogate model de las formantes fue de 0,57039.
  
- Con estos valores del pitch, la predicción del surrogate model para esta instancia es 0,48127.
+  Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_formantes_wav2vec2}
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_instancia_wav2vec2.png}
-	\caption{Ejemplo concreto (I\_12\_N).}
-	\label{fig:Wav2Vec2}
- \end{figure}
+ \item MFCC: En este modelo los coeficientes cepstrales de Mel 5,6 y 7 son los que más influyen mientras que los coeficientes 1,13 y 12 son los que menos influyen. La predicción del surrogate model de los mfccs fue de 0,29669.
  
-A la vista de la imagen podemos ver ambas características empujan al modelo a decidir que este audio es real.
+ Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_mfccs_wav2vec2} 
  
- \item Formantes: En este modelo la f1 y la f3 tienen una influencia similar y muy superior a la de f2.
- 
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_wav2vec2.png}
-	\caption{Shap global formantes.}
-	\label{fig:Wav2Vec2}
- \end{figure}
-
-En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las formantes son:
-
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
-\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                                                                                                                     \\
-F1 mean                 & 1001.88668     & Este es un valor alta de f1, típico de las vocales abiertas (A,E,O).                                                                                                        \\
-F2 mean                 & 2104.97462     & \begin{tabular}[c]{@{}l@{}}Este es un valor típico de las vocales frontales o anteriores (E,I). \\ Las vocales posteriores tendrían valores menores de 1200.\end{tabular}   \\
-F3 mean                 & 3271.62780     & \begin{tabular}[c]{@{}l@{}}Este valor muestra una voz con un timbre bastante claro y \\ resonante típico de voces femeninas o voces masculinas poco \\ graves.\end{tabular}
-\end{tabular}
-\end{table}
- 
- Con estos valores de las formantes, la predicción del surrogate model para esta instancia es 0,57039.
-
- 
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_instancia_wav2vec2.png}
-	\caption{Ejemplo concreto (I\_12\_N).}
-	\label{fig:Wav2Vec2}
- \end{figure} 
- 
- En la imagen se puede apreciar como la f1 es la que más tira de la predicción hacia la clase real mientras que la f3 en bastante menos medida lo hace hacia la clase generado.
- 
- \item MFCC: En este modelo se observa como los coeficientes cepstrales de Mel 5,6 y 7 son los que más influyen mientras que los coeficientes 1,13 y 12 son los que menos influyen.
- 
-  \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_wav2vec2.png}
-	\caption{Shap global MFCCs.}
-	\label{fig:Wav2Vec2}
- \end{figure}
-
-En este ejemplo concreto tenemos que tener en cuenta que los valores del audio para las características espectrales son:
-
-\begin{table}[]
-\begin{tabular}{|l|l|l|}
-\textbf{Característica} & \textbf{Valor} & \textbf{Interpretación}                                                \\
-MFCC 1 mean             & -456.79852     & Es un valor bastante bajo, típico de audios con pausas frecuentes.     \\
-MFCC 2 mean             & 45.54136       & Esto indica que es una voz con más énfasis en fonemas graves y medios. \\
-MFCC 3 mean             & 2.06269        & Esto nos dice que el espectro es bastante equilibrado.                 \\
-MFCC 4 mean             & 12.16472       & Esto nos habla de la presencia de consonantes agudas.                  \\
-MFCC 5 mean             & -1.45521       & Esto muestra que es una voz natural y sin exceso de brillo.            \\
-MFCC 6 mean             & 12.41849       & Esto indica que la voz hablada es clara.                               \\
-MFCC 7 mean             & 4.94370        & Esto indica que la señal es estable y natural.                         \\
-MFCC 8 mean             & 10.45284       & Esto nos dice que la voz presenta consonantes articuladas.             \\
-MFCC 9 mean             & 8.34968        & Esto indica que la voz es clara y con información armónica preservada. \\
-MFCC 10 mean            & 3.03896        & Esto muestra que es voz natural, es decir, sin ruido blanco.           \\
-MFCC 11 mean            & 10.38782       & Esto refuerza la claridad de la voz.                                   \\
-MFCC 12 mean            & 12.44464       & Esto nos habla de que es voz articulada.                               \\
-MFCC 13 mean            & 10.57839       & Esto nos dice que la voz no presenta distorsión.                      
-\end{tabular}
-\end{table}
- 
- Con estos valores de los mfccs, la predicción del surrogate model para esta instancia es 0,29669.
- 
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_instancia_wav2vec2.png}
-	\caption{Ejemplo concreto (I\_12\_N).}
-	\label{fig:Wav2Vec2}
- \end{figure}
- 
- En la imagen podemos apreciar como este grupo de características en conjunto empujan la predicción hacia la clase generado siendo que lo que la mfcc5 empuja hacia la clase real se ve contrarrestado por las mfcc7, mfcc11 y mfcc9.
- 
-	\end{enumerate}
+\end{enumerate}
 
 Ahora para las características, buscando también algo que complemente la explicación del Shap, vamos a usar Lime para explicar los mismos modelos y la misma instancia particular (I\_12\_N).
 
 \begin{enumerate}
- \item Energía: En este modelo podemos ver como la kurtosis es la única característica que tiene un impacto relevante en la predicción del modelo. 
+ \item Energía: En este modelo podemos ver como la kurtosis es la única característica que tiene un impacto relevante en la predicción del modelo. ~\ref{tab:lime_energía_wav2vec2} 
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_lime_wav2vec2.png}
 	\caption{Explicación local energía Lime.}
-	\label{fig:Wav2Vec2}
+	\label{fig:lime_energía_wav2vec2}
  \end{figure}
 
- \item Espectrales: En este modelo podemos ver como todas las características tienen algo de impacto, sin embargo predominan claramente el espectral bandwidth y el espectral centroid hacia reducir la predicción y el espectral rolloff hacia aumentarla.
+ \item Espectrales: En este modelo podemos ver como todas las características tienen algo de impacto, sin embargo predominan claramente el espectral bandwidth y el espectral centroid hacia reducir la predicción y el espectral rolloff hacia aumentarla. 
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_lime_wav2vec2.png}
-	\caption{Explicación local espectrales Lime.}
-	\label{fig:Wav2Vec2}
- \end{figure}
+ Imagen del lime de los espectrales: ~\ref{tab:lime_espectrales_wav2vec2} 
  
  \item Pitch: En este modelo se ve como el pitch std influye más que el pitch mean. Ambas características empujan la predicción hacia abajo.
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_lime_wav2vec2.png}
-	\caption{Explicación loca pitch Lime.}
-	\label{fig:Wav2Vec2}
- \end{figure}
- 
+  Imagen del lime del pitch: ~\ref{tab:lime_pitch_wav2vec2} 
+  
  \item Formantes: En este modelo la f1 domina sobre las demás siendo la que más empuja la predicción hacia alguna dirección, en este caso, contribuye a reducirla mientras que la f3 la empuja hacia arriba aunque con menos fuerza de lo que la f1 lo hace hacia abajo.
  
- \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_lime_wav2vec2.png}
-	\caption{Explicación local formantes Lime.}
-	\label{fig:Wav2Vec2}
- \end{figure}
+  Imagen del lime de las formantes: ~\ref{tab:lime_formants_wav2vec2} 
  
  \item MFCC: En este modelo los coeficientes 5,7,9 y 11 son los que más influyen en las decisiones del modelo siendo que el 5 es el coeficiente que más disminuye la predicción mientras que el 7, el 9 y el 11 son los que más la aumentan.
  
-  \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_lime_wav2vec2.png}
-	\caption{Explicación local mfccs Lime.}
-	\label{fig:Wav2Vec2}
- \end{figure}
+  Imagen del lime de los mfccs: ~\ref{tab:lime_mfccs_wav2vec2} 
  
-	\end{enumerate}
+\end{enumerate}
 
 Ahora que ya tenemos tanto Shap como Lime de todas las características de los audios, vamos a agregar los resultados de los cinco surrogate models para ver de forma general cuales son las características más influyentes a la hora de clasificar los audios en reales o generados.
 
@@ -379,7 +241,7 @@ Ahora vamos a ver como se ve la agregación de los cuatro modelos de XAI sobre l
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/influencia_global_espectrogramas_wav2vec2.png}
-	\caption{Lime general de los espectrogramas}
+	\caption{Influencia general de los espectrogramas}
 	\label{fig:Wav2Vec2}
 \end{figure}
 

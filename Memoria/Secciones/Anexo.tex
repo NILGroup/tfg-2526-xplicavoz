@@ -1,5 +1,6 @@
 \newpage
 \section{Anexo}
+\subsection{AASIST}
 \begin{figure}[H]
     \centering
 	\includegraphics[width=\textwidth]{imagenes/AASIST_global_occlusion_temp_logit.png}
@@ -110,7 +111,148 @@
     \label{fig:AASIST_global_SHAP}
 \end{figure}
 
+\subsection{WAV2VEC2}
 
+\begin{table}[H]
+\caption{Valores e interpretación de características acústicas del audio I\_12\_N}
+\label{tab:caracteristicas_audio}
 
+\begin{tabular}{|ccl|}
+\hline
+\multicolumn{1}{|c|}{\textbf{Característica}}     & \multicolumn{1}{c|}{\textbf{Valor}} & \multicolumn{1}{c|}{\textbf{Interpretación}}                                                                                                                                                  \\ \hline
+\multicolumn{3}{|c|}{\textbf{Energía}}                                                                                                                                                                                                                                                  \\ \hline
+\multicolumn{1}{|c|}{\textbf{RMS}}                & \multicolumn{1}{c|}{0.01956}        & \begin{tabular}[c]{@{}l@{}}Esto nos indica que el audio tiene un volumen muy \\ bajo, algo por debajo del rango típico de voz \\ estándar pero coherente con voces sin procesar.\end{tabular} \\ \hline
+\multicolumn{1}{|c|}{\textbf{Silence ratio}}      & \multicolumn{1}{c|}{0.76056}        & Esto nos dice que el 76\% del audio es silencio.                                                                                                                                              \\ \hline
+\multicolumn{1}{|c|}{\textbf{Skewness}}           & \multicolumn{1}{c|}{-0.49481}       & \begin{tabular}[c]{@{}l@{}}Esto muestra que el audio tiene una ligera asimetría \\ negativa.\end{tabular}                                                                                     \\ \hline
+\multicolumn{1}{|c|}{\textbf{ZCR}}                & \multicolumn{1}{c|}{0.09770}        & \begin{tabular}[c]{@{}l@{}}Esto muestra que el audio es estable y no tiene \\ demasiado ruido donde predominan las vocales \\ sonoras.\end{tabular}                                           \\ \hline
+\multicolumn{1}{|c|}{\textbf{Kurtosis}}           & \multicolumn{1}{c|}{28.54873}       & \begin{tabular}[c]{@{}l@{}}Esto es una curtosis extremadamente alta que encaja \\ con voz intermitente o silencios largos junto con \\ palabras puntuales.\end{tabular}                       \\ \hline
+\multicolumn{3}{|c|}{\textbf{Espectrales}}                                                                                                                                                                                                                                              \\ \hline
+\multicolumn{1}{|c|}{\textbf{Spectral centroid}}  & \multicolumn{1}{c|}{1636.52417}     & Presenta un centro de masa típico de voces habladas.                                                                                                                                          \\ \hline
+\multicolumn{1}{|c|}{\textbf{Spectral bandwidth}} & \multicolumn{1}{c|}{1590.95008}     & \begin{tabular}[c]{@{}l@{}}Esto indica una dispersión moderada del espectro lo \\ que es típico de voces complejas.\end{tabular}                                                              \\ \hline
+\multicolumn{1}{|c|}{\textbf{Spectral rolloff}}   & \multicolumn{1}{c|}{2916.26320}     & Este es un rolloff típico de voces con consonantes.                                                                                                                                           \\ \hline
+\multicolumn{1}{|c|}{\textbf{Spectral flatness}}  & \multicolumn{1}{c|}{0.03462}        & \begin{tabular}[c]{@{}l@{}}Esto nos muestra que es una señal altamente tonal, \\ es decir, sin ruido.\end{tabular}                                                                            \\ \hline
+\multicolumn{1}{|c|}{\textbf{HNR}}                & \multicolumn{1}{c|}{11.75470}       & Presenta un valor típico para las voces (entre 10 y 20).                                                                                                                                      \\ \hline
+\multicolumn{3}{|c|}{\textbf{Pitch}}                                                                                                                                                                                                                                                    \\ \hline
+\multicolumn{1}{|c|}{\textbf{Pitch std}}          & \multicolumn{1}{c|}{55.34092}       & \begin{tabular}[c]{@{}l@{}}Este valor muestra la variabilidad del pitch siendo \\ en este caso un valor de variabilidad alto.\end{tabular}                                                    \\ \hline
+\multicolumn{1}{|c|}{\textbf{Pitch mean}}         & \multicolumn{1}{c|}{266.19288}      & \begin{tabular}[c]{@{}l@{}}Este es un valor alto para el pitch lo que denota \\ voces agudas.\end{tabular}                                                                                    \\ \hline
+\multicolumn{3}{|c|}{\textbf{Formantes}}                                                                                                                                                                                                                                                \\ \hline
+\multicolumn{1}{|c|}{\textbf{F1 mean}}            & \multicolumn{1}{c|}{1001.88668}     & \begin{tabular}[c]{@{}l@{}}Este es un valor alta de f1, típico de las vocales \\ abiertas (A,E,O).\end{tabular}                                                                               \\ \hline
+\multicolumn{1}{|c|}{\textbf{F2 mean}}            & \multicolumn{1}{c|}{2104.97462}     & \begin{tabular}[c]{@{}l@{}}Este es un valor típico de las vocales frontales o \\ anteriores (E,I). Las vocales posteriores tendrían \\ valores menores de 1200.\end{tabular}                  \\ \hline
+\multicolumn{1}{|c|}{\textbf{F3 mean}}            & \multicolumn{1}{c|}{3271.62780}     & \begin{tabular}[c]{@{}l@{}}Este valor muestra una voz con un timbre bastante \\ claro y resonante típico de voces femeninas o voces \\ masculinas poco graves.\end{tabular}                   \\ \hline
+\multicolumn{3}{|c|}{\textbf{MFCCs}}                                                                                                                                                                                                                                                    \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 1 mean}}        & \multicolumn{1}{c|}{-456.79852}     & \begin{tabular}[c]{@{}l@{}}Es un valor bastante bajo, típico de audios con pausas \\ frecuentes.\end{tabular}                                                                                 \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 2 mean}}        & \multicolumn{1}{c|}{45.54136}       & \begin{tabular}[c]{@{}l@{}}Esto indica que es una voz con más énfasis en fonemas \\ graves y medios.\end{tabular}                                                                             \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 3 mean}}        & \multicolumn{1}{c|}{2.06269}        & Esto nos dice que el espectro es bastante equilibrado.                                                                                                                                        \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 4 mean}}        & \multicolumn{1}{c|}{12.16472}       & Esto nos habla de la presencia de consonantes agudas.                                                                                                                                         \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 5 mean}}        & \multicolumn{1}{c|}{-1.45521}       & \begin{tabular}[c]{@{}l@{}}Esto muestra que es una voz natural y sin exceso de \\ brillo.\end{tabular}                                                                                        \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 6 mean}}        & \multicolumn{1}{c|}{12.41849}       & Esto indica que la voz hablada es clara.                                                                                                                                                      \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 7 mean}}        & \multicolumn{1}{c|}{4.94370}        & Esto indica que la señal es estable y natural.                                                                                                                                                \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 8 mean}}        & \multicolumn{1}{c|}{10.45284}       & \begin{tabular}[c]{@{}l@{}}Esto nos dice que la voz presenta consonantes \\ articuladas.\end{tabular}                                                                                         \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 9 mean}}        & \multicolumn{1}{c|}{8.34968}        & \begin{tabular}[c]{@{}l@{}}Esto indica que la voz es clara y con información \\ armónica preservada.\end{tabular}                                                                             \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 10 mean}}       & \multicolumn{1}{c|}{3.03896}        & \begin{tabular}[c]{@{}l@{}}Esto muestra que es voz natural, es decir, sin ruido \\ blanco.\end{tabular}                                                                                       \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 11 mean}}       & \multicolumn{1}{c|}{10.38782}       & Esto refuerza la claridad de la voz.                                                                                                                                                          \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 12 mean}}       & \multicolumn{1}{c|}{12.44464}       & Esto nos habla de que es voz articulada.                                                                                                                                                      \\ \hline
+\multicolumn{1}{|c|}{\textbf{MFCC 13 mean}}       & \multicolumn{1}{c|}{10.57839}       & Esto nos dice que la voz no presenta distorsión.                                                                                                                                              \\ \hline
+\end{tabular}
+\end{table}
 
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_wav2vec2.png}
+        \caption{Shap global espectrales}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_instancia_wav2vec2.png}
+        \caption{Ejemplo concreto (I\_12\_N)}
+    \end{subfigure}
+    
+    \caption{Influencia de características espectrales en Wav2Vec2}
+    \label{fig:shap_espectrales_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_wav2vec2.png}
+        \caption{Shap global pitch}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_instancia_wav2vec2.png}
+        \caption{Ejemplo concreto (I\_12\_N)}
+    \end{subfigure}
+    
+    \caption{Influencia de características espectrales en Wav2Vec2}
+    \label{fig:shap_pitch_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_wav2vec2.png}
+        \caption{Shap global formantes.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_instancia_wav2vec2.png}
+        \caption{Ejemplo concreto (I\_12\_N)}
+    \end{subfigure}
+    
+    \caption{Influencia de características espectrales en Wav2Vec2}
+    \label{fig:shap_formantes_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_wav2vec2.png}
+        \caption{Shap global MFCCs.}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_instancia_wav2vec2.png}
+        \caption{Ejemplo concreto (I\_12\_N)}
+    \end{subfigure}
+    
+    \caption{Influencia de características espectrales en Wav2Vec2}
+    \label{fig:shap_mfccs_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_espectrales_lime_wav2vec2.png}
+	\caption{Explicación local espectrales Lime.}
+	\label{fig:lime_espectrales_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_pitch_lime_wav2vec2.png}
+	\caption{Explicación loca pitch Lime.}
+	\label{fig:lime_pitch_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_formants_lime_wav2vec2.png}
+	\caption{Explicación local formantes Lime.}
+	\label{fig:lime_formants_wav2vec2}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_MFCC_lime_wav2vec2.png}
+	\caption{Explicación local mfccs Lime.}
+	\label{fig:lime_mfccs_wav2vec2}
+\end{figure}
 

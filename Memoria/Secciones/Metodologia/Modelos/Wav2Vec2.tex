@@ -1,3 +1,85 @@
-\input{Secciones/Metodologia/Modelos/Wav2Vec2/introduccion.tex}
+\subsubsection{Wav2Vec2}
+
+El modelo elegido fue Wav2Vec2, un modelo de aprendizaje profundo para el procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente a partir de la señal de audio cruda, sin necesidad de extraer características manualmente.
+
+\subsubsection*{Justificación del modelo}
+
+El propósito de realizar un \textit{fine-tuning} de este modelo para adaptarlo a nuestra tarea se basa en que, al contar con un dataset de audio muy reducido, es necesario partir de un modelo previamente entrenado con grandes volúmenes de datos. Aunque dicho entrenamiento previo no esté orientado a clasificación, permite reutilizar el conocimiento aprendido y adaptar el modelo a nuestra tarea mediante su reentrenamiento.
+
+\subsubsection*{Planificación del trabajo}
+
+El proceso de \textit{fine-tuning} de este modelo se divide en varias etapas:
+
+\begin{enumerate}
+ \item Preprocesamiento de los datos: Conversión de los datos al formato requerido por el modelo.
+ \item Configuración y entrenamiento del modelo: Adaptación y reentrenamiento del modelo con los nuevos datos.
+ \item Análisis de resultados: Evaluación de los resultados obtenidos.
+\end{enumerate}
+
+Antes de comenzar con el preprocesamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}, \textit{TrainingArguments}, \textit{Wav2Vec2ForSequenceClassification} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de la librería \textit{Pandas}.
+
+\subsubsection*{Preprocesamiento de los datos}
+
+Para el preprocesamiento de los audios se definen dos constantes globales: la frecuencia de muestreo (\textit{sampling rate}), fijada en 16000 Hz (ya que el modelo fue entrenado con esta frecuencia), y la duración máxima de los audios, establecida en 10 segundos.
+
+El \textit{dataframe} utilizado consta de dos columnas: una con las rutas a los audios y otra con las etiquetas correspondientes. Este conjunto de 200 audios, que incluye muestras tanto en español como en inglés, se divide en tres subconjuntos: entrenamiento (80\%), validación (10\%) y prueba (10\%).
+
+Posteriormente, se cargan los audios y se convierten las etiquetas al tipo \textit{long}, que es el formato esperado por el modelo.
+
+A continuación, los datos se procesan mediante una serie de funciones para adaptarlos a los requisitos del modelo:
+
+\begin{enumerate}
+ \item Extractor de características: define cómo se introduce el audio en el modelo, recibiendo señal cruda, normalizándola y aplicando \textit{padding} para convertirla al formato esperado.
+ 
+ \item Función de preprocesamiento: recibe el audio, la longitud máxima, la frecuencia de muestreo y el extractor de características, y devuelve los tensores listos para el modelo.
+ 
+ \item Colector de datos: recoge todos los datos del dataframe (valores de entrada y etiquetas) y devuelve un diccionario de esos datos transformados a tensores de PyTorch.
+\end{enumerate}
+
+\subsubsection*{Configuración y entrenamiento del modelo}
+
+En esta fase se emplean las clases restantes de la librería \textit{transformers}, comenzando con \textit{Wav2Vec2ForSequenceClassification}.
+
+Esta clase permite cargar el modelo base Wav2Vec2, configurar el número de salidas y definir la tarea. En nuestro caso, el modelo se configura para clasificación binaria (\textit{single-label classification}) con dos salidas.
+
+Para el entrenamiento de este modelo se han usado los 200 audios del dataset (100 en español y 100 en inglés) divididos como se mencionó anteriormente (80-10-10). Dado que son pocos audios para efectuar esta tarea, optamos por congelar el extractor de características para evitar el sobreajuste de los filtros del modelo.
+
+A continuación, se definen las métricas de evaluación. En este caso, debido al posterior postprocesado de las salidas, se emplean la precisión (\textit{accuracy}), el \textit{F1-score} y el área bajo la curva ROC (ROC-AUC).
+
+Posteriormente, se utiliza la clase \textit{TrainingArguments} para configurar el entrenamiento del modelo:
+
+\begin{itemize}
+ \item \texttt{output\_dir = ./wav2vec2-deepfake}: Carpeta que guarda los checkpoints, logs y el mejor modelo.
+ \item \texttt{eval\_strategy = steps}: Evaluación cada x pasos.
+ \item \texttt{save\_strategy = steps}: Guardado cada x pasos.
+ \item \texttt{logging\_steps = 50}: Cada 50 pasos calcula el loss, la tasa de aprendizaje y las métricas si toca evaluar.
+ \item \texttt{save\_steps = 500}: Evalúa cada 500 pasos.
+ \item \texttt{eval\_steps = 500}: Guarda cada 500 pasos.
+ \item \texttt{learning\_rate = 1e-5}: Tasa de aprendizaje. Es tan baja ya que se trata de una tarea de fine-tuning.
+ \item \texttt{per\_device\_train\_batch\_size = 4}: Batch-size del entrenamiento.
+ \item \texttt{per\_device\_eval\_batch\_size = 4}: Batch-size de la evaluación.
+ \item \texttt{gradient\_accumulation\_steps = 2}: Acumula gradientes durante 2 pasos antes de actualizar los pesos.
+ \item \texttt{num\_train\_epochs = 5}: Épocas de entrenamiento.
+ \item \texttt{fp16 = True}: Precisión de 16 bits para optimizar memoria y mejorar la velocidad de entrenamiento.
+ \item \texttt{metric\_for\_best\_model = auc}: Métrica que determinará cuál es el mejor modelo.
+ \item \texttt{load\_best\_model\_at\_end = True}: Carga el modelo con mejor métrica AUC.
+ \item \texttt{report\_to = none}: Desactiva la integración con herramientas externas.
+\end{itemize}
+
+Por último, se utiliza la clase \textit{Trainer} para ensamblar todo el pipeline y definir el proceso de entrenamiento:
+
+\begin{itemize}
+ \item \texttt{model = model}
+ \item \texttt{args = training\_args}
+ \item \texttt{train\_dataset = train\_dataset["train"]}
+ \item \texttt{eval\_dataset = train\_dataset["eval"]}
+ \item \texttt{data\_collator = data\_collator}
+ \item \texttt{processing\_class = feature\_extractor}
+ \item \texttt{compute\_metrics = compute\_metrics}
+\end{itemize}
+
+Una vez configurados todos los componentes, se procede a iniciar el entrenamiento del modelo.
+
+Enlace al notebook: \href{run:../Modelos/Iván/fine-tunning-Wav2Vec.ipynb}{Notebook fine-tunning-Wav2Vec}
 
 \input{Secciones/Metodologia/Modelos/Wav2Vec2/explicacion.tex}

@@ -3,6 +3,27 @@
 import numpy as np
 import librosa
 import torch
+from transformers import (
+    Wav2Vec2FeatureExtractor,
+    Wav2Vec2ForSequenceClassification,
+)
+import os
+
+base = os.getcwd()
+
+SAMPLING_RATE = 16000
+MAX_AUDIO_LEN = 10 * SAMPLING_RATE
+
+
+
+model = Wav2Vec2ForSequenceClassification.from_pretrained(
+    os.path.join(base,"Iván\wav2vec2-deepfake-final") # Poner ruta donde esté el modelo
+)
+model.eval()
+
+feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(
+    os.path.join(base,"Iván//wav2vec2-deepfake-final") # Poner ruta donde esté el modelo
+)
 
 
 def preprocess_single(audio_path, max_audio_len, sampling_rate, feature_extractor):
@@ -36,6 +57,14 @@ def prediccion(model, input_values):
     logits = outputs.logits
     return logits
 
+def generar_predicciones(audio):
+    input_values = preprocess_single(audio,MAX_AUDIO_LEN,SAMPLING_RATE,feature_extractor)
+    logits = prediccion(model,input_values)
+
+    print("nombre =", os.path.splitext(os.path.basename(audio))[0])
+    print("Salida del modelo =", logits)
+    score = float(logits_to_score(logits))
+    print("score =", score)
 
 # Para generar las explicaciones
 
@@ -122,7 +151,7 @@ def preprocesamiento(df):
 
     espectrogramas(df)
 
-    aux = pd.read_csv("c:\\Users\\ivire\\Documents\\GitHub\\TFG\\tfg-2526-xplicavoz\\Dataset\\todosLosAudiosMezcladosyDivididos\\out.csv")
+    aux = pd.read_csv(os.path.join(base,"Iván\\todosLosAudiosMezcladosyDivididos\\out.csv"))
 
     df["salida_wav2vec2"] = aux["score"]
 
@@ -180,19 +209,16 @@ def explicacion_shap(modelo,audio, X):
 
     return shap_heatmap_norm
 
-def mostrar_shap(shap, espectrograma, audio):
-    plt.figure(figsize=(12,6))
-    plt.imshow(espectrograma,aspect='auto',origin='lower',cmap='magma',extent=[0, espectrograma.shape[1], 0, 64])
+def mostrar_shap(espectrograma, shap, audio,ax):
+    
+    im = ax.imshow(shap,aspect='auto',origin='lower',cmap='coolwarm',alpha=1,extent=[0, espectrograma.shape[1], 0, 64])
 
-    plt.imshow(shap,aspect='auto',origin='lower',cmap='coolwarm',alpha=1,extent=[0, espectrograma.shape[1], 0, 64])
+    ax.set_yticks(list(range(0, 65, 4)))
+    ax.set_xlabel('Time frames')
+    ax.set_ylabel('Mel bands')
+    ax.set_title(f'SHAP - {os.path.splitext(os.path.basename(audio))[0]}')
 
-    plt.yticks(list(range(0, 65, 4)))
-
-    plt.colorbar(label='SHAP intensity')
-    plt.xlabel('Time frames')
-    plt.ylabel('Mel bands')
-    plt.title(f'Espectrograma de Mel con SHAP - {os.path.splitext(os.path.basename(audio))[0]}')
-    plt.show()
+    return im
 
 # IG
 
@@ -230,20 +256,40 @@ def integrated_gradients(model, audio, baseline=None, steps=50):
 
     return integrated_grads.numpy()
 
-def mostrar_ig(espectrograma,ig,audio):
+def mostrar_ig(espectrograma,ig,audio,ax):
+    
+    im = ax.imshow(ig,aspect='auto',origin='lower',cmap='coolwarm',alpha=1,extent=[0, espectrograma.shape[1], 0, 64])
 
-    plt.figure(figsize=(12,6))
+    ax.set_yticks(list(range(0, 65, 4)))
+    ax.set_xlabel('Time frames')
+    ax.set_ylabel('Mel bands')
+    ax.set_title(f'IG - {os.path.splitext(os.path.basename(audio))[0]}')
 
-    plt.imshow(espectrograma, aspect="auto", origin="lower", cmap="magma", extent=[0, espectrograma.shape[1], 0, 64])
-    plt.imshow(ig, aspect="auto", origin="lower", cmap="coolwarm", alpha=1, extent=[0, espectrograma.shape[1], 0, 64])
-    plt.yticks(list(range(0, 65, 4)))
+    return im
 
+def mostrar_graficas(model,audio,X_tensor):
+    mel_spec = extract_spectrogram(audio)  # (64, tiempo)
 
-    plt.colorbar(label="Integrated Gradients")
-    plt.title(f'Espectrograma de Mel con IG - {os.path.splitext(os.path.basename(audio))[0]}')
-    plt.xlabel("Time")
-    plt.ylabel("Mel band")
+    shap = explicacion_shap(model,audio,X_tensor)
 
+    ig = integrated_gradients(model, audio, steps=100)
+
+    n_frames = mel_spec.shape[1]
+
+    shap = shap[:, :n_frames]
+    ig = ig[:, :n_frames]
+
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5))
+
+    # 1. Mel
+    axes[0].imshow(mel_spec, aspect='auto', origin='lower', cmap='magma')
+    axes[0].set_title("Mel Spectrogram")
+
+    # 2. SHAP
+    im_shap = mostrar_shap(mel_spec, shap, audio, axes[1])
+
+    # 3. IG
+    im_ig = mostrar_ig(mel_spec, ig, audio, axes[2])
+
+    plt.tight_layout()
     plt.show()
-
-
