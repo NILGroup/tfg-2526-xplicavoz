@@ -27,26 +27,26 @@ Para todos los modelos usaremos la instancia I\_12\_N cuyo clase es 0 (audio rea
 Aquí podemos ver todas las características de este audio: ~\ref{tab:caracteristicas_audio}
 
 \begin{enumerate}
- \item Energía: En este modelo podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
+ \item Energía: En este modelo~\ref{tab:shap_energia_wav2vec2} podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
  
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_wav2vec2.png}
 	\caption{Shap global energía.}
-	\label{fig:Wav2Vec2}
+	\label{fig:shap_energia_wav2vec2}
  \end{figure}
  
  Con estas características de energía, la predicción del surrogate model para esta instancia es 0,52822.
  
+  A la vista de la imagen~\ref{tab:shap_energia_instancia_wav2vec2} podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado.
+ 
  \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_instancia_wav2vec2.png}
 	\caption{Ejemplo concreto.}
-	\label{fig:Wav2Vec2}
+	\label{fig:shap_energia_instancia_wav2vec2}
  \end{figure}
  
- A la vista de la imagen podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado.
- 
 
- \item Espectrales: En este modelo las características más influyentes son el spectral_centroid, el spectral_rolloff y el spectral_bandwidth y la predicción del surrogate model de los espectrales fue de 0,49076.
+ \item Espectrales: En este modelo las características más influyentes son el spectral\_centroid, el spectral\_rolloff y el spectral\_bandwidth y la predicción del surrogate model de los espectrales fue de 0,49076.
  
  Imágenes del shap para el surrogate model de los espectrales: ~\ref{tab:shap_espectrales_wav2vec2}
  

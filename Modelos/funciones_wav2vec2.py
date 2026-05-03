@@ -9,22 +9,8 @@ from transformers import (
 )
 import os
 
-base = os.getcwd()
-
 SAMPLING_RATE = 16000
 MAX_AUDIO_LEN = 10 * SAMPLING_RATE
-
-
-
-model = Wav2Vec2ForSequenceClassification.from_pretrained(
-    os.path.join(base,"Iván\wav2vec2-deepfake-final") # Poner ruta donde esté el modelo
-)
-model.eval()
-
-feature_extractor = Wav2Vec2FeatureExtractor.from_pretrained(
-    os.path.join(base,"Iván//wav2vec2-deepfake-final") # Poner ruta donde esté el modelo
-)
-
 
 def preprocess_single(audio_path, max_audio_len, sampling_rate, feature_extractor):
     # 1. Cargar audio
@@ -57,7 +43,7 @@ def prediccion(model, input_values):
     logits = outputs.logits
     return logits
 
-def generar_predicciones(audio):
+def generar_predicciones(model,feature_extractor, audio):
     input_values = preprocess_single(audio,MAX_AUDIO_LEN,SAMPLING_RATE,feature_extractor)
     logits = prediccion(model,input_values)
 
@@ -147,7 +133,7 @@ def fix_spec(spec,target_time):
 
     return spec
 
-def preprocesamiento(df):
+def preprocesamiento(df,base):
 
     espectrogramas(df)
 
@@ -213,7 +199,7 @@ def mostrar_shap(espectrograma, shap, audio,ax):
     
     im = ax.imshow(shap,aspect='auto',origin='lower',cmap='coolwarm',alpha=1,extent=[0, espectrograma.shape[1], 0, 64])
 
-    ax.set_yticks(list(range(0, 65, 4)))
+    ax.set_yticks(list(range(0, 65, 10)))
     ax.set_xlabel('Time frames')
     ax.set_ylabel('Mel bands')
     ax.set_title(f'SHAP - {os.path.splitext(os.path.basename(audio))[0]}')
@@ -260,7 +246,7 @@ def mostrar_ig(espectrograma,ig,audio,ax):
     
     im = ax.imshow(ig,aspect='auto',origin='lower',cmap='coolwarm',alpha=1,extent=[0, espectrograma.shape[1], 0, 64])
 
-    ax.set_yticks(list(range(0, 65, 4)))
+    ax.set_yticks(list(range(0, 65, 10)))
     ax.set_xlabel('Time frames')
     ax.set_ylabel('Mel bands')
     ax.set_title(f'IG - {os.path.splitext(os.path.basename(audio))[0]}')
