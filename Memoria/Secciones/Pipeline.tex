@@ -24,3 +24,17 @@ Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.sa
 Una vez cargado, se usan las funciones cargadas del archivo funciones\_AASIST.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
 
 A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.
+
+\subsubsection{Wav2Vec2}
+
+Para poder reutilizar el modelo, es necesario guardar tanto el modelo entrenado como el extractor de características. Para ello, se utiliza el método \texttt{save\_model()} de la clase \texttt{Trainer}, junto con el método \texttt{save\_pretrained()} de \texttt{Wav2Vec2FeatureExtractor}. Ambas clases provienen de la librería \texttt{Transformers}.
+
+Una vez guardados, con la función \texttt{from\_pretrained} de las clases \texttt{Wav2Vec2ForSequenceClassification} y \texttt{Wav2Vec2FeatureExtractor} puedes cargar tanto el modelo como el extractor de características.
+
+Tras cargar lo que necesitamos, emplearemos la función \texttt{generar\_predicciones} del archivo \texttt{funciones\_wav2vec2} a la que pasándole el modelo, el extractor y el audio te devolverá tanto la salida del modelo (logits) como su predicción para ese audio (score).
+
+Para generar las explicaciones de ese audio necesitamos usar los 200 audios de nuestro dataframe junto con su label. Con los audios usaremos la función \texttt{preprocesamiento} de \texttt{funciones\_wav2vec2} que nos devolverá los espectrogramas de todos los audios en forma de tensor de \texttt{torch} y agruparemos todos los labels en otro tensor.
+
+Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
+
+Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap e Integrated Gradients.
