@@ -1,4 +1,5 @@
 \subsubsection{LightGBM}
+\label{subsubsec:mod_lgbm}
 
 Como hemos comentado antes, a diferencia de Random Forest, que construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
 
@@ -44,7 +45,7 @@ Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMC
 
 \subsubsection*{Optimización de hiperparámetros}
 
-LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en \autoref{subsubsec:eda_lgbm}.
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en \autoref{subsubsec:eda_lgbm}. Estos difieren de los que declaramos en el modelo baseline, esta decisión es debido a que vamos a optimizar estos hiperparámetros por ser más influyentes.
 
 \begin{itemize}
 	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.

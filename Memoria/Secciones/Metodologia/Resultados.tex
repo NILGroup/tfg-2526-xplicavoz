@@ -1,26 +1,168 @@
 \subsection{Resultados}
 
-\subsubsection{Random Forest}
+\subsubsection{Modelos de datos tabulares}
 
-En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+En este apartado vamos a agrupar y revisar los resultados de los modelos de datos tabulares, los cuales se mencionan en \ref{subsec:modelos}, sin incluir los resultados de IA explicable. Para comodidad en las tablas, los modelos los hemos acortado por sus siglas y, de ser exactamente iguales los resultados, la tabla de resultados mostrará todos los resultados compactados.
 
-\subsubsection*{Modelo baseline}
+\subsubsection*{Modelos baseline}
+
+Como vemos en las tablas \ref{tab:metricas_principales_modelos_base} \ref{tab:classification_report_modelos_base} \ref{tab:analisis_errores_modelos_base}, estos modelos clasifican correctamente entre reales y generados. 
+
+% ESTO VA EN ANALISIS DE RESULTADOS
+Esto puede deberse a que los audios, cuando se escuchan directamente por una persona, se detectan algunos donde no se entiende lo que está diciendo el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas'' y otros aspectos que nos llevan a pensar que dichos audios son falsos.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Modelo} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUC-ROC} & \textbf{MCC}\\
+\midrule
+RF & 1 & 1 & 1 & 1 & 1 & 1\\
+LGBM & 1 & 1 & 1 & 1 & 1 & 1\\
+SVM & 1 & 1 & 1 & 1 & 1 & 1\\
+KNN & 1 & 1 & 1 & 1 & 1 & 1\\
+RL & 1 & 1 & 1 & 1 & 1 & 1\\
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de los modelos baseline de datos tabulares}
+\label{tab:metricas_principales_modelos_base}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Métrica-modelo} & \textbf{Real (1)} & \textbf{IA (0)} & \textbf{accuracy} & \textbf{macro avg} & \textbf{weighted avg}\\
+\midrule
+Precisión & 1 & 1 &  & 1 & 1 \\
+Recall & 1 & 1 &  & 1 & 1 \\
+F1 & 1 & 1 & 1 & 1 & 1 \\
+Nº Instancias & 10 & 10 & 20 & 20 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Classification report de los modelos baseline de datos tabulares}
+\label{tab:classification_report_modelos_base}
+\end{table}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Modelo} & \textbf{Verdaderos Negativos} & \textbf{Verdaderos Positivos} & \textbf{Falsos Positivos} & \textbf{Falsos Negativos} & \textbf{Error tipo I} & \textbf{Error tipo II}\\
+\midrule
+modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
+\bottomrule
+\end{tabular}
+\caption{Análisis de errores de los modelos baseline de datos tabulares}
+\label{tab:analisis_errores_modelos_base}
+\end{table}
+
+\subsubsection*{Validación Cruzada Estratificada}
+
+Los resultados revelan que los modelos son estables en los 5 folds y que clasifican bien, como se ve en \ref{tab:cv_modelos_base}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica}\\
+\midrule
+Accuracy & 1 & +/- 0 \\
+F1-Score & 1 & +/- 0 \\
+AUC-ROC & 1 & +/- 0 \\ 
+\bottomrule
+\end{tabular}
+\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
+\label{tab:cv_modelos_base}
+\end{table}
+
+\subsubsection*{Grid Search}
+
+En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido en los distintos modelos.
+
+Para Random Forest podemos ver que los parámetros difieren ligeramente a lo que hemos definido en el modelo baseline (ver Tabla \ref{tab:grid_search_rf}). Teniendo que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han disminuido.
 
 \begin{table}[H]
 \centering
 \begin{tabular}{lc}
 \toprule
-\textbf{Métrica} & \textbf{Valor}\\
+\textbf{Hiperparámetro} & \textbf{Valor}\\
 \midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
+n\_estimators & 100 \\
+max\_depth & 5 \\
+min\_samples\_split & 2 \\
+min\_samples\_leaf & 1  \\
+max\_features & sqrt \\
 \bottomrule
 \end{tabular}
-\caption{Métricas principales de Random Forest baseline}
+\caption{Mejores hiperparámetros para Random Forest con Grid Search y CV de 5 folds}
+\label{tab:grid_search_rf}
+\end{table}
+
+En el Grid Search del modelo LightGBM tomamos otro rumbo, como se menciona en \autoref{subsubsec:mod_lgbm},
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{Valor}\\
+\midrule
+num\_leaves & 15 \\
+learning\_rate & 0.01 \\
+n\_estimators & 300 \\
+min\_child\_samples & 20  \\
+subsample & 0.6 \\
+colsample\_bytree & 0.6 \\
+reg\_alpha & 0 \\
+reg\_lambda & 0 \\
+\bottomrule
+\end{tabular}
+\caption{Mejores hiperparámetros para LightGBM con Grid Search y CV de 5 folds}
+\label{tab:grid_search_lgbm}
+\end{table}
+
+El Grid Search del modelo SVM puede parecer más simple, pero es interesante ver los valores que devuelve (ver Tabla \ref{tab:grid_search_svm}. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajo hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{Valor}\\
+\midrule
+C & 1 \\
+gamma & 0.01 \\
+kernel & rbf \\
+\bottomrule
+\end{tabular}
+\caption{Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}
+\label{tab:grid_search_svm}
+\end{table}
+
+
+
+
+\subsubsection{Random Forest}
+
+En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI). 
+
+\subsubsection*{Modelo baseline}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Métrica} & \textbf{Valor RF} & \textbf{Valor LGBM} & \textbf{Valor SVM} & \textbf{Valor KNN} & \textbf{Valor Regresión Logística}\\
+\midrule
+Accuracy & 1 & 1 & 1 & 1 & 1 \\
+Precision & 1 & 1 & 1 & 1 & 1 \\
+Recall & 1 & 1 & 1 & 1 & 1 \\
+F1-Score & 1 & 1 & 1 & 1 & 1  \\
+AUC-ROC & 1 & 1 & 1 & 1 & 1 \\
+MCC & 1 & 1 & 1 & 1 & 1 \\ 
+\bottomrule
+\end{tabular}
+\caption{Métricas principales de los modelos baseline de datos tabulares}
+\label{tab:res_modelos_base}
 \end{table}
 
 \begin{table}[H]
@@ -853,9 +995,15 @@ Los resultados no varían de los anteriores, lo que es de esperar en este caso. 
 \subsubsection*{Resultados de explicacion}
 % SHAP
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_local.png}
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_1.png}
 	\caption{Explicación local con SHAP}
-	\label{fig:shap_svm_local}
+	\label{fig:1_shap_svm_local}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_2.png}
+	\caption{Explicación local con SHAP}
+	\label{fig:2_shap_svm_local}
 \end{figure}
 
 En esta imagen podemos observar que, como hemos visto antes, la variable más importante es spectral flatness, por un orden de magnitud, seguido de spectral bandwidth y mfcc1 con el mismo valor entre sí.
