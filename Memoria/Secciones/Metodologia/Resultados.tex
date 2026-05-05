@@ -139,8 +139,6 @@ kernel & rbf \\
 \end{table}
 
 
-
-
 \subsubsection{Random Forest}
 
 En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI). 
@@ -295,6 +293,8 @@ Al igual que el modelo baseline, este modelo optimizado también clasifica corre
 
 \subsubsection*{Resultados de explicación}
 
+Como podemos observar en las gráficas \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
+
 % SHAP
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_local_1.png}
@@ -308,11 +308,15 @@ Al igual que el modelo baseline, este modelo optimizado también clasifica corre
 	\label{fig:2_shap_rf_local}
 \end{figure}
 
+Como se muestra en \ref{fig:shap_rf_global}, la importancia de las características concuerda con las que vimos antes, en mismo orden y magnitud. Además, en colores podemos ver mejor, por ejemplo en spectral flatness, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
+
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_global.png}
 	\caption{Explicación global con SHAP}
 	\label{fig:shap_rf_global}
 \end{figure}
+
+Ahora hemos decidido quitar la característica spectral flatness, y los resultados los podemos ver en \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
