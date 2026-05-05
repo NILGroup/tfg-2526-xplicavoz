@@ -2,10 +2,11 @@
 \section{Pipeline}
 \label{sec:pipeline}
 
-Como forma de cierre para el proyecto, hemos desarrollado un pipeline que utiliza todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline está dividido en secciones que corresponden a cada modelo que permiten ir ejecutándolos de forma independiente.
+Como cierre para el proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único ``notebook'' todos los modelos desarrollados a lo largo del proyecto. De este modo, permite facilitar la comparación de resultados y explicaciones entre modelos.
 
-Hemos diseñado un diagrama de flujo simplificado para mostrar la estructura general del pipeline. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, se han dividido los modelos en dos grupos según el tipo de entrada que utilizan, es decir, modelos que trabajan con la onda de audio cruda y modelos que trabajan con características extraídas del audio. En cada grupo, se muestran los modelos implementados y las técnicas de XAI aplicadas a cada uno de ellos.
+Cabe mencionar que el diseño de este pipeline constituye una de las aportaciones prácticas del proyecto, al integrar en una misma estructura modelos de distinta naturaleza y técnicas de explicabilidad complementarias. Esto permite analizar un mismo audio desde múltiples perspectivas, comparando no solo el resultado de clasificación, sino también la forma en que cada modelo justifica su decisión.
 
+Con el fin de representar su estructura general, se ha diseñado un diagrama de flujo simplificado. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, los modelos se han dividido en dos grupos según el tipo de entrada que utilizan: por un lado, aquellos que operan sobre características extraídas del audio y, por otro, los que trabajan directamente con la forma de onda cruda. En cada grupo se indican tanto los modelos implementados como las técnicas de XAI aplicadas a cada uno de ellos.
 \begin{figure}[H]
     \centering
 	\includegraphics[width=\textwidth]{imagenes/Arquitectura_pipeline.png}
@@ -13,9 +14,11 @@ Hemos diseñado un diagrama de flujo simplificado para mostrar la estructura gen
     \label{fig:Arquitectura_pipeline}
 \end{figure}
 
-Para poder usar los modelos entrenados durante el proyecto y no perder tiempo entrenándolos para cada caso, hemos utilizado diversas técnicas para guardarlos que se explicarán en el apartado de cada modelo.
+Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos, que se explicarán en el apartado correspondiente a cada modelo.
 
-La primera parte del pipeline consta de una primera celda con los imports necesarios, una segunda celda donde se indica la ruta al audio que se quiere analizar y una tercera celda donde se extraen las características del audio usando la función ``\texttt{extract\_features}'' del archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección con la predicción y las explicaciones obtenidas con las técnicas de XAI aplicadas a dicho modelo.
+La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
+
+Además, el ``notebook'' está organizado en secciones correspondientes a cada modelo, lo que permite ejecutar cada uno de ellos de forma independiente.
 
 \subsubsection{AASIST}
 

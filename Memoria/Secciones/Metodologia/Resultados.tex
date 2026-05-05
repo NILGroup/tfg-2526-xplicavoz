@@ -1161,21 +1161,7 @@ Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el pro
 Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de \textbf{épocas: 10, 20, 40 o 80}. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
 Por último, antes de analizar los resultados, es importante explicar que en la separación manual del dataset hemos separado los distintos speakers que había en cada idioma. Esto se refiere a que en el dataset hay por idioma, 5 speakers distintos con 10 audios ``bonafide'' y 10 ``spoof'', entonces, hemos intentado que en las tres particiones haya audios de las 5 personas y así intentar evitar sesgos.
 
-A la hora de evaluar, hemos usado 4 medidas:
-
-\textbf{Accuracy}%: proporción de las muestras clasificadas correctamente sobre el total de muestras.
-
-    %$\text{Accuracy}=\frac{TP+TN}{TP+TN+FP+FN}$
-\textbf{Precision}%: proporción de las muestras spoof detectadas sobre el total de muestras clasificadas como spoof.
-
- %$\text{Precision}=\frac{TP}{TP+FP}$
-\textbf{Recall}%: proporción de muestras spoof detectadas correctamente sobre el total de muestras spoof.
-
- %$\text{Recall}=\frac{TP}{TP+FN}$
-
-\textbf{F1}%: media armónica entre precision y recall.
-
- %$\text{F1} = \frac{2\cdot \text{Precision}\cdot \text{Recall}}{\text{Precision}+\text{Recall}}$
+A la hora de evaluar, hemos usado 4 medidas: accuracy, precision, recall y f1.
 
 \begin{figure}[H]
     \centering
@@ -1191,8 +1177,9 @@ En lo referido a las épocas, lo más destacable es que superar las 40 épocas e
 
 \input{Secciones/Metodologia/Modelos/AASIST/resultados.tex}
 
+\subsubsection{Perceptrón}
 \input{Secciones/Metodologia/Modelos/Perceptron/resultados.tex}
-
+\subsubsection{Wav2Vec2}
 \input{Secciones/Metodologia/Modelos/Wav2Vec2/resultados.tex}
 
 \subsubsection{Regresión Logística}
