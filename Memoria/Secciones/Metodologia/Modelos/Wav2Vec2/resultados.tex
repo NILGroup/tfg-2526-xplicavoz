@@ -12,6 +12,8 @@ Una vez hecho el entrenamiento, podemos mostrar los resultados del modelo.
 
 Las métricas nos muestran que el modelo tiene un porcentaje de aciertos del 90\% y una capacidad discriminativa del 92\%, lo que nos permite concluir que en general es un modelo bastante preciso.
 
+\subsubsection*{Salida del modelo}
+
 Ahora vamos a procesar la salida del modelo para hacerla más interpretable, ya que actualmente el modelo devuelve una tupla con dos valores de pertenencia a las distintas clases. Lo que se busca es transformar esto en un número entre 0 y 1 que indique el grado de pertenencia del audio a la clase generada. Cuanto más cercano a 1, más pertenece ese audio a la clase generada.
 
 Para lograrlo, se aplica una función sigmoide que mide qué tan mayor es $x_2$ (clase generada) con respecto a $x_1$ (clase real):
@@ -27,6 +29,10 @@ Para lograrlo, se aplica una función sigmoide que mide qué tan mayor es $x_2$ 
 \end{itemize}
 
 Por último, estos nuevos resultados se guardan en un \textit{dataframe} que servirá para aplicar posteriormente modelos de XAI. Este dataframe contiene el nombre del audio, el valor devuelto por el modelo y la categoría binaria a la que pertenece.
+
+Cabe recalcar que en los nombres la primera letra indica el idioma (E: español, I: inglés), el número es su identificador y la última letra indica si es natural (N) o generado (G).
+
+Podemos ver en los resultados de las predicciones cómo el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse a ruido o a otras imperfecciones en los audios.
 
 \begin{table}[h]
 \centering
@@ -58,6 +64,257 @@ E\_43\_G & 0.76308837 & 1 \\
 \end{tabular}
 \end{table}
 
-Cabe recalcar que en los nombres la primera letra indica el idioma (E: español, I: inglés), el número es su identificador y la última letra indica si es natural (N) o generado (G).
+\subsubsection*{Resultados explicación Wav2Vec2}
 
-Podemos ver en los resultados de las predicciones cómo el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse a ruido o a otras imperfecciones en los audios.
+Los resultados de los primeros cinco surrogate models implementados (orientados a datos tabulares) son los siguientes. 
+
+Cabe recalcar que para todos los modelos usaremos la instancia I\_12\_N cuya clase es 0 (audio real) y el modelo Wav2Vec2 predijo 0,2905, es decir, lo clasificó como real.
+
+En cuanto al Shap mostraremos dos gráficas por modelo y la predicción del modelo para ese audio. La primera gráfica nos mostrará la explicación global para ese modelo mientras que la segunda nos mostrará una explicación local de uno de los audios. 
+
+Aquí proporcionamos un enlace a la tabla con todas las características que extrajimos del audio: ~\ref{tab:caracteristicas_audio}
+
+\begin{enumerate}
+ \item Energía: En este modelo~\ref{tab:shap_energia_wav2vec2} podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_wav2vec2.png}
+	\caption{Shap global energía.}
+	\label{fig:shap_energia_wav2vec2}
+ \end{figure}
+ 
+ Antes de pasar con la explicación local debemos detenernos en la predicción del modelo que fue de 0,52822. Esto nos da a entender que ninguna de las características observadas por el modelo son verdaderamente relevantes a la hora de decidir si el audio es real o generado.  
+ 
+  Pasando ahora con la explicación local~\ref{tab:shap_energia_instancia_wav2vec2} podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado.
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_instancia_wav2vec2.png}
+	\caption{Ejemplo concreto.}
+	\label{fig:shap_energia_instancia_wav2vec2}
+ \end{figure}
+ 
+
+ \item Espectrales: En este modelo las características más influyentes son el spectral\_centroid, el spectral\_rolloff y el spectral\_bandwidth y la predicción del surrogate model de los espectrales fue de 0,49076. 
+ 
+ Imágenes del shap para el surrogate model de los espectrales: ~\ref{tab:shap_espectrales_wav2vec2}
+ 
+ \item Pitch: En este modelo hay un claro dominio por parte del pitch std en comparación con el pitch mean. La predicción del surrogate model del pitch fue de 0,48127.
+ 
+ Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_pitch_wav2vec2}
+ 
+ \item Formantes: En este modelo la f1 y la f3 tienen una influencia similar y muy superior a la de f2. La predicción del surrogate model de las formantes fue de 0,57039.
+ 
+  Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_formantes_wav2vec2}
+ 
+ \item MFCC: En este modelo los coeficientes cepstrales de Mel 5,6 y 7 son los que más influyen mientras que los coeficientes 1,13 y 12 son los que menos influyen. La predicción del surrogate model de los mfccs fue de 0,29669.
+ 
+ Imágenes del shap para el surrogate model del pitch: ~\ref{tab:shap_mfccs_wav2vec2} 
+ 
+\end{enumerate}
+
+A la vista de todas las predicciones de los surrogate models (Energía: 0,52822, Espectrales: 0,49076, Pitch: 0,48127, Formantes: 0,57039 y MFCC: 0,29669) podemos concluir que los mfccs son el grupo de características más relevante a la hora de decidir si este audio (I\_12\_N) es real o generado.
+
+Ahora, buscando también algo que complemente la explicación del Shap, vamos a usar Lime para explicar los mismos modelos y la misma instancia particular (I\_12\_N).
+
+\begin{enumerate}
+ \item Energía: En este modelo podemos ver como la kurtosis es la única característica que tiene un impacto relevante en la predicción del modelo. ~\ref{tab:lime_energía_wav2vec2} 
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_lime_wav2vec2.png}
+	\caption{Explicación local energía Lime.}
+	\label{fig:lime_energía_wav2vec2}
+ \end{figure}
+
+ \item Espectrales: En este modelo podemos ver como todas las características tienen algo de impacto, sin embargo predominan claramente el espectral bandwidth y el espectral centroid hacia reducir la predicción y el espectral rolloff hacia aumentarla. 
+ 
+ Imagen del lime de los espectrales: ~\ref{tab:lime_espectrales_wav2vec2} 
+ 
+ \item Pitch: En este modelo se ve como el pitch std influye más que el pitch mean. Ambas características empujan la predicción hacia abajo.
+ 
+  Imagen del lime del pitch: ~\ref{tab:lime_pitch_wav2vec2} 
+  
+ \item Formantes: En este modelo la f1 domina sobre las demás siendo la que más empuja la predicción hacia alguna dirección, en este caso, contribuye a reducirla mientras que la f3 la empuja hacia arriba aunque con menos fuerza de lo que la f1 lo hace hacia abajo.
+ 
+  Imagen del lime de las formantes: ~\ref{tab:lime_formants_wav2vec2} 
+ 
+ \item MFCC: En este modelo los coeficientes 5,7,9 y 11 son los que más influyen en las decisiones del modelo siendo que el 5 es el coeficiente que más disminuye la predicción mientras que el 7, el 9 y el 11 son los que más la aumentan.
+ 
+  Imagen del lime de los mfccs: ~\ref{tab:lime_mfccs_wav2vec2} 
+ 
+\end{enumerate}
+
+Ahora que ya tenemos tanto Shap como Lime de todas las características de los audios, vamos a agregar los resultados de los cinco surrogate models para ver de forma general cuales son las características más influyentes a la hora de clasificar los audios en reales o generados.
+
+Para esta tarea se ha hecho lo siguiente, primero calculamos la importancia promedio de cada característica usando sus valores Shap, luego calculamos la importancia de cada grupo de características y con esto podemos promediar la importancia de cada característica entre todos los grupos de características. Por último los ordenamos de mayor a menor importancia y los mostramos.
+
+En esta gráfica~\ref{tab:ranking_shap_Wav2Vec2} podemos ver las 15 características más importantes para la predicción destacando sobre todo el centroide espectral y el 5º coeficiente cepstral de Mel.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_shap_wav2vec2.png}
+	\caption{Ranking características Shap.}
+	\label{fig:ranking_shap_Wav2Vec2}
+\end{figure}
+
+Para Lime hacemos exactamente lo mismo. 
+
+Aquí~\ref{tab:ranking_lime_Wav2Vec2} vemos que destacan las mismas características que en la de Shap pero con ligeras variaciones de posición entre ellas.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_lime_wav2vec2.png}
+	\caption{Ranking características Lime.}
+	\label{fig:ranking_lime_Wav2Vec2}
+\end{figure}
+
+Para acabar con la explicación de las características, vamos a juntar ambas explicaciones en una sola combinada para obtener el orden global de influencia de las características. Este orden será calculado haciendo la media aritmética de su importancia en Shap y Lime.
+
+En esta gráfica combinada~\ref{tab:ranking_agregado_Wav2Vec2} podemos ver el ranking global de las características según su importancia. Podemos observar que a la hora de agregar ambas gráficas las diferencias respecto a las gráficas anteriores de los rankings de Shap y Lime no son demasiado grandes ya que ambas exponían uno similar.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_final_wav2vec2.png}
+	\caption{Ranking agregado de características.}
+	\label{fig:ranking_agregado_Wav2Vec2}
+\end{figure}
+
+Sobre el sexto surrogate model aplicaremos Shap, Lime, Integrated gradients y Grad cam.
+
+De cada una de estas técnicas sacaremos tres imágenes. La dos primeras se corresponderán con la actuación de la técnica de XAI sobre un audio concreto (I\_12\_N) y el espectrograma de dicho audio. La última imagen nos mostrará los patrones de actuación global de la técnica empleada. 
+
+SHAP
+
+Aquí podemos ver en las imágenes~\ref{tab:shap_local_espectrogramas_Wav2Vec2} cómo la parte del audio que más influye en la predicción es la parte final del audio, correspondiente a las bandas de mel entre 25 y 45, que simbolizan frecuencias medio-altas. Estas bandas contienen las formantes F2 y F3, así como elementos clave para la inteligibilidad del habla. Si nos fijamos en el espectrograma, esto coincide con el final, donde parece que el audio está distorsionado. Esto se aprecia claramente al escuchar el audio (I\_12\_N: audio 12 natural en inglés), donde la última palabra es ``next'', y ese final que parece distorsionado corresponde al sonido de la pronunciación del grupo consonántico ``xt''. También se puede observar cómo la parte donde ya no hay espectrograma, en la explicación de SHAP, no tiene prácticamente influencia.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{shap_espectrogramas_wav2vec2.png}
+        \caption{Shap de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:shap_local_espectrogramas_Wav2Vec2}
+\end{figure}
+
+En esta imagen~\ref{tab:shap_global_espectrogramas_Wav2Vec2} sobre la influencia global del shap podemos ver como las partes que más influyen en la clasificación del audio son el principio y el final del audio. Comparando esta gráfica con la anterior podemos confirmar la importancia que tienen las bandas de mel medias. También podemos ver como el audio elegido para la explicación global no es representativo de la explicación global ya que esta última si que usa mucho la parte final del audio para la explicación.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_global_espectrogramas_wav2vec2.png}
+	\caption{Shap general de los espectrogramas}
+	\label{fig:shap_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+LIME
+
+En esta imagen~\ref{tab:lime_local_espectrogramas_Wav2Vec2} se muestra la explicación local de lime sobre mismo audio que en el shap. En ella podemos ver como, al igual que en el shap, las bandas medias son las más relevantes y la pronunciación final es lo que más mueve la predicción hacia la clase real. Por último podemos ver como en estas bandas medias al principio estas empujan la predicción hacia generado, esto se puede deber a que el audio tarda en comenzar y a como pronuncia el principio de la primera palabra ``what''.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{lime_espectrogramas_wav2vec2.png}
+        \caption{Lime de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:lime_local_espectrogramas_Wav2Vec2}
+\end{figure}
+
+Aquí~\ref{tab:lime_global_espectrogramas_Wav2Vec2} a diferencia de en shap, según lime, el modelo toma las decisiones principalmente gracias al principio de los audios aunque el final también tiene algo de influencia.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_global_espectrogramas_wav2vec2.png}
+	\caption{Lime general de los espectrogramas}
+	\label{fig:lime_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+INTEGRATED GRADIENTS
+
+Aquí~\ref{tab:ig_local_espectrogramas_Wav2Vec2} podemos ver como no está analizando el audio del todo bien ya que las partes más rojas son las que más influyes a una predicción hacia generado pero si vemos el espectrograma del audio, en esas partes como tal no hay nada, son zonas negras, también la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma. Si ignoramos esas partes y nos centramos solo donde si que hay evidencia de audio, podemos ver como esas son zonas más blancas - azuladas que empujan la predicción hacia real. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{ig_espectrogramas_wav2vec2.png}
+        \caption{Lime de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:ig_local_espectrogramas_Wav2Vec2}
+\end{figure}
+
+En la predicción global~\ref{tab:ig_global_espectrogramas_Wav2Vec2} se puede apreciar cierta similitud con las dos explicaciones generales anteriores donde las principales zonas de influencia en la clasificación son la parte inicial y la parte final de los audios en las bandas medias.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/ig_global_espectrogramas_wav2vec2.png}
+	\caption{Integrated gradients general de los espectrogramas}
+	\label{fig:ig_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+GRAD CAM
+
+Aquí~\ref{tab:gc_local_espectrogramas_Wav2Vec2}, al igual que en la explicación local de integrated gradients, podemos ver que en las partes donde no hay audio son las partes que más influyen en la predicción aunque aquí si que distingue bien que la parte final donde no hay espectrograma no tiene ningún peso en la predicción. De todas formas, fijándonos donde hay audio podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{gc_espectrogramas_wav2vec2.png}
+        \caption{Lime de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:gc_local_espectrogramas_Wav2Vec2}
+\end{figure}
+
+La explicación global del grad cam~\ref{tab:gc_global_espectrogramas_Wav2Vec2} se caracteriza por darle el mayor peso a los instantes iniciales del espectrograma, dándole un peso prácticamente nulo al centro del espectrograma, curiosamente donde están los audios, y otorgándole un peso relevante también al final del espectrograma.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/gc_global_espectrogramas_wav2vec2.png}
+	\caption{Grad cam general de los espectrogramas}
+	\label{fig:gc_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+Ahora vamos a ver como se ve la agregación de los cuatro modelos de XAI sobre los espectrogramas. Esto se ha calculado para cada frame del espectrograma, se ha sacado su valor en cada una de las explicaciones globales de los distintos modelos y se ha hecho la media aritmética sobre ellos. Antes de poder hacer esto, hemos tenido que normalizar todos las explicaciones ya que estaban en diferentes escalas.
+
+La agregación de las explicaciones globales~\ref{tab:agregado_espectrogramas_Wav2Vec2} nos deja claro donde se encuentran las zonas más influyentes siendo el principio y el final del espectrograma dejando al centro con un peso mucho menos relevante.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/influencia_global_espectrogramas_wav2vec2.png}
+	\caption{Influencia general de los espectrogramas}
+	\label{fig:agregado_espectrogramas_Wav2Vec2}
+\end{figure}
+
+Como conclusiones podemos sacar que a la vista de los modelos de explicación, parece que el modelo Wav2Vec2 se fija más en los alrededores del audio que en el audio en sí mismo. Esto puede explicartes gracias a las siguitentes propiedades de los espectrogramas de voz:
+
+\begin{enumerate}
+
+ \item Coarticulación: Este es un fenómeno típico de la voz humana donde esta no está formada por unidades aisladas, es decir, cada sonido depende de los anteriores y posteriores. Esto hace que las transiciones entre fonemas contengan más información que el fonema en sí haciendo que lo que está alrededor del audio tenga más peso.
+ 
+ \item Dinámica espectro-temporal: Las partes centrales de los audios tienden a ser más estables y redundantes mientras que las zonas de cambio contienen mayor variabilidad lo que hace que contengan la mayoría de la información discriminativa del audio.
+ 
+ \item Estructura de formantes y transiciones: Las trayectorias de las formantes, claves para identificar fonemas, suelen estar en los bordes de los segmentos por lo que las zonas de alrededor del audio contienen más información 	dinámica de las formantes.
+ 
+ \item Efectos de ventana del espectrograma: Como el espectrograma se calcula usando ventanas, cada punto del espectrograma mezcla información de un intervalo temporal siendo que en los bordes del espectrograma se incluyen partes de dos sonidos distintos haciendo que estos sean más informativos al incluir mezclas de contextos.
+ 
+ \item Relación señal-ruido: En muchos audios el inicio y el final de los mismos pueden tener cambios de energía o ruido de fondo que el modelo puede usar como señales útiles.
+ 
+ \item Información prosódica: Los elementos como la entonación, el ritmo o el énfasis no están concentrados en un punto sino que ocurren durante las transiciones.
+
+\end{enumerate}

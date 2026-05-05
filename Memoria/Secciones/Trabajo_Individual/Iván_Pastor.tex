@@ -14,7 +14,15 @@
 	
 	\item XAI sobre Wav2Vec2: Sobre el modelo Wav2Vec2, no se puede aplicar directamente IA explicable ya que la entrada son embeddings, para ello lo que he hecho ha sido dividir entre las características y el espectrograma de Mel. Para las características usa Shap y Lime sobre surrogate models que imitan la salida de Wav2Vec2 y para los espectrogramas de Mel use una CNN a la que le apliqué Shap, Lime, Integrated gradients y Grad Cam.
 	
-	\item Aportaciones en la memoria: Mi aportación a la memoria se ha basado en volcar todo mi trabajo a la misma. Esto se puede resumir en la escritura de las secciones del perceptrón y del Wav2Vec2 en la memoria, la redacción de los experimentos con los datasets de WaveFake y ASVSpoof2021. Además me encargué de escribir el análisis del dataset final que usamos durante el proyecto. 
+	\item Estado del arte: Escritura de las secciones del perceptrón multicapa, del Wav2Vec2 y de la regresión Ridge.
 	
-	\item Pipeline: Adaptación del código del Wav2Vec2 para que funcione a partir de un enlace único a un audio.
+	\item Datasets: Redacción de los experimentos con los datasets de WaveFake y ASVSpoof2021. Además me encargué de escribir el análisis del dataset final que usamos durante el proyecto. 
+	
+	\item Modelos: Escritura de los modelos del perceptrón multicapa y del wav2vec2.
+	
+	\item Pipeline (memoria): Escritura de la sección del Wav2Vec2 del pipeline.
+	
+	\item Pipeline: Adaptación del código del Wav2Vec2 para que funcione a partir de un enlace único a un audio. También he creado un archivo con todas las funciones del código adaptado para que se ejecuten las predicciones y las explicaciones en una celda cada uno.
+	
+	\item Readme: Agregué la explicación de la carpeta que corresponde con los modelos que he desarrollado.
 \end{itemize}

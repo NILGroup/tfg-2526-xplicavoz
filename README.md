@@ -20,6 +20,13 @@ En cuanto a la estructuración del repositorio, tenemos 3 carpetas principales:
     - xgb_clas.json: archivo que sirve como guardado del modelo XGBClassifier para poder recuperarlo desde el pipeline.
     - xgb_sur.json: archivo que sirve como guardado del modelo XGBClassifier para poder recuperarlo desde el pipeline.
 
+- Modelos/Iván:
+    - todosLosAudiosMezcladosyDivididos: Carpeta compuesta por 4 csv's que se corresponden con los conjuntos de entrenamiento (test.csv), evaluación (eval.csv), prueba (test.csv) y salida (out.csv). Los primeros tres tienen las rutas (locales) a los archivos de audio y sus labels. El último csv está formado por el nombre del audio, el score asignado por el modelo y el label real del audio.
+    - wav2vec2-deepfake-final: Carpeta donde se guarda el modelo entrenado
+    - fine-tunning-Wav2Vec2.ipynb: Código de crear los archivos de las dos carpetas anteriores, es decir, creará todos los dataframes y le aplicará un fine-tunning al modelo Wav2Vec2 guardando tanto el modelo entrenado como los resultados del mismo.
+    - MLP.ipynb: Modelo que aplica embeddings tanto a los datos tabulares como a los espectrogramas y los pasa por un MLP. 
+    - XAI.ipynb: Código en el que se le aplican técnicas de XAI al modelo wav2vec2 fine-tuneado.
+
 # Autores
 - Jorge Aured Zarzoso
 - Germán Bravo Quintián

@@ -82,4 +82,30 @@ Una vez configurados todos los componentes, se procede a iniciar el entrenamient
 
 Enlace al notebook: \href{run:../Modelos/Iván/fine-tunning-Wav2Vec.ipynb}{Notebook fine-tunning-Wav2Vec}
 
-\input{Secciones/Metodologia/Modelos/Wav2Vec2/explicacion.tex}
+\subsubsection*{Implementación de modelos de XAI para la interpretabilidad del modelo Wav2Vec2 fine-tuneado}
+
+Ahora que tenemos el resultado del modelo (el Wav2Vec2 fine-tuneado), vamos a explicar que características y que parte del espectrograma de Mel del audio son las más influyentes.
+
+Sin embargo ahora nos encontramos con el problema principal de este modelo que es que como entrada recibe un embedding, entonces, no podemos aplicar técnicas de XAI directamente al modelo. Otro problema que tenemos es que el código que tenemos de extracción de características saca muchísimas características y de ciertas características no solo saca un valor escalar sino que también saca un vector con sus valores en cada instante.
+
+Para solucionar estos problemas hemos realizado dos preprocesamientos. La primera es que agruparemos los atributos del dataset en cinco grupos en función de sus características y lo que representan. Con esto nos quedan las siguientes agrupaciones:
+
+\begin{enumerate}
+ \item Energía: rms, silence ratio, zcr, skewness, kurtosis. Este grupo son las características que se centran en la energía del audio.
+ 
+ \item Espectrales: spectral centroid, spectral bandwidth, spectral rolloff, spectral flatness, hnr. Este grupo son las características que miden la distribución de la energía en el ámbito de la frecuencia.
+ 
+ \item Pitch: pitch mean, pitch std. Este grupo son las características que miden el comportamiento de la frecuencia fundamental del audio.
+ 
+ \item Formantes:  f1 mean, f2 mean, f3 mean. Este grupo son las características que describen la estructura vocal.
+ 
+ \item MFCC: MFCC mean del 1 al 13. Este grupo de características capturan patrones del espectro del audio.
+\end{enumerate}
+
+El segundo preprocesamiento que se ha hecho ha sido desarrollar modelos surrogate que imiten el comportamiento del modelo. Para esto hemos implementado seis modelos distintos. Los cinco primeros modelos serán regresiones Ridge (añadir referencia) de la clase \textit{sklearn}. Usamos esta regresión en lugar de una regresión lineal o una regresión logística ya que con los pocos datos del conjunto de entrenamiento, es seguro que el modelo va sufrir de sobreajuste y esta regresión ataja este problema.
+
+Ahora pasamos al sexto surrogate model, una CNN muy simple que recibirá como entrada los espectrogramas de mel de los audios en forma de tensores de \textit{pytorch}. Esta se compone solo de una capa convolucional y una capa de pooling. Además se simplificarán los espectrogramas agrupando todas las bandas de frecuencia en 8 superbandas. Esto se hace para evitar que se produzca un sobreajuste ya que tenemos muy pocos audios.
+
+Sobre este surrogate model aplicaremos Shap, Lime, Integrated gradients y Grad cam.
+
+Enlace al notebook: \href{run:../Modelos/Iván/XAI.ipynb}{Abrir notebook}
