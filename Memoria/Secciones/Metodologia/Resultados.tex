@@ -308,7 +308,7 @@ Como podemos observar en las gráficas \ref{fig:1_shap_rf_local} y \ref{fig:2_sh
 	\label{fig:2_shap_rf_local}
 \end{figure}
 
-Como se muestra en \ref{fig:shap_rf_global}, la importancia de las características concuerda con las que vimos antes, en mismo orden y magnitud. Además, en colores podemos ver mejor, por ejemplo en spectral flatness, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
+Como se muestra en la gráfica \ref{fig:shap_rf_global}, la importancia de las características en la explicación global de SHAP concuerda con las que vimos antes, en mismo orden y magnitud. Además, en colores podemos ver mejor, por ejemplo en spectral flatness, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_global.png}
@@ -316,20 +316,7 @@ Como se muestra en \ref{fig:shap_rf_global}, la importancia de las característi
 	\label{fig:shap_rf_global}
 \end{figure}
 
-Ahora hemos decidido quitar la característica spectral flatness, y los resultados los podemos ver en \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}
-
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:1_shap_rf_local_sin_specflat}
-\end{figure}
-
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:2_shap_rf_local_sin_specflat}
-\end{figure}
-
+Ya que hemos visto que ``spectral flatness'' es la característica más influyente con diferencia, hemos decidido eliminarla y entrenar un modelo, cuyos resultados podemos ver en las tablas \ref{tab:metricas_principales_rf_sin_specflat}, \ref{tab:classification_report_rf_sin_specflat} y \ref{tab:analisis_errores_rf_sin_specflat}. Aquí vemos que el modelo deja de clasificar correctamente, debido a que, al perder la característica más influyente, el modelo pierde rendimiento en clasificación.
 \begin{table}[H]
 \centering
 \begin{tabular}{lc}
@@ -345,6 +332,7 @@ MCC & 0.8000 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de Random Forest sin spectral flatness}
+\label{tab:metricas_principales_rf_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -361,6 +349,7 @@ weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de Random Forest sin spectral flatness}
+\label{tab:classification_report_rf_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -378,19 +367,24 @@ Error tipo II & 10\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de Random Forest sin spectral flatness}
+\label{tab:analisis_errores_rf_sin_specflat}
 \end{table}
 
+Tras quitar la característica ``spectral flatness'' del modelo, la explicación que genera la podemos ver en las gráficas \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}. Aquí vemos que otras características adquieren peso, ya que la falta de una característica hace que las importancias se reestructuren. En particular vemos que ``spectral bandwidth'' mantiene una alta importancia, mientras que ``mfcc 1'' la mantiene solo en la predicción de clase negativa.
+
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
-	\label{fig:1_shap_rf_local_sin_sflat_mfcc1_sband}
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:1_shap_rf_local_sin_specflat}
 \end{figure}
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
-	\label{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:2_shap_rf_local_sin_specflat}
 \end{figure}
+
+Con la nueva distribución de importancias, hemos decidido quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1''. Los resultados del modelo los encontramos en las tablas \ref{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_rf_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_rf_sin_sflat_mfcc1_sband}. Estos son algo inferiores a los previos, y es consecuente con que al eliminar características, el modelo pierde rendimiento.
 
 \begin{table}[H]
 \centering
@@ -407,6 +401,7 @@ MCC & 0.5025 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}
+\label{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}
 \end{table}
 
 \begin{table}[H]
@@ -423,6 +418,7 @@ weighted avg & 0.7525 & 0.7500 & 0.7494 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}
+\label{tab:classification_report_rf_sin_sflat_mfcc1_sband}
 \end{table}
 
 \begin{table}[H]
@@ -440,7 +436,22 @@ Error tipo II & 30\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de Random Forest sin spectral flatness, mfcc1, y spectral bandwidth}
+\label{tab:analisis_errores_rf_sin_sflat_mfcc1_sband}
 \end{table}
+
+Como se puede observar en las gráficas \ref{fig:1_shap_rf_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}, las importancias vuelven a redistribuirse, ganando más en este caso ``silence ratio''. Es interesante ver que ahora la segunda predicción, que hasta ahora predecía como positiva, ahora la predice como negativa (falso negativo), debido a que con las características que tiene no es capaz de clasificarla correctamente.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\label{fig:1_shap_rf_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\label{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}
+\end{figure}
 
 % LIME
 \begin{figure}[H]
@@ -623,7 +634,9 @@ Error tipo II & 0\% \\
 Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
 
 \subsubsection*{Resultados de explicación}
-% SHAP
+
+Como se puede ver en las gráficas \ref{fig:1_shap_lgbm_local} y \ref{fig:2_shap_lgbm_local}, el modelo clasifica únicamente con ``spectral flatness''. Esto nos dice que, pese a que antes no observamos un sobreajuste, el modelo realmente lo tiene con esta característica.
+
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local_1.png}
 	\caption{Explicación local con SHAP}
@@ -636,23 +649,15 @@ Como observamos y como la intuición nos decía, los resultados son iguales que 
 	\label{fig:2_shap_lgbm_local}
 \end{figure}
 
+La importancia de características en la explicación global es congruente con las explicaciones locales: la característica ``spectral flatness'' tiene mucho peso, mientras que las otras tienen peso casi 0.
+
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_global.png}
 	\caption{Explicación global con SHAP}
 	\label{fig:shap_lgbm_global}
 \end{figure}
 
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:1_shap_lgbm_local_sin_specflat}
-\end{figure}
-
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:2_shap_lgbm_local_sin_specflat}
-\end{figure}
+Hemos quitado dicha característica para ver cómo se comporta el modelo, lo que podemos ver en las tablas \ref{tab:metricas_principales_lgbm_sin_specflat}, \ref{tab:classification_report_lgbm_sin_specflat} y \ref{tab:analisis_errores_lgbm_sin_specflat}. Como era de esperar al ver el sobreajuste del modelo el rendimiento ha bajado, aunque mantiene valores de predicción muy altos.
 
 \begin{table}[H]
 \centering
@@ -669,6 +674,7 @@ MCC & 0.8000 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de LightGBM sin spectral flatness}
+\label{tab:metricas_principales_lgbm_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -685,6 +691,7 @@ weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de LightGBM sin spectral flatness}
+\label{tab:classification_report_lgbm_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -702,7 +709,24 @@ Error tipo II & 10\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de LightGBM sin spectral flatness}
+\label{tab:analisis_errores_lgbm_sin_specflat}
 \end{table}
+
+Para ver ahora la importancia de cada característica veamos las gráficas \ref{fig:1_shap_lgbm_local_sin_specflat} y \ref{fig:2_shap_lgbm_local_sin_specflat}. Podemos ver que en la instancia que clasifica como negativa los pesos se redistribuyen razonablemente bien, mientras que en la instancia que clasifica como positiva encontramos que ``spectral flatness'' recibe casi todo el peso.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:1_shap_lgbm_local_sin_specflat}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:2_shap_lgbm_local_sin_specflat}
+\end{figure}
+
+
 
 
 \begin{figure}[H]
@@ -732,6 +756,7 @@ MCC & 0.7035 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de LightGBM sin spectral flatness y mfcc1}
+\label{tab:metricas_principales_lgbm_sin_sflat_mfcc1}
 \end{table}
 
 \begin{table}[H]
@@ -748,6 +773,7 @@ weighted avg & 0.8535 & 0.8500 & 0.8496 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de LightGBM sin spectral flatness y mfcc 1}
+\label{tab:classification_report_lgbm_sin_sflat_mfcc1}
 \end{table}
 
 \begin{table}[H]
@@ -765,6 +791,7 @@ Error tipo II & 10\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de LightGBM sin spectral flatness y mfcc1}
+\label{tab:analisis_errores_lgbm_sin_sflat_mfcc1}
 \end{table}
 
 % LIME
@@ -997,7 +1024,9 @@ Error tipo II & 0\% \\
 Los resultados no varían de los anteriores, lo que es de esperar en este caso. Interesa ver que, pese a que SVM con $gamma = 0,01$ y $gamma = scale$ arrojan los mismos resultados, y el GridSearch eligió uno sobre otro, quizá al funcionar igual, en este contexto, eligió el más ``simple'' (como vimos, scale se calcula mediante una fórmula).
 
 \subsubsection*{Resultados de explicacion}
-% SHAP
+
+Como podemos ver en las gráficas \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
+
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_1.png}
 	\caption{Explicación local con SHAP}
@@ -1010,7 +1039,7 @@ Los resultados no varían de los anteriores, lo que es de esperar en este caso. 
 	\label{fig:2_shap_svm_local}
 \end{figure}
 
-En esta imagen podemos observar que, como hemos visto antes, la variable más importante es spectral flatness, por un orden de magnitud, seguido de spectral bandwidth y mfcc1 con el mismo valor entre sí.
+Con estas dos instancias no tenemos una clara idea de cuál es la característica más influyente. Como vemos en la gráfica \ref{fig:shap_svm_global}, la más influyente es ``spectral flatness'', como en los casos anteriores. Aunque en este caso no tiene un peso excesivamente alto, pues hay otras como ``spectral bandwidth'' o ``mfcc 1'' que también tienen un peso notable.
 
 \begin{figure}[H]
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_global.png}
@@ -1018,19 +1047,7 @@ En esta imagen podemos observar que, como hemos visto antes, la variable más im
 	\label{fig:shap_svm_global}
 \end{figure}
 
-Aquí vemos que los resultados son consistentes con lo anterior respecto de spectral flatness, ya que vemos claramente que los que tienen un valor alto influyen hacia un lado de la clasificación, mientras que los de valor bajo influyen hacia el otro lado.
-
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:1_shap_svm_local_sin_specflat}
-\end{figure}
-
-\begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
-	\label{fig:2_shap_svm_local_sin_specflat}
-\end{figure}
+Para ver si ``spectral flatness'' tiene una alta dominancia en la clasificación, entrenamos un modelo sin ella, esto se puede ver en las tablas \ref{tab:metricas_principales_svm_sin_specflat}, \ref{tab:classification_report_svm_sin_specflat} y \ref{tab:analisis_errores_svm_sin_specflat}. Como vemos, el modelo sigue clasificando correctamente aún sin dicha característica.
 
 \begin{table}[H]
 \centering
@@ -1047,6 +1064,7 @@ MCC & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de SVM sin spectral flatness}
+\label{tab:metricas_principales_svm_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -1063,6 +1081,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de SVM sin spectral flatness}
+\label{tab:classification_report_svm_sin_specflat}
 \end{table}
 
 \begin{table}[H]
@@ -1080,21 +1099,24 @@ Error tipo II & 0\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de SVM sin spectral flatness}
+\label{tab:analisis_errores_svm_sin_specflat}
 \end{table}
 
-Podemos observar que al quitar spectral flatness, la característica que individualmente influye más es spectral bandwitdh, y que difiere bastante su importancia dependiendo de si clasifica positiva o negativamente. Vemos a su vez que las características cambian, se redistribuyen sus valores. Por último nos encontramos con que el rendimiento del modelo no ha cambiado tras quitar dicha característica, lo cual es normal cuando las importancias no difieren mucho.
+Para ver ahora la nueva distribución de importancia de características mostramos las gráficas \ref{fig:1_shap_svm_local_sin_specflat} y \ref{fig:2_shap_svm_local_sin_specflat}. Como se puede observar las importancias siguen estando bien distribuidas, aunque sí vemos que ``spectral bandwidth'' está en la zona de alta importancia en ambas instancias predichas.
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
-	\label{fig:1_shap_svm_local_sin_sflat_mfcc1_sband}
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:1_shap_svm_local_sin_specflat}
 \end{figure}
 
 \begin{figure}[H]
-	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
-	\label{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\label{fig:2_shap_svm_local_sin_specflat}
 \end{figure}
+
+Ahora probamos a quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1'', resultados en las tablas \ref{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_svm_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}. Vemos que el modelo sigue clasificando correctamente.
 
 \begin{table}[H]
 \centering
@@ -1111,6 +1133,7 @@ MCC & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
+\label{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
 \begin{table}[H]
@@ -1127,6 +1150,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \bottomrule
 \end{tabular}
 \caption{Classification report de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
+\label{tab:classification_report_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
 \begin{table}[H]
@@ -1144,9 +1168,22 @@ Error tipo II & 0\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de SVM sin spectral flatness, mfcc1 y spectral bandwidth}
+\label{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
-Tras quitar spectral flatness, mfcc1 y spectral bandwidth vemos que las importancias de las características en la explicación se distribuye mucho más, siendo en las clases positivas spectral rolloff la más importante con diferencia. Pese a quitar estas características, el modelo sigue clasificando bien.
+Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las gráficas \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que ``spectral rolloff'' toma un alto valor, pero no deja a 0 el resto de importancias.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\label{fig:1_shap_svm_local_sin_sflat_mfcc1_sband}
+\end{figure}
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
+	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\label{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}
+\end{figure}
 
 % LIME
 \begin{figure}[H]
