@@ -1,24 +1,52 @@
-%\documentclass[tfg,estilo=digital,portada=normativa]{fdi-simplex}
-\documentclass{article}
-% Preámbulo
+\documentclass[tfg,estilo=digital,portada=normativa]{fdi-simplex}
 
-% Cargamos los paquetes que usamos en la memoria
-\input{Config.tex}
 
-\title{TFG - XplicaVoz}
-\author{\parbox{.7\textwidth}{\centering Jorge Aured Zarzoso, Germán Bravo Quintián, Rafael López Rodríguez, Iván Pastor Sacristán}}
-\date{\today}
+\titulo{TFG - XplicaVoz}
+\autor{Jorge Aured Zarzoso}
+\autor{Germán Bravo Quintián}
+\autor{Rafael López Rodríguez}
+\autor{Iván Pastor Sacristán}
+\director{Marta Caro Martínez}
+\director{Antonio Fernando García Sevilla}
 
-\setlength{\parindent}{1.5em}
+\titulacion{Ingeniería del Software, Ingeniería de computadores}
+\cursoAcademico{2025/2026}
+
+\palabrasClave{TODO}
+\keywords{TODO}
+
+\addbibresource{bibliografia.bib}
+
+\logo{imagenes/Escudo_UCM}
+
+% paquetes estudiantes (tomado de Config.tex)
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float} % NO DEBERIAIS USAR [H]
+\graphicspath{{./imagenes/}{../imagenes/}{../../imagenes/}}
+
 \begin{document}
 
-\maketitle
+\makeportada
 
-% Para poner la sangría manualmente
-\begin{justify}
+\frontmatter
+
+\begin{resumen}
+    TODO resumen en español
+\end{resumen}
+
+\begin{abstract}
+    TODO abstract en ingles
+\end{abstract}
 
 % Para tener índice (compilar 2 veces, a veces se traba)
 \tableofcontents
+
+\listoffigures
+\listoftables
 
 % Para añadir una imagen
 %\begin{figure}
@@ -27,8 +55,7 @@
 %	\label{fig:x1}
 %\end{figure}
 
-% Para que no se mezcle el índice con la memoria
-\newpage
+\mainmatter
 
 \input{Secciones/Introduccion.tex}
 
@@ -40,12 +67,11 @@
 
 \input{Secciones/Trabajo_Individual.tex}
 
-\input{Secciones/Anexo.tex}
-
-\end{justify}
+\backmatter
 
 % Esto carga el archivo .bib. El nombre del archivo es "bibliografia.bib"
-\bibliographystyle{plain}
-\bibliography{bibliografia}
+\printbibliography[heading=bibintoc]
+
+\input{Secciones/Anexo.tex}
 
 \end{document}

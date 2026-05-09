@@ -1,5 +1,4 @@
-\newpage
-\section{Pipeline}
+\chapter{Pipeline}
 \label{sec:pipeline}
 
 Como cierre para el proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único ``notebook'' todos los modelos desarrollados a lo largo del proyecto. De este modo, permite facilitar la comparación de resultados y explicaciones entre modelos.
@@ -20,7 +19,7 @@ La primera parte del ``notebook'' consta de una celda inicial con los imports ne
 
 Además, el ``notebook'' está organizado en secciones correspondientes a cada modelo, lo que permite ejecutar cada uno de ellos de forma independiente.
 
-\subsubsection{AASIST}
+\subsection{AASIST}
 
 Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
 
@@ -28,7 +27,7 @@ Una vez cargado, se usan las funciones cargadas del archivo funciones\_AASIST.py
 
 A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.
 
-\subsubsection{Wav2Vec2}
+\subsection{Wav2Vec2}
 
 Para poder reutilizar el modelo, es necesario guardar tanto el modelo entrenado como el extractor de características. Para ello, se utiliza el método \texttt{save\_model()} de la clase \texttt{Trainer}, junto con el método \texttt{save\_pretrained()} de \texttt{Wav2Vec2FeatureExtractor}. Ambas clases provienen de la librería \texttt{Transformers}.
 

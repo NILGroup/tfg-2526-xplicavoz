@@ -1,16 +1,16 @@
-\section{Introducción}
+\chapter{Introducción}
 
-\subsection{Motivación y Contexto}
+\section{Motivación y Contexto}
 En los últimos años, la sociedad ha sido testigo de un aumento considerable en el uso de la Inteligencia Artificial (IA) para suplantar la identidad de personas de forma maliciosa mediante la clonación de voz, técnica conocida como \textit{deepfake}. Esta evolución tecnológica ha alcanzado un punto crítico donde la distinción entre un audio humano y uno sintético es prácticamente imperceptible para el oído humano. Como se ve en \cite{1Barrington2025, 2Nadine2025}, estudios recientes indican que, mientras la detección de audios 100\% generados resulta sencilla para un usuario promedio, la precisión al clasificar voces reales frente a clones de alta calidad apenas ronda el 60\%.
 
 Esta vulnerabilidad supone una amenaza latente en sectores estratégicos como la ciberseguridad, el periodismo y el ámbito judicial. Por otro lado, las técnicas de detección de \textit{deepfakes} no han avanzado al mismo ritmo que las de generación, lo que se traduce en una proliferación de estafas y desinformación. Por este motivo, ya no es posible confiar únicamente en las capacidades naturales del ser humano para diferenciar la autenticidad de una voz, lo que convierte el desarrollo de herramientas tecnológicas robustas en una necesidad social imperativa.
 
-\subsection{Definición del Problema}
+\section{Definición del Problema}
 El rendimiento del modelo de clasificación no es el único factor determinante en esta investigación. En la actualidad, los modelos de aprendizaje profundo se han convertido en ``cajas negras'', sistemas opacos donde no se comprende cómo se generan las predicciones. Esta falta de transparencia da lugar a problemas de confianza respecto a dichas decisiones, especialmente en ámbitos críticos como la medicina o la ingeniería, donde la vida de las personas puede estar en juego.
 
 Para solventar este problema ha surgido la IA explicable (XAI), la cual toma dichos modelos opacos y proporciona una justificación de qué características de los datos afectan más a la decisión del modelo. En esta investigación, abordamos el problema dual de maximizar la capacidad de discriminación entre audios reales y generados y, simultáneamente, dotar al sistema de una interpretación humana coherente mediante la aplicación de XAI.
 
-\subsection{Objetivos}
+\section{Objetivos}
 El objetivo principal de este trabajo es desarrollar un marco de trabajo para la detección de audio generado sintéticamente que priorice no solo la eficacia en la clasificación, sino también la transparencia de sus resultados. Para ello, se plantean los siguientes objetivos específicos:
 
 \begin{itemize}
@@ -19,7 +19,7 @@ El objetivo principal de este trabajo es desarrollar un marco de trabajo para la
     \item \textbf{Integración de Métodos de Explicabilidad:} Proponer el uso de herramientas de interpretación que permitan visualizar qué partes del audio están influyendo en la decisión del sistema, convirtiendo el modelo en una herramienta útil para un análisis humano posterior.
 \end{itemize}
 
-\subsection{Planificación}
+\section{Planificación}
 Para garantizar la consecución de los objetivos propuestos, el proyecto se ha estructurado siguiendo un flujo de trabajo sistemático. La metodología planificada se divide en las siguientes fases consecutivas:
 
 \begin{enumerate}
