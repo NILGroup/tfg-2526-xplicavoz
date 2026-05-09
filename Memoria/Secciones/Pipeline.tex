@@ -6,7 +6,7 @@ Como cierre para el proyecto, se ha desarrollado un pipeline capaz de aplicar, a
 Cabe mencionar que el diseño de este pipeline constituye una de las aportaciones prácticas del proyecto, al integrar en una misma estructura modelos de distinta naturaleza y técnicas de explicabilidad complementarias. Esto permite analizar un mismo audio desde múltiples perspectivas, comparando no solo el resultado de clasificación, sino también la forma en que cada modelo justifica su decisión.
 
 Con el fin de representar su estructura general, se ha diseñado un diagrama de flujo simplificado. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, los modelos se han dividido en dos grupos según el tipo de entrada que utilizan: por un lado, aquellos que operan sobre características extraídas del audio y, por otro, los que trabajan directamente con la forma de onda cruda. En cada grupo se indican tanto los modelos implementados como las técnicas de XAI aplicadas a cada uno de ellos.
-\begin{figure}[H]
+\begin{figure}
     \centering
 	\includegraphics[width=\textwidth]{imagenes/Arquitectura_pipeline.png}
 	\caption{Arquitectura del pipeline.}

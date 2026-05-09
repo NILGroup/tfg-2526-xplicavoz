@@ -1,0 +1,62 @@
+\babel@toc {spanish}{}\relax 
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {3.1}{\ignorespaces Métricas principales de los modelos baseline de datos tabulares}}{71}{table.caption.41}%
+\contentsline {table}{\numberline {3.2}{\ignorespaces Classification report de los modelos baseline de datos tabulares}}{71}{table.caption.42}%
+\contentsline {table}{\numberline {3.3}{\ignorespaces Análisis de errores de los modelos baseline de datos tabulares}}{71}{table.caption.43}%
+\contentsline {table}{\numberline {3.4}{\ignorespaces Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}}{71}{table.caption.44}%
+\contentsline {table}{\numberline {3.5}{\ignorespaces Mejores hiperparámetros para Random Forest con Grid Search y CV de 5 folds}}{72}{table.caption.45}%
+\contentsline {table}{\numberline {3.6}{\ignorespaces Mejores hiperparámetros para LightGBM con Grid Search y CV de 5 folds}}{72}{table.caption.46}%
+\contentsline {table}{\numberline {3.7}{\ignorespaces Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}}{73}{table.caption.47}%
+\contentsline {table}{\numberline {3.8}{\ignorespaces Métricas principales de los modelos baseline de datos tabulares}}{73}{table.caption.49}%
+\contentsline {table}{\numberline {3.9}{\ignorespaces Classification report de Random Forest baseline}}{73}{table.caption.50}%
+\contentsline {table}{\numberline {3.10}{\ignorespaces Análisis de errores de Random Forest baseline}}{74}{table.caption.51}%
+\contentsline {table}{\numberline {3.11}{\ignorespaces Resultados de Validación Cruzada con 5 folds de Random Forest baseline}}{74}{table.caption.52}%
+\contentsline {table}{\numberline {3.12}{\ignorespaces Mejores hiperparámetros para Random Forest con Grid Search y CV de 5 folds}}{75}{table.caption.53}%
+\contentsline {table}{\numberline {3.13}{\ignorespaces Métricas principales de Random Forest optimizado}}{75}{table.caption.54}%
+\contentsline {table}{\numberline {3.14}{\ignorespaces Classification report de Random Forest óptimo}}{75}{table.caption.55}%
+\contentsline {table}{\numberline {3.15}{\ignorespaces Análisis de errores de Random Forest optimizado}}{76}{table.caption.56}%
+\contentsline {table}{\numberline {3.16}{\ignorespaces Métricas principales de Random Forest sin spectral flatness}}{79}{table.caption.60}%
+\contentsline {table}{\numberline {3.17}{\ignorespaces Classification report de Random Forest sin spectral flatness}}{79}{table.caption.61}%
+\contentsline {table}{\numberline {3.18}{\ignorespaces Análisis de errores de Random Forest sin spectral flatness}}{79}{table.caption.62}%
+\contentsline {table}{\numberline {3.19}{\ignorespaces Métricas principales de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}}{81}{table.caption.65}%
+\contentsline {table}{\numberline {3.20}{\ignorespaces Classification report de Random Forest sin spectral flatness, mfcc1 y spectral bandwith}}{82}{table.caption.66}%
+\contentsline {table}{\numberline {3.21}{\ignorespaces Análisis de errores de Random Forest sin spectral flatness, mfcc1, y spectral bandwidth}}{82}{table.caption.67}%
+\contentsline {table}{\numberline {3.22}{\ignorespaces Counter factuals generados por DiCE}}{85}{table.caption.71}%
+\contentsline {table}{\numberline {3.23}{\ignorespaces Métricas principales de LightGBM baseline}}{85}{table.caption.73}%
+\contentsline {table}{\numberline {3.24}{\ignorespaces Classification report de LightGBM baseline}}{85}{table.caption.74}%
+\contentsline {table}{\numberline {3.25}{\ignorespaces Análisis de errores de LightGBM baseline}}{86}{table.caption.75}%
+\contentsline {table}{\numberline {3.26}{\ignorespaces Resultados de Validación Cruzada con 5 folds de LightGBM baseline}}{86}{table.caption.76}%
+\contentsline {table}{\numberline {3.27}{\ignorespaces Mejores hiperparámetros para LightGBM con Grid Search y CV de 5 folds}}{87}{table.caption.77}%
+\contentsline {table}{\numberline {3.28}{\ignorespaces Métricas principales de LightGBM optimizado}}{87}{table.caption.78}%
+\contentsline {table}{\numberline {3.29}{\ignorespaces Classification report de LightGBM óptimo}}{88}{table.caption.79}%
+\contentsline {table}{\numberline {3.30}{\ignorespaces Análisis de errores de LightGBM optimizado}}{88}{table.caption.80}%
+\contentsline {table}{\numberline {3.31}{\ignorespaces Métricas principales de LightGBM sin spectral flatness}}{92}{table.caption.84}%
+\contentsline {table}{\numberline {3.32}{\ignorespaces Classification report de LightGBM sin spectral flatness}}{92}{table.caption.85}%
+\contentsline {table}{\numberline {3.33}{\ignorespaces Análisis de errores de LightGBM sin spectral flatness}}{92}{table.caption.86}%
+\contentsline {table}{\numberline {3.34}{\ignorespaces Métricas principales de LightGBM sin spectral flatness y mfcc1}}{96}{table.caption.91}%
+\contentsline {table}{\numberline {3.35}{\ignorespaces Classification report de LightGBM sin spectral flatness y mfcc 1}}{97}{table.caption.92}%
+\contentsline {table}{\numberline {3.36}{\ignorespaces Análisis de errores de LightGBM sin spectral flatness y mfcc1}}{97}{table.caption.93}%
+\contentsline {table}{\numberline {3.37}{\ignorespaces Counter factuals generados por DiCE}}{98}{table.caption.95}%
+\contentsline {table}{\numberline {3.38}{\ignorespaces Métricas principales de SVM con kernel lineal}}{98}{table.caption.97}%
+\contentsline {table}{\numberline {3.39}{\ignorespaces Classification report de SVM con kernel lineal}}{98}{table.caption.98}%
+\contentsline {table}{\numberline {3.40}{\ignorespaces Análisis de errores de SVM con kernel lineal}}{99}{table.caption.99}%
+\contentsline {table}{\numberline {3.41}{\ignorespaces Métricas principales de SVM con kernel no lineal}}{99}{table.caption.100}%
+\contentsline {table}{\numberline {3.42}{\ignorespaces Classification report de SVM con kernel no lineal}}{99}{table.caption.101}%
+\contentsline {table}{\numberline {3.43}{\ignorespaces Análisis de errores de SVM con kernel no lineal}}{100}{table.caption.102}%
+\contentsline {table}{\numberline {3.44}{\ignorespaces Resultados Validación Cruzada}}{100}{table.caption.103}%
+\contentsline {table}{\numberline {3.45}{\ignorespaces Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}}{100}{table.caption.104}%
+\contentsline {table}{\numberline {3.46}{\ignorespaces Métricas principales de SVM óptimo}}{101}{table.caption.105}%
+\contentsline {table}{\numberline {3.47}{\ignorespaces Classification report de SVM con kernel no lineal}}{101}{table.caption.106}%
+\contentsline {table}{\numberline {3.48}{\ignorespaces Análisis de errores de SVM óptimo}}{101}{table.caption.107}%
+\contentsline {table}{\numberline {3.49}{\ignorespaces Métricas principales de SVM sin spectral flatness}}{105}{table.caption.111}%
+\contentsline {table}{\numberline {3.50}{\ignorespaces Classification report de SVM sin spectral flatness}}{105}{table.caption.112}%
+\contentsline {table}{\numberline {3.51}{\ignorespaces Análisis de errores de SVM sin spectral flatness}}{105}{table.caption.113}%
+\contentsline {table}{\numberline {3.52}{\ignorespaces Métricas principales de SVM sin spectral flatness, mfcc1 y spectral bandwidth}}{107}{table.caption.116}%
+\contentsline {table}{\numberline {3.53}{\ignorespaces Classification report de SVM sin spectral flatness, mfcc1 y spectral bandwidth}}{108}{table.caption.117}%
+\contentsline {table}{\numberline {3.54}{\ignorespaces Análisis de errores de SVM sin spectral flatness, mfcc1 y spectral bandwidth}}{108}{table.caption.118}%
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {table}{\numberline {1}{\ignorespaces Valores e interpretación de características acústicas del audio I\_12\_N}}{143}{table.4.1}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

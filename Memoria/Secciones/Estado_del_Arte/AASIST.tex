@@ -1,8 +1,8 @@
 \subsubsection{AASIST}
 \label{subsubsec:eda_aasist}
-AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de ``spoofing'' de audio desarrollado en 2022 \cite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
+AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de ``spoofing'' de audio desarrollado en 2022 \parencite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
 
-Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto por ser el más específico para la tare de audio anti-spoofing, a diferencia de otros con usos fuera de este ámbito. Esta especialización para separar audios ``bona fide'' de muestras falsificadas se refleja tanto en su arquitectura, explicada en el siguiente punto, como en la motivación que llevó a su diseño. 
+Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto por ser el más específico para la tarea de audio anti-spoofing, a diferencia de otros con usos fuera de este ámbito. Esta especialización para separar audios ``bona fide'' de muestras falsificadas se refleja tanto en su arquitectura, explicada en el siguiente punto, como en la motivación que llevó a su diseño. 
 \subsubsection*{Arquitectura y funcionamiento}
 
 \hspace{.7cm}
@@ -25,19 +25,19 @@ El modelo tiene las siguientes fases:
             \item Un ``\textbf{stack node}'', conectado de forma unidireccional a todos los nodos, que va acumulando la información espectro-temporal entre sucesivas capas HS-GAL.
             \item Tras cada HS-GAL, se aplica otra vez la técnica ``\textbf{graph pooling}'' con el mismo objetivo anterior.
         \end{itemize}
-    Sobre la combinación del punto 3 para establecer la conectividad entre grafos, se aplica la operación MGO (\textit{Max Graph Operation}) que usa una combinación entre HS-GAL + pooling donde se realiza la verdadera integración entre ambos dominios para que los nodos heterogéneos aprendas cómo deben relacionarse entre sí. 
+    Sobre la combinación del punto 3 para establecer la conectividad entre grafos, se aplica la operación MGO (\textit{Max Graph Operation}) que usa una combinación entre HS-GAL + pooling donde se realiza la verdadera integración entre ambos dominios para que los nodos heterogéneos aprendan cómo deben relacionarse entre sí. 
     De forma paralela, se procesan dos ramas en las que se ejecutan consecutivamente dos secuencias MGO. Dentro de cada rama, el ``stack node'' se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento, teniendo como resultado un grafo heterogéneo.
-    \item Por último, usando las operaciones ''\textbf{max}'' y ``\textbf{average}'' sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el ``stack node'' para formar la representación final en la capa de salida.
+    \item Por último, usando las operaciones ``\textbf{max}'' y ``\textbf{average}'' sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el ``stack node'' para formar la representación final en la capa de salida.
 \end{enumerate}
 
 \subsubsection*{Innovaciones clave}
 
 \begin{itemize}
-    \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simulteamente ambos grafos, combinada con un ``stack'' node para ir acumulando información espectro-temporal.
+    \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simultáneamente ambos grafos, combinada con un ``stack node'' para ir acumulando información espectro-temporal.
     
-    \item \textbf{MGO}: un método con dos ramas aplicando paralelamente HS-GAL más una fase de ``pooling'' lo que permite que cada secuencia pueda aprender distintos grupos de patrones.
+    \item \textbf{MGO}: un método con dos ramas aplicando paralelamente HS-GAL más una fase de ``pooling'', lo que permite que cada secuencia pueda aprender distintos grupos de patrones.
     
-    \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el ``stack node'' con las estadisticas sacadas de la operaciones ``max'' y ``average'' finales.
+    \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el ``stack node'' con las estadísticas sacadas de las operaciones ``max'' y ``average'' finales.
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
@@ -45,7 +45,7 @@ El modelo tiene las siguientes fases:
 \begin{itemize}
     \item \textbf{Integración espectro-temporal}: al modelar conjuntamente los grafos temporal y espectral en un grafo heterogéneo, permite encontrar información cruzada que se podría perder si se tratara por separado.
     
-    \item \textbf{Stack node}: esta técnica ``acumulativa'' ayuda a encontrar ``huellas'' de suplantación (spoofing) cuando no están presentes en un solo nodo y se encuentran distribuidos en varios instantes o bandas.
+    \item \textbf{Stack node}: esta técnica ``acumulativa'' ayuda a encontrar ``huellas'' de suplantación (spoofing) cuando no están presentes en un solo nodo y se encuentran distribuidas en varios instantes o bandas.
     
     \item \textbf{Readout}: al juntar estadísticas globales (average) con evidencia puntual fuerte (max), facilita la detección de diferentes patrones de ``spoofing''.
 

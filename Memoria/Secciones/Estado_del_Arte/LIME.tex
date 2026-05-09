@@ -1,7 +1,7 @@
 \subsubsection{LIME}
 \label{subsubsec:eda_lime}
 
-LIME (Local Interpretable Model-agnostic Explanations) es una técnica de explicabilidad ``post-hoc'' cuyo objetivo es explicar predicciones individuales mediante aproximaciones locales interpretables \cite{2016lime}. Se considera agnóstico del modelo, ya que solo necesita observar las salidas para las nuevas muestras perturbadas.
+LIME (Local Interpretable Model-agnostic Explanations) es una técnica de explicabilidad ``post-hoc'' cuyo objetivo es explicar predicciones individuales mediante aproximaciones locales interpretables \parencite{2016lime}. Se considera agnóstico del modelo, ya que solo necesita observar las salidas para las nuevas muestras perturbadas.
 
 Para conseguir esta explicación, LIME parte de una muestra concreta $x$ cuya predicción se quiere interpretar. A partir de ella, se generan múltiples versiones perturbadas modificando o eliminando parcialmente algunas de sus características. Cada una de estas muestras perturbadas se introduce en el modelo original $f$, obteniendo un conjunto de predicciones que permiten evaluar cómo cambia la salida del modelo cuando varía la entrada.
 
