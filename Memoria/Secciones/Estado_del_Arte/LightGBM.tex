@@ -1,7 +1,7 @@
 \subsubsection{LightGBM}
 \label{subsubsec:eda_lgbm}
 
-LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient boosting desarrollado por Microsoft en 2017 \cite{ke2017lightgbm} que optimiza el proceso de entrenamiento mediante innovaciones en la forma de construir los árboles y muestrear los datos. Mientras que Random Forest construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
+LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient boosting desarrollado por Microsoft en 2017 que optimiza el proceso de entrenamiento mediante innovaciones en la forma de construir los árboles y muestrear los datos. Mientras que Random Forest construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
 
 \subsubsection*{Arquitectura y funcionamiento}
 
@@ -65,8 +65,6 @@ Vamos a explicar los hiperparámetros más importantes en los modelos LightGBM.
 	
 	\item \textbf{objective}: Define la tarea de aprendizaje que debe realizar el modelo y la función de pérdida que se optimizará durante el entrenamiento  Es uno de los parámetros más importantes porque determina fundamentalmente cómo se evalúa el error y cómo se actualizan los pesos. Para problemas de regresión, los valores más comunes son ``regression'' (error cuadrático medio L2), ``regression\_l1'' (error absoluto L1, más robusto ante outliers) y 'huber' (combinación híbrida de L1 y L2 para datos con ruido). Para clasificación binaria se usa ``binary'' (pérdida logística), para clasificación multiclase se usa ``multiclass'' y para ranking se usa ``lambdarank''. En la práctica, elegir el objective correcto según el problema es el primer paso antes de ajustar cualquier otro parámetro.
 	
-%	\item \textbf{metric}: Especifica qué métrica se utilizará para evaluar el rendimiento del modelo durante el entrenamiento, tanto para mostrar progreso como para implementar early stopping. A diferencia del objective (que es la función que el modelo optimiza), la métrica es solo para evaluación y puede ser diferente de la función de pérdida. LightGBM incluye múltiples métricas predefinidas: para regresión están ``mse'', ``mae'', ``rmse''; para clasificación binaria ``binary\_logloss'' (pérdida logarítmica) y ``binary\_error'' (tasa de error); para clasificación multiclase ``multi\_logloss'' y ``multi\_error''; y para ranking ``ndcg'' y ``map''. Algunas métricas como ``auc'' son mayores cuanto mejores, mientras que otras como ``rmse'' son mejores cuanto menores.
-	
 	\item \textbf{boosting\_type}: Determina el algoritmo específico que LightGBM utilizará para construir los árboles secuencialmente. Las opciones principales son: ``gbdt'' (Gradient Boosting Decision Tree), que es el método tradicional y el valor por defecto, donde cada árbol corrige los errores del anterior; ``dart'' (Dropouts meet Multiple Additive Regression Trees), que utiliza un enfoque inspirado en dropout de redes neuronales, apagando aleatoriamente algunos árboles durante el entrenamiento para reducir el sobreajuste; ``goss'' (Gradient-based One-Side Sampling), que acelera el entrenamiento muestreando selectivamente las instancias con gradientes grandes; y ``rf'' (Random Forest), que cambia el comportamiento a un verdadero bosque aleatorio donde los árboles se construyen independientemente sin boosting. La elección afecta tanto la velocidad de entrenamiento como la precisión y el riesgo de sobreajuste.
 \end{itemize}
 
@@ -81,3 +79,5 @@ Vamos a explicar los hiperparámetros más importantes en los modelos LightGBM.
     
     \item \textbf{Early stopping}: Se puede configurar para que detenga el entrenamiento cuando añadir más árboles no mejora la validación, evitando overfitting.
 \end{itemize}
+
+Fuentes: \cite{2017lightgbm}, 
