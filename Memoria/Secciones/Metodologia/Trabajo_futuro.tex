@@ -1,0 +1,22 @@
+\subsection{Trabajo futuro}
+
+El trabajo desarrollado establece una base sólida para la detección de ``deepfakes'' de audio mediante el uso de distintos métodos de IA y técnicas XAI. 
+Actualmente, el producto final del trabajo consiste en un pipeline que permite aplicar, sobre un audio de entrada, todos los modelos de clasificación y explicación estudiados en el capítulo de metodología. Este pipeline genera como salida los resultados obtenidos por los distintos modelos de IA, combinados con gráficas resultantes de aplicar XAI sobre dichos resultados.
+
+Aunque estas representaciones permiten observar qué factores han influido en la decisión de los modelos, su interpretación requiere de ciertos conocimientos técnicos y la explicación no siempre resulta suficientemente directa. Por ello, como trabajo futuro se propone el desarrollo de un explicador que actúe como una última capa entre los valores calculados por las técnicas XAI aplicadas en el pipeline y el resultado final mostrado.
+La idea principal sería transformar el sistema actual, centrado en la visualización, en un enfoque basado en la interpretabilidad asistida. Es decir, el sistema no se limitaría a presentar gráficas, sino que también ofrecería explicaciones más fácilmente interpretables sobre la decisión final y sobre las evidencias que apoyan esta clasificación.
+
+Asimismo, se sugieren dos tipos de explicadores que podrían resultar complementarios entre ellos. El primero estaría basado en \textbf{modelos grandes de lenguaje o LLM}. El objetivo de este primer explicador sería convertir salidas técnicas en explicaciones textuales más comprensibles y sintetizadas. Este enfoque presenta varias ventajas. En primer lugar, permitiría a usuarios no expertos comprender el motivo de la clasificación final. En segundo lugar, facilitaría la comparación entre los resultados de los distintos modelos.
+En tercer lugar, permitiría generar informes automáticos que resuman las evidencias principales utilizadas para la clasificación del audio.
+
+El segundo tipo de explicador propuesto estaría basado en \textbf{contrafactuales}. Mientras que las técnicas XAI responden principalmente a qué partes o características han influido en la decisión final, los contrafactuales responden a una pregunta diferente: ``¿qué tendría que cambiar en el audio para que su clasificación fuera distinta?''.
+Este tipo de explicación es especialmente interesante porque también permite analizar la sensibilidad de los modelos ante modificaciones concretas de la entrada.
+
+Este tipo de explicador podría indicar qué alteración mínima hace que los modelos cambien la clasificación original del audio. Según el tipo de modificación se contemplan tres posibilidades: 
+\begin{itemize}
+    \item \textbf{Contrafactuales por segmentos temporales}: el sistema podría modificar, ocultar o sustituir segmentos determinados del audio y observar cómo cambian las predicciones.
+    \item \textbf{Contrafactuales sobre espectrogramas}: este enfoque actuaría igual que el anterior pero realizando modificaciones sobre la representación espectral del audio.
+    \item \textbf{Contrafactuales sobre características acústicas}: el explicador modificaría características acústicas como los MFCC o el pitch, con el objetivo de ver si se altera la salida de los modelos.
+\end{itemize}
+
+Sin embargo, esta propuesta contiene limitaciones que deben considerarse. En primer lugar, es necesario garantizar la fidelidad de las explicaciones respecto al comportamiento real de los modelos. En segundo lugar, se debe asegurar la trazabilidad, es decir, cada afirmación generada por el explicador se debe poder relacionar con una salida concreta del pipeline. En tercer lugar, los contrafactuales deben ser realistas y no consistir en modificaciones alejadas de la coherencia del dominio del audio.
