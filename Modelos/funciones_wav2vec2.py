@@ -3,10 +3,6 @@
 import numpy as np
 import librosa
 import torch
-from transformers import (
-    Wav2Vec2FeatureExtractor,
-    Wav2Vec2ForSequenceClassification,
-)
 import os
 
 SAMPLING_RATE = 16000
@@ -47,6 +43,7 @@ def generar_predicciones(model,feature_extractor, audio):
     input_values = preprocess_single(audio,MAX_AUDIO_LEN,SAMPLING_RATE,feature_extractor)
     logits = prediccion(model,input_values)
 
+    print("")
     print("nombre =", os.path.splitext(os.path.basename(audio))[0])
     print("Salida del modelo =", logits)
     score = float(logits_to_score(logits))
@@ -152,48 +149,40 @@ def preprocesamiento(df,base):
 
 # SHAP
 
-def explicacion_shap(modelo,audio, X):
-    X_np = X.numpy()
+def explicacion_shap(modelo, audio, X):
+
+    X_np = X.numpy().astype(np.float32)
+    X_np = np.nan_to_num(X_np)
 
     background = X_np[:50]
 
-    explainer_SHAP_espectrogramas = shap.GradientExplainer(modelo, background)
-    shap_values_espectrogramas = explainer_SHAP_espectrogramas.shap_values(X_np)
-    
+    explainer = shap.GradientExplainer(modelo, background)
+
     mel_spec = extract_spectrogram(audio)
-    mel_spec = fix_spec(mel_spec,target_time=128)  # (64, tiempo)
+    mel_spec = fix_spec(mel_spec, target_time=128)
 
-    input_model = mel_spec[np.newaxis, ..., np.newaxis]  # (1, 8, tiempo, 1)
+    mel_spec = (mel_spec - X_np.mean()) / (X_np.std() + 1e-8)
 
-    shap_vals = explainer_SHAP_espectrogramas.shap_values(input_model)[0][0, ..., 0]  # (8, tiempo)
+    input_model = mel_spec[np.newaxis, ..., np.newaxis].astype(np.float32)
+    input_model = np.nan_to_num(input_model)
 
-    n_mels, n_frames = mel_spec.shape
-    n_superbands = shap_vals.shape[0]
+    shap_values = explainer.shap_values(input_model)
 
-    shap_heatmap = np.zeros_like(mel_spec)
-    band_height = n_mels // n_superbands
+    shap_values = np.array(shap_values)
 
-    for i in range(n_superbands):
-        f = interp1d(
-            np.arange(shap_vals.shape[1]),
-            shap_vals[i],
-            kind='linear',
-            fill_value="extrapolate"
-        )
-        
-        band_values = f(np.arange(n_frames))
-        
-        start = i * band_height
-        end = (i + 1) * band_height if i < n_superbands - 1 else n_mels
-        
-        shap_heatmap[start:end, :] = np.tile(band_values, (end - start, 1))
+    shap_values = np.nan_to_num(shap_values)
 
-    shap_heatmap_norm = (
-        (shap_heatmap - shap_heatmap.min()) /
-        (shap_heatmap.max() - shap_heatmap.min() + 1e-8)
-    )
+    shap_map = shap_values[0, :, :, 0, 0]
 
-    return shap_heatmap_norm
+    if np.isclose(shap_map.std(), 0):
+        shap_map += np.random.normal(0, 1e-6, shap_map.shape)
+
+    min_val = shap_map.min()
+    max_val = shap_map.max()
+
+    shap_map = (shap_map - min_val) / (max_val - min_val + 1e-8)
+
+    return shap_map
 
 def mostrar_shap(espectrograma, shap, audio,ax):
     
