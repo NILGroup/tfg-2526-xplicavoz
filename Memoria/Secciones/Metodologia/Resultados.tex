@@ -11,7 +11,7 @@ Como vemos en las tablas \ref{tab:metricas_principales_modelos_base} \ref{tab:cl
 % ESTO VA EN ANALISIS DE RESULTADOS
 Esto puede deberse a que los audios, cuando se escuchan directamente por una persona, se detectan algunos donde no se entiende lo que está diciendo el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas'' y otros aspectos que nos llevan a pensar que dichos audios son falsos.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
@@ -28,7 +28,7 @@ RL & 1 & 1 & 1 & 1 & 1 & 1\\
 \label{tab:metricas_principales_modelos_base}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lccccc}
 \toprule
@@ -44,7 +44,7 @@ Nº Instancias & 10 & 10 & 20 & 20 & 20 \\
 \label{tab:classification_report_modelos_base}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
@@ -61,7 +61,7 @@ modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
 
 Los resultados revelan que los modelos son estables en los 5 folds y que clasifican bien, como se ve en \ref{tab:cv_modelos_base}.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcc}
 \toprule
@@ -82,7 +82,7 @@ En primer lugar veamos cuáles son los mejores parámetros del grid que hemos de
 
 Para Random Forest podemos ver que los parámetros difieren ligeramente a lo que hemos definido en el modelo baseline (ver Tabla \ref{tab:grid_search_rf}). Teniendo que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han disminuido.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -99,9 +99,9 @@ max\_features & sqrt \\
 \label{tab:grid_search_rf}
 \end{table}
 
-En el Grid Search del modelo LightGBM tomamos otro rumbo, como se menciona en \autoref{subsubsec:mod_lgbm},
+Como se mencionó en \autoref{subsubsec:mod_lgbm}, el Grid Search de LightGBM usaba parámetros distintos. Los resultados podemos verlos en la tabla \ref{tab:grid_search_lgbm}.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -123,7 +123,7 @@ reg\_lambda & 0 \\
 
 El Grid Search del modelo SVM puede parecer más simple, pero es interesante ver los valores que devuelve (ver Tabla \ref{tab:grid_search_svm}. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajo hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -145,7 +145,7 @@ En este apartado vamos a mostrar los resultados y comentaremos un poco  al respe
 
 \subsubsection*{Modelo baseline}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lccccc}
 \toprule
@@ -163,7 +163,7 @@ MCC & 1 & 1 & 1 & 1 & 1 \\
 \label{tab:res_modelos_base}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -179,7 +179,7 @@ weighted avg & 1 & 1 & 1 & 20 \\
 \caption{Classification report de Random Forest baseline}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -200,7 +200,7 @@ Observamos que este modelo baseline clasifica correctamente entre audios reales 
 
 \subsubsection*{Validación Cruzada Estratificada}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcc}
 \toprule
@@ -220,7 +220,7 @@ Estos resultados revelan que el modelo es estable en los 5 folds y que, como hem
 
 En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -239,7 +239,7 @@ max\_features & sqrt \\
 % RESULTADOS
 Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, lo que es comprensible puesto la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor. Tenemos que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han bajado respecto de los que definimos inicialmente.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -951,9 +951,9 @@ Estos resultados nos dicen que el modelo es estable en estos 5 folds, al tener u
 
 \subsubsection*{Grid Search}
 
-En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
+Veamos ahora el resultado del Grid Search que hemos definido para SVM, en la tabla Aunque este sea un Grid Search más simple, es interesante ver los valores que devuelve. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajor hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -965,12 +965,13 @@ kernel & rbf \\
 \bottomrule
 \end{tabular}
 \caption{Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}
+\label{tab:grid_search_svm}
 \end{table}
 
-% RESULTADOS
-Aunque este sea un Grid Search más simple, es interesante ver los valores que devuelve. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajor hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
 
-\begin{table}[H]
+Para ver el rendimiento del modelo optimizado nos fijamos en las tablas \ref{tab:metricas_principales_svm_optimo}, \ref{tab:classification_report_svm_optimo} y \ref{tab:analisis_errores_svm_optimo}. En dichas tablas observamos que el rendimiento del modelo se mantiene, es decir, sigue clasificando correctamente.
+
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -985,9 +986,10 @@ MCC & 1 \\
 \bottomrule
 \end{tabular}
 \caption{Métricas principales de SVM óptimo}
+\label{tab:metricas_principales_svm_optimo}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -1000,10 +1002,11 @@ macro avg & 1 & 1 & 1 & 20 \\
 weighted avg & 1 & 1 & 1 & 20 \\
 \bottomrule
 \end{tabular}
-\caption{Classification report de SVM con kernel no lineal}
+\caption{Classification report de SVM óptimol}
+\label{tab:classification_report_svm_optimo}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1018,22 +1021,20 @@ Error tipo II & 0\% \\
 \bottomrule
 \end{tabular}
 \caption{Análisis de errores de SVM óptimo}
+\label{tab:analisis_errores_svm_optimo}
 \end{table}
-
-% RESULTADOS
-Los resultados no varían de los anteriores, lo que es de esperar en este caso. Interesa ver que, pese a que SVM con $gamma = 0,01$ y $gamma = scale$ arrojan los mismos resultados, y el GridSearch eligió uno sobre otro, quizá al funcionar igual, en este contexto, eligió el más ``simple'' (como vimos, scale se calcula mediante una fórmula).
 
 \subsubsection*{Resultados de explicacion}
 
 Como podemos ver en las gráficas \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_1.png}
 	\caption{Explicación local con SHAP}
 	\label{fig:1_shap_svm_local}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_2.png}
 	\caption{Explicación local con SHAP}
 	\label{fig:2_shap_svm_local}
@@ -1041,7 +1042,7 @@ Como podemos ver en las gráficas \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_s
 
 Con estas dos instancias no tenemos una clara idea de cuál es la característica más influyente. Como vemos en la gráfica \ref{fig:shap_svm_global}, la más influyente es ``spectral flatness'', como en los casos anteriores. Aunque en este caso no tiene un peso excesivamente alto, pues hay otras como ``spectral bandwidth'' o ``mfcc 1'' que también tienen un peso notable.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_global.png}
 	\caption{Explicación global con SHAP}
 	\label{fig:shap_svm_global}
@@ -1049,7 +1050,7 @@ Con estas dos instancias no tenemos una clara idea de cuál es la característic
 
 Para ver si ``spectral flatness'' tiene una alta dominancia en la clasificación, entrenamos un modelo sin ella, esto se puede ver en las tablas \ref{tab:metricas_principales_svm_sin_specflat}, \ref{tab:classification_report_svm_sin_specflat} y \ref{tab:analisis_errores_svm_sin_specflat}. Como vemos, el modelo sigue clasificando correctamente aún sin dicha característica.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1067,7 +1068,7 @@ MCC & 1 \\
 \label{tab:metricas_principales_svm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -1084,7 +1085,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \label{tab:classification_report_svm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1104,13 +1105,13 @@ Error tipo II & 0\% \\
 
 Para ver ahora la nueva distribución de importancia de características mostramos las gráficas \ref{fig:1_shap_svm_local_sin_specflat} y \ref{fig:2_shap_svm_local_sin_specflat}. Como se puede observar las importancias siguen estando bien distribuidas, aunque sí vemos que ``spectral bandwidth'' está en la zona de alta importancia en ambas instancias predichas.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
 	\label{fig:1_shap_svm_local_sin_specflat}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness}
 	\label{fig:2_shap_svm_local_sin_specflat}
@@ -1118,7 +1119,7 @@ Para ver ahora la nueva distribución de importancia de características mostram
 
 Ahora probamos a quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1'', resultados en las tablas \ref{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_svm_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}. Vemos que el modelo sigue clasificando correctamente.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1136,7 +1137,7 @@ MCC & 1 \\
 \label{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -1153,7 +1154,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \label{tab:classification_report_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1173,26 +1174,25 @@ Error tipo II & 0\% \\
 
 Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las gráficas \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que ``spectral rolloff'' toma un alto valor, pero no deja a 0 el resto de importancias.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
 	\label{fig:1_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
 	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
 	\label{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-% LIME
-\begin{figure}[H]
+Como vemos en la imagen \ref{fig:lime_svm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar.
+
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/lime_svm.png}
 	\caption{Explicación local con LIME}
 	\label{fig:lime_svm}
 \end{figure}
-
-% DiCE
 
 \subsubsection{AASIST}
 \label{subsubsec:res_aasist}
