@@ -7,7 +7,7 @@ Como vimos en la sección \ref{subsubsec:eda_aasist}, AASIST es un modelo creado
 La elección de AASIST se justifica por tratarse de un modelo desarrollado específicamente para la detección de ``spoof'' en audio. Su arquitectura está diseñada para explotar de forma conjunta información temporal y espectral, lo que resulta especialmente útil en un problema donde las diferencias entre señales naturales y generadas pueden ser sutiles y estar distribuidas. Además, su buen desempeño en tareas de ``\textit{anti-spoofing}'' lo convierte en una referencia sólida para ser utilizado en este trabajo.
 
 \subsubsection*{Aplicación del modelo}
-Lo explicado en esta subsección de aplicación se corresponde con lo desarrollado en este ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_modelo.ipynb}{notebook}''.
+Lo explicado en esta subsección de aplicación se corresponde con lo desarrollado en este~``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_modelo.ipynb}{notebook}''.
 
 Lo primero, al ser un modelo que produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios. 
 Posteriormente, se lee el contenido del \textbf{archivo .conf} del modelo. Para ello, hemos creado una función que busca el elemento pasado por parámetro y devuelve el bloque superior que contiene ese elemento junto con los elementos al mismo nivel. Esto nos permite construir una variable, que vamos a llamar args, con los siguientes campos:
@@ -30,22 +30,22 @@ Con esto preparado, creamos las tres funciones de inferencia para ver si consegu
 Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nombre del audio, la probabilidad de que sea ``bonafide'' y su duración. Para esto, se recorre cada audio del dataset, se le aplica una de las funciones de inferencia y se escribe la información en el csv.
 
 \subsection*{Explicación de los modelos XAI aplicados a AASIST}
-Para explicar esta subsección, nos apoyamos en lo desarrollado en este ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_XAI_declaracion.ipynb}{notebook}''.
-\subsubsection*{Enfoque de explicabilidad ante-hoc}
+Para explicar esta subsección, nos apoyamos en lo desarrollado en este~``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_XAI_declaracion.ipynb}{notebook}''.
+\subsection*{Enfoque de explicabilidad ante-hoc}
 Hemos usado las propias estructuras del modelo para empezar a explicar qué es lo que le empuja a decidir una clase u otra. Esto nos sirve además para enseñar mejor cómo funciona la arquitectura de AASIST.
 Lo primero que mostramos es el formato de la salida que es una tupla con dos valores, la probabilidad de que el audio sea ``spoof'' y de que sea ``bona fide'', y la estructura de los grafos que nos permite ver que se crean 23 nodos espectrales y 29 temporales. También, simulamos cómo funciona un ``pooling'' mostrando los nodos de cada tipo con mayor puntuación.
 
 Después,  ejemplificamos cuáles son los valores que se pasan a la capa de salida y cuánto afectan al cálculo de cada uno de los valores de la salida. Estos valores son los resultados de las operaciones ``max'' y ``average'' de cada subgrafo y el resultado del stack node. Con estas muestras podemos empezar a ver qué ha sido más significativo a la hora de responder si un audio es ``spoof'' o no.
 
-En relación a filtros de frecuencia, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de Fourier y las mostramos en una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_bandasf_filtros.png}{gráfica}. Con ella podemos afirmar que se captan todas las frecuencias de 0 a 8000 Hz y que en las frecuencias bajas hay más solapamiento entre filtros. Esto es importante ya que cuando extraemos cuáles son los filtros que más se activan durante el procesado del audio, no es raro que salgan algunos consecutivos ya que si dos filtros están observando una frecuencia muy activa, ambos responderán parecido.
+En relación a filtros de frecuencia, primero calculamos la banda de frecuencias aproximada de cada uno de los 70 filtros con una transformada rápida de Fourier y las mostramos en una~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_bandasf_filtros.png}{gráfica}. Con ella podemos afirmar que se captan todas las frecuencias de 0 a 8000 Hz y que en las frecuencias bajas hay más solapamiento entre filtros. Esto es importante ya que cuando extraemos cuáles son los filtros que más se activan durante el procesado del audio, no es raro que salgan algunos consecutivos ya que si dos filtros están observando una frecuencia muy activa, ambos responderán parecido.
 
-Posteriormente, representamos en una gráfica los filtros que más activación han tenido en el primer procesado, de dos formas: en la primera \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_top_filtros.png}{imagen}, viendo qué frecuencias cubren, y en la \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_activación_top_filtros.png}{segunda}, viendo su activación a lo largo del audio.
+Posteriormente, representamos en una gráfica los filtros que más activación han tenido en el primer procesado, de dos formas: en la primera~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_top_filtros.png}{imagen}, viendo qué frecuencias cubren, y en la~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_activación_top_filtros.png}{segunda}, viendo su activación a lo largo del audio.
 
 Con la primera gráfica, se observa que los 5 filtros más excitados se pueden separar en dos grupos por su consecución, mientras que en la segunda, se aprecia cómo tienen comportamientos muy parecidos. 
 
 En relación con las frecuencias, simulamos cómo sería la salida de la capa ``\textbf{sinc-convolution}'' que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un ``\textbf{heatmap}'' en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
 
-Hemos creado dos mapas filtro-tiempo, el \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_heatmap.png}{primero} sería el más fiel al modelo, mientras que el \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_heatmap_normalizado.png}{segundo} normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
+Hemos creado dos mapas filtro-tiempo, el~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_heatmap.png}{primero} sería el más fiel al modelo, mientras que el~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_heatmap_normalizado.png}{segundo} normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
 
 Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se activan más y cuándo se excitan más. Asimismo, es importante mencionar que se está representando la magnitud absoluta de atribución, no signo.
 
@@ -60,11 +60,11 @@ La única diferencia entre estas funciones, es que la del plano espectral necesi
 Las caídas en la probabilidad las mostramos en una gráfica y nos permite ver qué instantes del audio son más relevantes para el modelo. 
 Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que los picos en tramos pequeños se compensen y obtengamos aportación nula.
 
-Tenemos como resultado las gráficas temporales de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_temporal.png}{``logit''} y de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_temporal_margen.png}{margen}. Aunque con ellas todavía no sabemos qué fenómenos son los determinantes, sí nos permite saber en qué momento ocurren.
+Tenemos como resultado las gráficas temporales de~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_temporal.png}{``logit''} y de~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_temporal_margen.png}{margen}. Aunque con ellas todavía no sabemos qué fenómenos son los determinantes, sí nos permite saber en qué momento ocurren.
 
-Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren. Asimismo, tenemos las mismas dos gráficas, una de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial.png}{``logit''} y otra de \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial_margen.png}{margen}.
+Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren. Asimismo, tenemos las mismas dos gráficas, una de~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial.png}{``logit''} y otra de~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_hiding_frecuencial_margen.png}{margen}.
 
-\subsubsection*{Implementación de Integrated Gradients}
+\subsection*{Implementación de Integrated Gradients}
 
 La siguiente técnica que vamos a aplicar es la explicada en la sección \textbf{\ref{subsubsec:eda_ig}}. Para medir el error usando esta técnica usamos la métrica ``\textbf{delta}'' que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
 Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. Para ello, usamos la clase \textbf{LayerIntegratedGradients} porque analizamos solo una capa concreta del modelo y nos devuelve la salida en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Esta clase usa los siguientes parámetros:
@@ -78,15 +78,15 @@ Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. P
 \end{itemize}
 
 A diferencia de los mapas filtro-tiempo mostrados anteriormente, aquí representamos las zonas que más \textbf{contribuyen} al ``logit'' final.
-Sin embargo, igual que antes, representamos una gráfica \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa_normalizado.png}{normalizada} para apreciar más detalle y una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa.png}{sin normalizar} para ver el mapa puro.
+Sin embargo, igual que antes, representamos una gráfica~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa_normalizado.png}{normalizada} para apreciar más detalle y una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa.png}{sin normalizar} para ver el mapa puro.
 
-Para mostrar esto de manera más visual, generamos una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa_frecuencial.png}{gráfica} donde vemos los filtros en el eje x, proporcionando información sobre los más excitados. 
+Para mostrar esto de manera más visual, generamos una~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_mapa_frecuencial.png}{gráfica} donde vemos los filtros en el eje x, proporcionando información sobre los más excitados. 
 
 Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.  
 
-Como resultado, obtenemos una \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_audio.png}{gráfica} de importancia temporal indicando lo importante que es cada instante según esta técnica.
+Como resultado, obtenemos una~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_IG_audio.png}{gráfica} de importancia temporal indicando lo importante que es cada instante según esta técnica.
 
-\subsubsection*{Implementación de RISE}
+\subsection*{Implementación de RISE}
 
 A continuación aplicamos RISE, sección \textbf{\ref{subsubsec:eda_rise}}, y obtenemos los resultados en forma de gráfica temporal.
 Para transformar la idea de esta técnica a audio, lo primero es generar una función que genere las máscaras aleatorias. Esta función genera una primera máscara de tamaño ``grid\_size'' formada solo por 1 o 0. Cada posición de esta primera máscara tiene una probabilidad ``p\_keep'' de tener valor 1, es decir, conservar sin alteraciones esa parte de la señal. Entre cada uno de estos puntos, se realiza un escalado suave hasta tener una máscara del mismo tamaño que la señal original, evitando cambios bruscos que provoquen discontinuidades artificiales.
@@ -97,9 +97,9 @@ Esta multiplicación es la que va a ir discriminando qué instantes de audio son
 
 Por último, con el bucle acabado, aplicamos a los acumuladores una media sobre el número de máscaras multiplicado por el valor ``p\_keep''.
 
-Mostramos las gráficas de ambas métricas, ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_logit.png}{logit}'' y \href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_margin.png}{margen} para poder compararlas como se ha mencionado anteriormente.
+Mostramos las gráficas de ambas métricas,~``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_logit.png}{logit}'' y~\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Memoria/imagenes/AASIST_RISE_margin.png}{margen} para poder compararlas como se ha mencionado anteriormente.
 
-\subsubsection*{Implementación de SHAP}
+\subsection*{Implementación de SHAP}
 
 El último modelo de XAI que hemos aplicado en AASIST es SHAP, sección \textbf{\ref{subsubsec:eda_shap}}. Sin embargo, no lo hemos podido aplicar directamente debido a dos razones principales. En primer lugar, el modelo recibe como entrada una onda de audio cruda, lo que se traduce en muchísimas variables, algo poco manejable para esta técnica. En segundo lugar, la arquitectura de AASIST, con técnicas como el bloque MGO, no es compatible de forma natural con los explicadores de SHAP. Incluso obviando estas razones, como resultado de aplicar SHAP sobre AASIST, obtendríamos la importancia para miles de muestras individuales del audio y no características interpretables, como es el objetivo.
 

@@ -1194,7 +1194,7 @@ Como vemos en la imagen \ref{fig:lime_svm}, la explicación que genera LIME tamb
 	\label{fig:lime_svm}
 \end{figure}
 
-\subsubsection{AASIST}
+\subsection{AASIST}
 \label{subsubsec:res_aasist}
 Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
 Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.

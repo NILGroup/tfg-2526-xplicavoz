@@ -1,9 +1,9 @@
-\subsubsection{AASIST}
+\subsection{AASIST}
 \label{subsubsec:eda_aasist}
-AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de ``spoofing'' de audio desarrollado en 2022 \parencite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
+AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de ``spoofing'' de audio desarrollado en 2022~\parencite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
 
 Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto por ser el más específico para la tarea de audio anti-spoofing, a diferencia de otros con usos fuera de este ámbito. Esta especialización para separar audios ``bona fide'' de muestras falsificadas se refleja tanto en su arquitectura, explicada en el siguiente punto, como en la motivación que llevó a su diseño. 
-\subsubsection*{Arquitectura y funcionamiento}
+\subsection*{Arquitectura y funcionamiento}
 
 \hspace{.7cm}
 El modelo tiene las siguientes fases:
@@ -30,7 +30,7 @@ El modelo tiene las siguientes fases:
     \item Por último, usando las operaciones ``\textbf{max}'' y ``\textbf{average}'' sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el ``stack node'' para formar la representación final en la capa de salida.
 \end{enumerate}
 
-\subsubsection*{Innovaciones clave}
+\subsection*{Innovaciones clave}
 
 \begin{itemize}
     \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simultáneamente ambos grafos, combinada con un ``stack node'' para ir acumulando información espectro-temporal.
@@ -40,7 +40,7 @@ El modelo tiene las siguientes fases:
     \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el ``stack node'' con las estadísticas sacadas de las operaciones ``max'' y ``average'' finales.
 \end{itemize}
 
-\subsubsection*{Ventajas específicas para detección de deepfakes}
+\subsection*{Ventajas específicas para detección de deepfakes}
 
 \begin{itemize}
     \item \textbf{Integración espectro-temporal}: al modelar conjuntamente los grafos temporal y espectral en un grafo heterogéneo, permite encontrar información cruzada que se podría perder si se tratara por separado.
