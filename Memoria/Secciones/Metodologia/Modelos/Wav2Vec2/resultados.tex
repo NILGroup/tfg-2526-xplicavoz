@@ -179,7 +179,7 @@ Sobre el sexto surrogate model aplicaremos Shap, Lime, Integrated gradients y Gr
 
 De cada una de estas técnicas sacaremos tres imágenes. La dos primeras se corresponderán con la actuación de la técnica de XAI sobre un audio concreto (I\_12\_N) y el espectrograma de dicho audio. La última imagen nos mostrará los patrones de actuación global de la técnica empleada. 
 
-SHAP
+\subsubsection*{Shap}
 
 Aquí podemos ver en las imágenes~\ref{tab:shap_local_espectrogramas_Wav2Vec2} cómo la parte del audio que más influye en la predicción es la parte final del audio, correspondiente a las bandas de mel entre 25 y 45, que simbolizan frecuencias medio-altas. Estas bandas contienen las formantes F2 y F3, así como elementos clave para la inteligibilidad del habla. Si nos fijamos en el espectrograma, esto coincide con el final, donde parece que el audio está distorsionado. Esto se aprecia claramente al escuchar el audio (I\_12\_N: audio 12 natural en inglés), donde la última palabra es ``next'', y ese final que parece distorsionado corresponde al sonido de la pronunciación del grupo consonántico ``xt''. También se puede observar cómo la parte donde ya no hay espectrograma, en la explicación de SHAP, no tiene prácticamente influencia.
 
@@ -207,7 +207,8 @@ En esta imagen~\ref{tab:shap_global_espectrogramas_Wav2Vec2} sobre la influencia
 	\label{fig:shap_global_espectrogramas_Wav2Vec2}
 \end{figure}
 
-LIME
+\subsubsection*{Lime}
+
 
 En esta imagen~\ref{tab:lime_local_espectrogramas_Wav2Vec2} se muestra la explicación local de lime sobre mismo audio que en el shap. En ella podemos ver como, al igual que en el shap, las bandas medias son las más relevantes y la pronunciación final es lo que más mueve la predicción hacia la clase real. Por último podemos ver como en estas bandas medias al principio estas empujan la predicción hacia generado, esto se puede deber a que el audio tarda en comenzar y a como pronuncia el principio de la primera palabra ``what''.
 
@@ -235,7 +236,7 @@ Aquí~\ref{tab:lime_global_espectrogramas_Wav2Vec2} a diferencia de en shap, seg
 	\label{fig:lime_global_espectrogramas_Wav2Vec2}
 \end{figure}
 
-INTEGRATED GRADIENTS
+\subsubsection*{Integrated gradients}
 
 Aquí~\ref{tab:ig_local_espectrogramas_Wav2Vec2} podemos ver como no está analizando el audio del todo bien ya que las partes más rojas son las que más influyes a una predicción hacia generado pero si vemos el espectrograma del audio, en esas partes como tal no hay nada, son zonas negras, también la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma. Si ignoramos esas partes y nos centramos solo donde si que hay evidencia de audio, podemos ver como esas son zonas más blancas - azuladas que empujan la predicción hacia real. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
 
@@ -263,7 +264,7 @@ En la predicción global~\ref{tab:ig_global_espectrogramas_Wav2Vec2} se puede ap
 	\label{fig:ig_global_espectrogramas_Wav2Vec2}
 \end{figure}
 
-GRAD CAM
+\subsubsection*{Grad Cam}
 
 Aquí~\ref{tab:gc_local_espectrogramas_Wav2Vec2}, al igual que en la explicación local de integrated gradients, podemos ver que en las partes donde no hay audio son las partes que más influyen en la predicción aunque aquí si que distingue bien que la parte final donde no hay espectrograma no tiene ningún peso en la predicción. De todas formas, fijándonos donde hay audio podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
 
