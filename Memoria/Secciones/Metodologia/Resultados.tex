@@ -1219,7 +1219,10 @@ En lo referido a las épocas, lo más destacable es que superar las 40 épocas e
 \input{Secciones/Metodologia/Modelos/AASIST/resultados.tex}
 
 \subsection{Perceptrón}
-\input{Secciones/Metodologia/Modelos/Perceptron/resultados.tex}
+
+Como podíamos esperar, se produce un gran sobreajuste en el modelo por lo que no emplearemos ninguna de las métricas típicas para evaluarlo.
+
+Las conclusiones que podemos sacar sobre este modelo a la vista de los resultados son que para crear un modelo de clasificación desde 0 y que sea eficaz en su labor, necesitaríamos muchísimos más audios de los que disponemos, además, en lo que se refiere a la posterior tarea de aplicar elementos de IA explicable al modelo, al usar embeddings como entrada, no podemos aplicarle directamente ninguna de esas técnicas.
 
 \subsection{Wav2Vec2}
 
