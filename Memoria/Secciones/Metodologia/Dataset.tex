@@ -1,4 +1,4 @@
-\subsection{Dataset}
+\section{Dataset}
 Para encontrar un dataset público que tuviera voces tanto reales como clonadas y que ademas fueran por pares (i.e. un audio de voz real cuya transcripción es "Hoy he comido en un restaurante chino" y un audio clonando dicha voz diciendo lo mismo) ha sido complicado. Hemos echado un ojo a bastantes datasets. Vamos a comentar los que hemos tenido en cuenta.
 
 \begin{enumerate}
@@ -13,7 +13,7 @@ Para encontrar un dataset público que tuviera voces tanto reales como clonadas 
 \hspace{.7cm}
 Finalmente, el dataset por el que nos decantamos fue \href{https://www.ai4europe.eu/research/ai-catalog/odss-open-dataset-synthetic-speech}{ODSS}. Hemos usado este conjunto de audios porque ya tiene creado un par para cada audio, lo que nos ahorra tiempo de generar nuestros propios audios. A esta ventaja se le suma que ODSS ya contenía audios en inglés y en español, ambos idiomas son sumamente hablados por lo que es interesante centrarse en ellos.
 
-\subsubsection*{Análisis del dataset}
+\subsection*{Análisis del dataset}
 
 De este subconjunto de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los mfcc's que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
 

@@ -1,4 +1,4 @@
-\subsubsection*{Características}
+\subsection*{Características}
 
 Podemos extraer características de la voz como el tono fundamental, los formantes, las pausas, y otros. Con estos datos, los modelos pueden aprender las relaciones entre los dos grupos de audios. Cabe destacar que las características de este tipo extraídas son mayormente arrays en el que cada componente es un valor en un momento determinado. Esto se debe a que la voz tiene una componente temporal, por lo que hay que dividir cada audio en marcos temporales (frames). Además, los modelos que aplicaremos no entrenan con arrays, por lo que los promediaremos con la media y/o desviación típica.
  Vamos a explicar cada característica que extraemos de los audios:
