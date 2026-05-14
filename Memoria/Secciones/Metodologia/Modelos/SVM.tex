@@ -1,7 +1,7 @@
 \subsection{Support Vector Machine (SVM)}
 \label{subsubsec:mod_svm}
 
-Como ya hemos visto sobre los SVM en \autoref{subsubsec:eda_svm}, estos se fundamentan en la búsqueda del hiperplano óptimo que maximiza el margen de separación entre clases, lo que proporciona una base teórica sólida y garantías de generalización.
+Como ya hemos visto sobre los SVM en la \autoref{subsubsec:eda_svm}, estos se fundamentan en la búsqueda del hiperplano óptimo que maximiza el margen de separación entre clases, lo que proporciona una base teórica sólida y garantías de generalización.
 
 \subsubsection*{Justificación del modelo}
 
@@ -54,11 +54,11 @@ El parámetro \texttt{gamma='scale'} establece automáticamente \(\gamma = 1/(n_
 
 \subsubsection*{Validación cruzada estratificada}
 
-Para garantizar la robustez de las evaluaciones y evitar dependencias de una única partición, se implementó validación cruzada estratificada con 5 folds, como explicamos en \autoref{subsec:proc_exp}. Se utilizó un pipeline que integra el escalado y el clasificador para asegurar que la normalización se realice correctamente en cada fold. 
+Para garantizar la robustez de las evaluaciones y evitar dependencias de una única partición, se implementó validación cruzada estratificada con 5 folds, como explicamos en la \autoref{subsec:proc_exp}. Se utilizó un pipeline que integra el escalado y el clasificador para asegurar que la normalización se realice correctamente en cada fold. 
 
 \subsubsection*{Optimización de hiperparámetros}
 
-Para buscar la mejor configuración de hiperparámetros para SVM nos hemos centrado en el kernel RBF, ya que es más usado que el kernel lineal, como vimos en \autoref{subsubsec:eda_svm}. SVM con kernel RBF tiene dos hiperparámetros críticos que determinan su rendimiento (C y gamma). La búsqueda sistemática se realizó mediante Grid Search con validación cruzada sobre dichos parámetros:
+Para buscar la mejor configuración de hiperparámetros para SVM nos hemos centrado en el kernel RBF, ya que es más usado que el kernel lineal, como vimos en la \autoref{subsubsec:eda_svm}. SVM con kernel RBF tiene dos hiperparámetros críticos que determinan su rendimiento (C y gamma). La búsqueda sistemática se realizó mediante Grid Search con validación cruzada sobre dichos parámetros:
 
 \begin{itemize}
 	\item \textbf{C}: Probamos 0,1, 1, 10 y 100.

@@ -1,7 +1,7 @@
 \subsection{Random Forest}
 \label{subsubsec:eda_rf}
 
-Random Forest es un algoritmo de aprendizaje automático basado en la combinación de múltiples árboles de decisión, propuesto por Leo Breiman en 2001. Pertenece a la familia de métodos \textit{ensemble}, que mejoran el rendimiento agregando las predicciones de varios modelos más simples.
+Random Forest es un algoritmo de aprendizaje automático basado en la combinación de múltiples árboles de decisión, propuesto por Leo Breiman en 2001 ~\cite{2001randomforest}. Pertenece a la familia de métodos \textit{ensemble}, que mejoran el rendimiento agregando las predicciones de varios modelos más simples.
 
 \subsubsection*{Arquitectura y funcionamiento}
 
@@ -29,7 +29,7 @@ Este mecanismo de votación reduce drásticamente la varianza del modelo: aunque
 
 \subsubsection*{Hiperparámetros}
 
-Vamos a hablar de los hiperparámetros que tiene Random Forest y para qué sirven o qué representan, ya que conocerlos es crucial a la hora de usar un modelo.
+Vamos a hablar de los hiperparámetros que tiene Random Forest y para qué sirven ~\cite{sklearn_random_forest}, ya que conocerlos es crucial a la hora de usar un modelo.
 
 \begin{itemize}
 	\item \textbf{n\_estimators}: Define la cantidad de árboles de decisión que conforman el bosque aleatorio. A medida que aumentamos este número, el modelo tiende a mejorar su rendimiento porque se promedian más predicciones individuales, lo que reduce la varianza y el riesgo de sobreajuste. Sin embargo, a partir de cierto punto (generalmente entre 100 y 500 árboles) los beneficios se vuelven marginales, mientras que el tiempo de entrenamiento y predicción sigue incrementándose linealmente, por lo que es recomendable encontrar un equilibrio entre rendimiento y eficiencia computacional.
@@ -58,5 +58,3 @@ Vamos a hablar de los hiperparámetros que tiene Random Forest y para qué sirve
 	\caption{Voto por mayoría en el ``bosque''.}
 	\label{fig:voto_mayoria}
 \end{figure}
-
-Fuentes: \cite{2001randomforest}, \cite{sklearn_random_forest}

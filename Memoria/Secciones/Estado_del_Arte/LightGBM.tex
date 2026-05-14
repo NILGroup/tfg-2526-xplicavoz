@@ -1,7 +1,7 @@
 \subsection{LightGBM}
 \label{subsubsec:eda_lgbm}
 
-LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient boosting desarrollado por Microsoft en 2017 que optimiza el proceso de entrenamiento mediante innovaciones en la forma de construir los árboles y muestrear los datos. Mientras que Random Forest construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
+LightGBM (\textit{Light Gradient Boosting Machine}) es un framework de gradient boosting desarrollado por Microsoft en 2017 ~\cite{2017lightgbm}, que optimiza el proceso de entrenamiento mediante innovaciones en la forma de construir los árboles y muestrear los datos. Mientras que Random Forest construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
 
 \subsubsection*{Arquitectura y funcionamiento}
 
@@ -42,7 +42,7 @@ Cuando una nueva instancia llega para ser clasificada:
 
 \subsubsection*{Hiperparámetros}
 
-Vamos a explicar los hiperparámetros más importantes en los modelos LightGBM.
+Vamos a explicar los hiperparámetros más conocidos en los modelos LightGBM ~\cite{sklearn_lightgbm}.
 
 \begin{itemize}
 	\item \textbf{max\_depth}: Limita explícitamente la profundidad máxima que pueden alcanzar los árboles durante el entrenamiento. Es especialmente importante cuando se trabaja con conjuntos de datos pequeños, ya que los árboles poco profundos tienen menos probabilidad de sufrir sobreajuste. Si max\_depth es menor o igual a cero, significa que no hay límite para la profundidad máxima, lo que puede ser arriesgado con datos limitados.
@@ -61,8 +61,6 @@ Vamos a explicar los hiperparámetros más importantes en los modelos LightGBM.
 	
 	\item \textbf{reg\_alpha y reg\_lambda}: Estos parámetros aplican regularización L1 (lasso) y L2 (ridge) respectivamente para controlar la complejidad del modelo y prevenir el sobreajuste. La regularización añade una penalización a la función de pérdida por tener valores de parámetros grandes, lo que favorece modelos más simples y generalizables. Por defecto valen 0, lo que significa que no se aplica regularización. Aumentar estos valores puede ser especialmente útil cuando se sospecha de sobreajuste o cuando se trabaja con muchas características redundantes.
 	
-	\item \textbf{min\_gain\_to\_split}: Establece la ganancia mínima necesaria para realizar una división en un nodo del árbol. Por defecto es 0, lo que significa que cualquier mejora, por pequeña que sea, justifica una división. Aumentar este valor hace que el modelo sea más conservador, ya que solo se dividirán nodos cuando la reducción en la pérdida sea significativa. Esto puede acelerar el entrenamiento al reducir el número de divisiones y también actuar como regularización, previniendo que el modelo aprenda patrones muy sutiles que podrían ser ruido.
-	
 	\item \textbf{objective}: Define la tarea de aprendizaje que debe realizar el modelo y la función de pérdida que se optimizará durante el entrenamiento  Es uno de los parámetros más importantes porque determina fundamentalmente cómo se evalúa el error y cómo se actualizan los pesos. Para problemas de regresión, los valores más comunes son ``regression'' (error cuadrático medio L2), ``regression\_l1'' (error absoluto L1, más robusto ante outliers) y 'huber' (combinación híbrida de L1 y L2 para datos con ruido). Para clasificación binaria se usa ``binary'' (pérdida logística), para clasificación multiclase se usa ``multiclass'' y para ranking se usa ``lambdarank''. En la práctica, elegir el objective correcto según el problema es el primer paso antes de ajustar cualquier otro parámetro.
 	
 	\item \textbf{boosting\_type}: Determina el algoritmo específico que LightGBM utilizará para construir los árboles secuencialmente. Las opciones principales son: ``gbdt'' (Gradient Boosting Decision Tree), que es el método tradicional y el valor por defecto, donde cada árbol corrige los errores del anterior; ``dart'' (Dropouts meet Multiple Additive Regression Trees), que utiliza un enfoque inspirado en dropout de redes neuronales, apagando aleatoriamente algunos árboles durante el entrenamiento para reducir el sobreajuste; ``goss'' (Gradient-based One-Side Sampling), que acelera el entrenamiento muestreando selectivamente las instancias con gradientes grandes; y ``rf'' (Random Forest), que cambia el comportamiento a un verdadero bosque aleatorio donde los árboles se construyen independientemente sin boosting. La elección afecta tanto la velocidad de entrenamiento como la precisión y el riesgo de sobreajuste.
@@ -79,5 +77,3 @@ Vamos a explicar los hiperparámetros más importantes en los modelos LightGBM.
     
     \item \textbf{Early stopping}: Se puede configurar para que detenga el entrenamiento cuando añadir más árboles no mejora la validación, evitando overfitting.
 \end{itemize}
-
-Fuentes: \cite{2017lightgbm}, \cite{sklearn_lightgbm}
