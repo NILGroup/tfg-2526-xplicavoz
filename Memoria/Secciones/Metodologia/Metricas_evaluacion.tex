@@ -14,11 +14,11 @@ Vamos a introducir también la matriz de confusión y el concepto de aciertos y 
 	\item \textbf{Falsos Negativos (FN)}: Instancias positivas predichas como negativas. También llamado Error tipo II.
 \end{itemize}
 
-Las matrices de confusión toman esos cuatro valores y los distribuyen en: eje y los valores reales, eje x los valores predichos y se forma una matriz N x N, siendo N el número de clases que definamos. En nuestro caso, y en la mayoría de casos, se da una matriz 2 x 2. También es importante entender que la diagonal principal siempre guarda los valores verdaderos (los aciertos de predicción). Con la siguiente imagen queremos ilustrar cómo se ve una matriz de confusión 2 x 2. Normalmente se pone la clase negativa arriba/a la izquierda de la clase positiva, aunque podrían estar al revés, pero siempre manteniendo lo que comentamos de la diagonal principal.
+Las matrices de confusión toman esos cuatro valores y los distribuyen en: eje y los valores reales, eje x los valores predichos y se forma una matriz N x N, siendo N el número de clases que definamos. En nuestro caso, y en la mayoría de casos, se da una matriz 2 x 2, como se ve en la imagen \ref{fig:matriz_confusion}. También es importante entender que la diagonal principal siempre guarda los valores verdaderos (los aciertos de predicción). Con la siguiente imagen queremos ilustrar cómo se ve una matriz de confusión 2 x 2. Normalmente se pone la clase negativa arriba/a la izquierda de la clase positiva, aunque podrían estar al revés, pero siempre manteniendo lo que comentamos de la diagonal principal.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/matriz_confusion.png}
-	\caption{Ejemplo real de matriz de confusión.}
+	\caption{Ejemplo de matriz de confusión.}
 	\label{fig:matriz_confusion}
 \end{figure}
 

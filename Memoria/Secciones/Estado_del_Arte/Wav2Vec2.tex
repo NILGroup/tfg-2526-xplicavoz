@@ -1,6 +1,6 @@
 \subsection{Wav2Vec2}
 \label{subsubsec:eda_wav2vec}
-Wav2Vec2 es un modelo de aprendizaje profundo end-to-end (el modelo procesa todo el flujo de datos, desde la entrada cruda hasta el resultado final) para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de las características del audio. Fue propuesto por Meta en 2020.
+Wav2Vec2 es un modelo de aprendizaje profundo end-to-end (el modelo procesa todo el flujo de datos, desde la entrada cruda hasta el resultado final) para procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente desde la señal cruda de audio, sin necesidad de las características del audio~\cite{2020wav2vec}. Fue propuesto por Meta en 2020.
 
 Como parte del entrenamiento, el modelo aprende unidades de habla discreta mediante un gumbel softmax (técnica utilizada en redes neuronales para aproximar el muestreo de distribuciones categóricas discretas de forma diferenciable) para representar las representaciones latentes en la tarea contrastiva.
 
@@ -25,5 +25,3 @@ El entrenamiento del modelo se basa en un preentrenamiento con enmascaramiento e
 Para cada paso de tiempo enmascarado, el modelo debe identificar la representación latente cuantizada correcta. Para ello, usa una pérdida contrastiva basada en la similitud del coseno.
 
 También se realiza un fine-tuning supervisado para reconocimiento automático del habla usando CTC como función de pérdida y aplicando una versión de SpecAugment (técnica de aumento de datos diseñada específicamente para el reconocimiento automático de voz) para evitar sobreajuste.
-
-Fuente: \cite{2020wav2vec}.

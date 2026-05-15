@@ -1,36 +1,36 @@
 @ARTICLE{Barrington2025,
-    author 	= {Barrington, Sarah and Cooper, Emily A. and Farid, Hany},
-    title 	= {People are poorly equipped to detect AI-powered voice clones},
-    journal 	= {Scientific Reports},
-    year 	= {2025},
-    month 	= {march},
-    volume 	= {11004},
-    doi 		= {10.1038/s41598-025-94170-3},
-    url 		= {https://www.nature.com/articles/s41598-025-94170-3},
+    author = {Barrington, Sarah and Cooper, Emily A. and Farid, Hany},
+    title = {People are poorly equipped to detect AI-powered voice clones},
+    journal = {Scientific Reports},
+    year = {2025},
+    month = {march},
+    volume = {11004},
+    doi = {10.1038/s41598-025-94170-3},
+    url = {https://www.nature.com/articles/s41598-025-94170-3},
 }
 
 @ARTICLE{Nadine2025,
-    author 	= {Lavan, Nadine and Irvine, Mairi and Rosi, Victor and McGettigan, Carolyn},
-    title 	= {Voice clones sound realistic but not (yet) hyperrealistic},
-    journal 	= {PubMed Central},
-    date 	= {24/7/2025},
-    doi 		= {https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0332692},
-    url 		= {https://pmc.ncbi.nlm.nih.gov/articles/PMC12459763/},
+    author = {Lavan, Nadine and Irvine, Mairi and Rosi, Victor and McGettigan, Carolyn},
+    title = {Voice clones sound realistic but not (yet) hyperrealistic},
+    journal = {PubMed Central},
+    date = {24/7/2025},
+    doi = {https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0332692},
+    url = {https://pmc.ncbi.nlm.nih.gov/articles/PMC12459763/},
 }
 
 @article{Peña2024,
-   title 		= {{Comparacion forense de voces: un estudio preliminar sobre las diferencias entre una voz natural y una voz artificial para la investigacion judicial}},
-   journal 		= {{Revista Oficial del Poder Judicial}},
-   author		= {Jimenez Peña, Jhon AND Torres Castillo, Fernando Aaron AND Cueva Sanchez, Oscar Esaul},
-   ISSN 			= {2663-9130},
-   language 		= {es},
-   URL 			= {http://www.scielo.org.pe/scielo.php?script=sci_arttext&pid=S2663-91302024000100053&nrm=iso},
-   volume 		= {16},
-   year 			= {2024},
-   month 		= {01},
-   pages 		= {53 - 81},
-   publisher 	= {scielo},
-   crossref 		= {10.35292/ropj.v16i21.881},
+   title = {{Comparacion forense de voces: un estudio preliminar sobre las diferencias entre una voz natural y una voz artificial para la investigacion judicial}},
+   journal = {{Revista Oficial del Poder Judicial}},
+   author={Jimenez Peña, Jhon AND Torres Castillo, Fernando Aaron AND Cueva Sanchez, Oscar Esaul},
+   ISSN = {2663-9130},
+   language = {es},
+   URL = {http://www.scielo.org.pe/scielo.php?script=sci_arttext&pid=S2663-91302024000100053&nrm=iso},
+   volume = {16},
+   year = {2024},
+   month = {01},
+   pages = {53 - 81},
+   publisher = {scielo},
+   crossref = {10.35292/ropj.v16i21.881},
    }
 
 @ARTICLE{TamayoFlorez2023,
@@ -44,24 +44,26 @@
 }
 
 @ARTICLE{Becker2024,
-    title 	= {AudioMNIST: Exploring Explainable Artificial Intelligence for audio analysis on a simple benchmark},
-    journal 	= {Journal of the Franklin Institute},
-    volume 	= {361},
-    number 	= {1},
-    pages 	= {418-428},
-    year 	= {2024},
-    issn 	= {0016-0032},
-    doi 		= {https://doi.org/10.1016/j.jfranklin.2023.11.038},
-    url 		= {https://www.sciencedirect.com/science/article/pii/S0016003223007536},
-    author 	= {Sören Becker and Johanna Vielhaben and Marcel Ackermann and Klaus-Robert Müller and Sebastian Lapuschkin and Wojciech Samek},
+    title = {AudioMNIST: Exploring Explainable Artificial Intelligence for audio analysis on a simple benchmark},
+    journal = {Journal of the Franklin Institute},
+    volume = {361},
+    number = {1},
+    pages = {418-428},
+    year = {2024},
+    issn = {0016-0032},
+    doi = {https://doi.org/10.1016/j.jfranklin.2023.11.038},
+    url = {https://www.sciencedirect.com/science/article/pii/S0016003223007536},
+    author = {Sören Becker and Johanna Vielhaben and Marcel Ackermann and Klaus-Robert Müller and Sebastian Lapuschkin and Wojciech Samek},
+    keywords = {Deep learning, Neural networks, Interpretability, Explainable artificial intelligence, Audio classification, Speech recognition},
+    abstract = {Explainable Artificial Intelligence (XAI) is targeted at understanding how models perform feature selection and derive their classification decisions. This paper explores post-hoc explanations for deep neural networks in the audio domain. Notably, we present a novel Open Source audio dataset consisting of 30,000 audio samples of English spoken digits which we use for classification tasks on spoken digits and speakers’ biological sex. We use the popular XAI technique Layer-wise Relevance Propagation LRP to identify relevant features for two neural network architectures that process either waveform or spectrogram representations of the data. Based on the relevance scores obtained from LRP, hypotheses about the neural networks’ feature selection are derived and subsequently tested through systematic manipulations of the input data. Further, we take a step beyond visual explanations and introduce audible heatmaps. We demonstrate the superior interpretability of audible explanations over visual ones in a human user study.}
 }
 
 @ARTICLE{2001randomforest,
-  author 	= {Breiman, Leo},
-  title 		= {Random Forests},
-  journal 	= {Machine Learning},
-  year 		= {2001},
-  url 		= {https://doi.org/10.1023/A:1010933404324}
+  author = {Breiman, Leo},
+  title = {Random Forests},
+  journal = {Machine Learning},
+  year = {2001},
+  url = {https://doi.org/10.1023/A:1010933404324}
 }
 
 @misc{sklearn_random_forest,
@@ -74,11 +76,11 @@
 }
 
 @ARTICLE{1995svm,
-  author 	= {Vapnik, Vladimir},
-  title 		= {Support-vector networks},
-  journal 	= {Machine Learning},
-  year 		= {1995},
-  url 		= {https://doi.org/10.1007/BF00994018}
+  author = {Vapnik, Vladimir},
+  title = {Support-vector networks},
+  journal = {Machine Learning},
+  year = {1995},
+  url = {https://doi.org/10.1007/BF00994018}
 }
 
 @misc{sklearn_svm,
@@ -91,10 +93,10 @@
 }
 
 @ARTICLE{2017lightgbm,
-author 	= {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
-title 	= {LightGBM: a highly efficient gradient boosting decision tree},
-year 	= {2017},
-url 		= {https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf}
+author = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
+title = {LightGBM: a highly efficient gradient boosting decision tree},
+year = {2017},
+url = {https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102fde848669bdd9eb6b76fa-Paper.pdf}
 }
 
 @misc{sklearn_lightgbm,
@@ -235,43 +237,3 @@ url 		= {https://proceedings.neurips.cc/paper_files/paper/2017/file/6449f44a102f
 
 }
 
-@article{firc2025deepfake,
-  author 	= {Firc, Matej and others},
-  title 		= {Evaluation Framework for Deepfake Speech Detection: A Comparative Study of State-of-the-Art Deepfake Speech Detectors},
-  journal 	= {Cybersecurity},
-  volume 	= {8},
-  number 	= {1},
-  pages 		= {1--25},
-  year 		= {2025},
-  publisher 	= {Springer},
-  doi 		= {10.1186/s42400-024-00346-1}
-}
-
-@article{p2v2025,
-  author 	= {Liu, Yifei and others},
-  title 		= {Perturbed Public Voices (P$^2$V): A Dataset for Robust Audio Deepfake Detection},
-  journal 	= {arXiv preprint arXiv:2501.09156},
-  year 		= {2025}
-}
-
-@article{crossdomain2024,
-  author 	= {Wu, Yuxiang and others},
-  title 		= {Cross-Domain Audio Deepfake Detection: Dataset and Analysis},
-  journal 	= {arXiv preprint arXiv:2404.04904},
-  year 		= {2024}
-}
-
-@online{dialnet5116534,
-  title 	= {Artículo en Dialnet},
-  year 	= {s.f.},
-  url 	= {https://dialnet.unirioja.es/servlet/articulo?codigo=5116534},
-  note 	= {Consultado el 15 de mayo de 2026}
-}
-
-@online{ibmRidgeRegression,
-  author		= {{IBM}},
-  title 		= {¿Qué es la regresión Ridge?},
-  year 		= {2026},
-  url 		= {https://www.ibm.com/es-es/think/topics/ridge-regression},
-  note 		= {Consultado el 15 de mayo de 2026}
-}

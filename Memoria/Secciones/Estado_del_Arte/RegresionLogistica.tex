@@ -2,15 +2,15 @@
 \label{subsubsec:eda_reg_log}
 A pesar de su nombre, la Regresión Logística es un algoritmo de clasificación lineal utilizado para predecir la probabilidad de que una instancia pertenezca a una categoría específica. Es un modelo fundamental en el aprendizaje estadístico debido a su simplicidad, eficiencia y facilidad de interpretación.
 
-\textbf{Fundamento conceptual: La función Sigmoide} \\
+\subsubsection*{Fundamento conceptual: La función Sigmoide}
 A diferencia de la regresión lineal, que predice valores continuos, la regresión logística utiliza la función logística o sigmoide para confinar el resultado de una ecuación lineal entre 0 y 1. La fórmula matemática es:
 $$\sigma(z) = \frac{1}{1 + e^{-z}}$$
 Donde $z$ es la combinación lineal de las características de entrada ($w^T x + b$). El valor resultante se interpreta como la probabilidad de pertenencia a la clase positiva. Si la probabilidad es superior a un umbral (generalmente 0.5), se clasifica como ``Real'', de lo contrario, como ``Deepfake''.
 
-\textbf{Proceso de entrenamiento} \\
+\subsubsection*{Proceso de entrenamiento}
 El modelo aprende los pesos ($w$) minimizando una función de pérdida denominada \textbf{Log-Loss} o entropía cruzada binaria. Este proceso se realiza mediante algoritmos de optimización como el Gradiente Descendente. Durante el entrenamiento, el modelo ajusta los coeficientes para penalizar fuertemente las predicciones que se alejan de la etiqueta real.
 
-\textbf{Ventajas específicas para detección de deepfakes}
+\subsubsection*{Ventajas específicas para detección de deepfakes}
 \begin{itemize}
     \item \textbf{Interpretabilidad directa:} Los coeficientes asignados a cada característica (como el pitch o los MFCC) indican directamente la importancia y la dirección de la influencia de cada parámetro en la detección del fraude.
     \item \textbf{Eficiencia:} Es computacionalmente muy ligero, lo que permite procesar grandes volúmenes de datos de audio en tiempo real con recursos mínimos.

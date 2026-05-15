@@ -5,7 +5,6 @@ Random Forest es un algoritmo de aprendizaje automático basado en la combinaci�
 
 \subsubsection*{Arquitectura y funcionamiento}
 
-\hspace{.7cm}
 El algoritmo construye un ``bosque'' de árboles de decisión donde cada árbol se entrena de forma ligeramente diferente, introduciendo aleatoriedad controlada en dos niveles:
 
 \begin{itemize}
@@ -16,7 +15,6 @@ El algoritmo construye un ``bosque'' de árboles de decisión donde cada árbol 
 
 \subsubsection*{Proceso de clasificación}
 
-\hspace{.7cm}
 Cuando llega una nueva muestra de audio con sus características (formantes, MFCC, etc.), cada árbol del bosque realiza su propia clasificación. La predicción final se decide por mayoría:
 
 \begin{itemize}
@@ -24,7 +22,6 @@ Cuando llega una nueva muestra de audio con sus características (formantes, MFC
     \item Si la mayoría lo clasifica como real, la predicción final es real.
 \end{itemize}
 
-\hspace{.7cm}
 Este mecanismo de votación reduce drásticamente la varianza del modelo: aunque un árbol individual pueda cometer errores, el consenso del bosque suele ser acertado. Esto se puede ver en la siguiente imagen \ref{fig:voto_mayoria}
 
 \subsubsection*{Hiperparámetros}
