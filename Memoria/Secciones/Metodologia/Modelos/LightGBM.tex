@@ -26,7 +26,6 @@ Se estableció una configuración inicial utilizando la interfaz nativa de Light
 	\item \textbf{feature\_fraction}: 0,9.
 	\item \textbf{bagging\_fraction}: 0,8.
 	\item \textbf{bagging\_freq}: 5.
-	\item \textbf{random\_state}: 12.
 	\item \textbf{is\_unbalanced}: True.
 \end{itemize}
 
@@ -45,7 +44,7 @@ Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMC
 
 \subsubsection*{Optimización de hiperparámetros}
 
-LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en la \autoref{subsubsec:eda_lgbm}. Estos difieren de los que declaramos en el modelo baseline, esta decisión es debido a que vamos a optimizar estos hiperparámetros por ser más influyentes.
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en hiperparámetros distintos de los definidos en el modelo baseline, ya que LightGBM cuenta con multitud de hiperparámetros y queremos probar nuevos en vez de usar los mencionados antes. A continuación podemos ver el ``grid'' que hemos definido para la búsqueda:
 
 \begin{itemize}
 	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.

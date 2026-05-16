@@ -1,3 +1,13 @@
 \chapter{Conclusiones}
 
+Tras terminar de revisar todo el proceso, desde la introducción del problema hasta las pruebas con modelos y una pequeña prueba real, se puede apreciar que el tema de esta investigación es para nada trivial, pues diferentes modelos tienen diferentes resultados. Se pueden ver claras diferencias entre los modelos específicos para la voz frente a los modelos generales (los que entrenan con datos tabulares). Los generales parecen tener cierta predisposición por algunas características, es decir, les otorgan una alta importancia frente al resto de características. Esto, si bien no es algo directamente negativo, si puede acarrear a malas predicciones, por ejemplo, si se modificasen dichas características ligeramente y los modelos cambiaran su predicción y, quizás, dichos cambios fuesen imperceptibles para el oído humano. En los modelos específicos hemos visto resultados más moderados, pero no por ello significa que sean peores que los otros modelos, SEGUIR DESARROLLANDO  
+
+En la prueba real se han escogido 4 audios, dos en español y dos en inglés, de los cuales uno es real y el otro generado. Se ha podido ver, en forma de simulación en código, cómo sería el análisis de una voz nueva, su clasificación en real o generada, y el uso de métodos que explican la predicción de los modelos. En esta prueba se ha visto que es de vital importancia los audios con los que se entrenan los modelos, puesto que uno que llega para ser clasificado, de ser de distinta calidad (ruido de fondo, claridad de la voz, pausas, etc.), puede generar predicciones equivocadas, por lo que un buen dataset con diversidad de condiciones es necesario para un correcto funcionamiento de los modelos.
+
+Se concluye con que este trabajo establece un buen punto inicial a la resolución de la detección de voces generadas y que los resultados aquí vistos muestran la viabilidad de esta.
+
+
+ESTO ME PARECE MAS ESTILO RESUMEN
+Como se ha mencionado, este proyecto se ha elaborado en el marco de la detección de voz sintética, es decir, voces suplantadas o \emph{deepfakes}. Durante la investigación del estado del arte para este problema a resolver se han encontrado modelos de aprendizaje automático tanto específicos para reconocimiento de voz como otros más generales, que entrenan en base a los datos tabulares de esta. En este punto también se exploraron diferentes métodos
+
 \input{Secciones/Conclusiones/Trabajo_futuro.tex}
