@@ -1,4 +1,4 @@
-\subsubsection{AASIST}
+\subsection{AASIST}
 AASIST es un modelo creado con la motivación de combinar pistas espectrales y temporales para detectar artefactos de spoofing y conseguir robustez frente a una gran variedad de ataques.
 Como este modelo produce una predicción a partir de la señal de audio cruda, el primer paso es definir las rutas a los audios. 
 
@@ -21,7 +21,7 @@ Con esto preparado, las tres funciones de inferencia las creamos para ver si con
 \end{itemize}
 Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nombre del audio, la probabilidad de que sea ``bonafide'' y su duración. Para esto, se recorre cada audio del dataset, se le aplica una de las funciones de inferencia y se escribe la información en el csv.
 
-\subsubsection*{Resultados y análisis}
+\subsection*{Resultados y análisis}
 
 Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
 Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
@@ -54,7 +54,7 @@ Lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica 
 
 En lo referido a las épocas, lo más destacable es que superar las 40 épocas empeora la predicción por lo que podemos suponer que está ocurriendo un fenómeno de sobreaprendizaje. También, podemos observar que en la partición en inglés, el aumento del valor de este parámetro no equivale en términos generales a una subida en la mejora de la predicción, fenómeno que no ocurre con la partición en español.
 
-\subsubsection*{Enfoque de explicabilidad ante-hoc}
+\subsection*{Enfoque de explicabilidad ante-hoc}
 Hemos usado las propias estructuras del modelo para empezar a explicar qué es lo que le empuja a decidir una clase a la otra. Esto nos sirve además para enseñar mejor cómo funciona AASIST por dentro.
 Lo primero que mostramos es el formato de la salida que es una tupla con dos valores, la probabilidad de que el audio sea ``spoof'' y de que sea ``bona fide'', y la estructura de los grafos que nos permite ver que se crean 23 nodos espectrales y 29 temporales. También, simulamos cómo funciona un ``pooling'' mostrando los nodos de cada tipo con mayor puntuación.
 

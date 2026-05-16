@@ -1,7 +1,7 @@
-\subsubsection{DICE}
+\subsection{DICE}
 \label{subsubsec:eda_dice}
 
-DiCE (Diverse Counterfactual Explanations) es una técnica de explicabilidad post-hoc, generalmente considerada ``model-agnostic'', basada en la generación de explicaciones contrafactuales \parencite{2020dice}. A diferencia de otros métodos, DiCE busca identificar qué cambios mínimos en una muestra concreta modificarían la predicción del modelo hacia una clase objetivo diferente.
+DiCE (Diverse Counterfactual Explanations) es una técnica de explicabilidad post-hoc, generalmente considerada ``model-agnostic'', basada en la generación de explicaciones contrafactuales~\parencite{2020dice}. A diferencia de otros métodos, DiCE busca identificar qué cambios mínimos en una muestra concreta modificarían la predicción del modelo hacia una clase objetivo diferente.
 
 La idea principal de las explicaciones contrafactuales consiste en responder a preguntas del estilo de: ``¿qué tendría que cambiar en la entrada para que el modelo produjera otra predicción?''. De este modo, para una muestra original clasificada en una determinada clase, DiCE genera nuevas muestras similares a ella, denominadas contrafactuales, que son clasificadas por el modelo como una clase alternativa elegida.
 

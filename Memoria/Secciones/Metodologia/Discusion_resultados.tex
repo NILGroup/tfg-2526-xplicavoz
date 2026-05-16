@@ -1,2 +1,57 @@
-\subsection{Discusión de los resultados}
+\section{Discusión de los resultados}
+\label{sec:discusion_resultados}
 
+% ESTO VA EN ANALISIS DE RESULTADOS
+Esto puede deberse a que los audios, cuando se escuchan directamente por una persona, se detectan algunos donde no se entiende lo que está diciendo el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas'' y otros aspectos que nos llevan a pensar que dichos audios son falsos.
+
+La discusión de resultados la trataremos comparando entre sí los modelos según las entradas que reciben y según su complejidad. Esto nos deja los siguientes grupos de modelos, AASIST y Wav2Vec2 en uno ya que ambos reciben la onda de audio cruda, y Random Forest, LigthGBM, SVM, regresión logística y KNN en el otro al recibir las características tabulares de los audios.
+
+El MLP se queda fuera de esta discusión debido a que la complejidad de la entrada y las pocas muestras que tenemos provocan que el modelo no tenga métricas relevantes debido a su overfitting. 
+
+\subsection*{Modelos que reciben los datos tabulares del audio}
+
+Para explicar por que pasa esto, nos apoyaremos en tres papers: \cite{firc2025deepfake,p2v2025,crossdomain2024}. Estos nos hablan de los problemas que presentan este grupo de modelos con el dataset que estamos empleando.
+
+Estos resultados perfectos no se deben a que el problema esté solucionado y estos modelos sean así de eficaces siempre, más bien se debe a una serie de problemas relacionados con su simplicidad y con el entorno en el que los estamos usando.
+
+\subsubsection*{Problemas de generalización}
+
+Los tres papers mencionados coinciden en que los modelos tienen dificultades mostrar buenos resultados ante audios no vistos previamente o audios que se salgan del dominio del dataset con el que fueron entrenados.
+
+Esto es causado porque los modelos aprenden patrones específicos del propio dataset que les entrena en lugar de aprender las características típicas de los audios generados.
+
+\subsubsection*{Problemas del dataset}
+
+El párrafo anterior nos introduce al siguiente problema, el dataset que estamos utilizando para entrenar estos modelos.
+
+El tamaño del dataset está limitando la generalización de los modelos, además de que, en el caso de los audios en español del dataset (todos los modelos de este grupo fueron entrenados con estos) se nota muy fácilmente la diferencia entre los audios reales y los generados haciendo que estemos en un entorno demasiado controlado y distante de uno realista. 
+
+La combinación de que un dataset sea pequeño, con que este mismo presente patrones fácilmente diferenciables nos acaba derivando en que modelos muy distintos de distinta complejidad den resultados perfectos. 
+
+Esta inflación en los resultados de todos estos modelos nos permite concluir que el dataset que estamos usando es muy homogéneo.
+
+\subsubsection*{Resultados de las explicaciones}
+
+Que todos los modelos basen gran parte de su decisión en el spectral flatness llegando al caso del LightGBM donde es la única característica que verdaderamente influyen en la predicción nos puede estar diciendo que el dataset en español puede estar siendo demasiado sencillo complementando esta a la explicación de por qué modelos tan sencillos como una regresión logística, un KNN o un SVM alcanzan resultados perfectos.
+
+\subsection*{Modelos que reciben la onda cruda del audio}
+
+La primera diferencia entre estos dos modelos es que fueron entrenados con distintas particiones del dataset siendo que para Wav2Vec2 fue de 160-20-20 y para AASIST fue 144-28-28. Esta diferencia ha perjudicado las métricas del AASIST teniendo que, fijándonos en la precisión, AASIST está alrededor del 0,7 mientras que Wav2Vec2 está en el 0,9.
+
+Otro factor a tener en cuenta para explicar esta diferencia es como han sido preentrenados estos modelos siendo que Wav2Vec2 ha sido entrenado sobre una enorme cantidad de datos con el objetivo de aprender representaciones acústicas y semánticas y capturar patrones temporales complejos. Esto le da ventaja en datasets pequeños con múltiples idiomas.
+
+Por otro lado AASIST es un modelo diseñado específicamente para la tarea de deepfake detection pero a su vez, necesita datasets más grandes lo que lo hace más dependiente del dominio. Además la partición de los datos empleada probablemente ha hecho que este modelo no pueda generalizar todo lo bien que podría hacerlo en datasets más grandes.
+
+\subsubsection*{Resultados de las explicaciones}
+
+En cuanto a las explicaciones, el ranking de características que sacan ambos modelos basándose en su influencia es completamente distinto lo cual nos indica que ambos modelos están aprendiendo patrones completamente distintos lo cual nos indica que aquí la arquitectura del modelo si influye en los patrones que este aprende.
+
+En Shap del AASIST podemos ver como la característica más influyente es el RMS lo que indica que está aprendiendo patrones globales de energía mientras que en el Wav2Vec2, la característica más influyente es el Spectral Centroid, lo que indica que está aprendiendo representaciones espectro-temporales.
+
+\subsection*{Comparación final}
+
+Como acabamos de ver, los modelos basados en Deep Learning aprenden representaciones más complejas que los modelos más simples, además son menos dependientes del entorno en el que los estamos usando.
+
+Esto se ve claramente en que los modelos del segundo grupo dependen de características distintas dependiendo de su preentrenamiento y su arquitectura mientras que los modelos más simples todos sacaban las mismas características importantes y despreciaban muchas veces las demás.
+
+En cuanto a las métricas, el AASIST y el Wav2Vec2 consiguen resultados mucho más creibles y sobre todo generalizables a otros dominios de voces mientras que las métricas perfectas de los modelos del primer grupo nos dan a entender una homogeneidad y una sencillez en el entorno en el que han sido entrenados que no se refleja en entornos más realistas donde lo más probable es que sus resultados en esos dominios sean mucho peores.

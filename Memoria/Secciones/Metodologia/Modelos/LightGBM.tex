@@ -1,7 +1,7 @@
-\subsubsection{LightGBM}
+\subsection{LightGBM}
 \label{subsubsec:mod_lgbm}
 
-Como hemos comentado antes, a diferencia de Random Forest, que construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
+Como hemos visto en la \autoref{subsubsec:eda_lgbm}, a diferencia de Random Forest, que construye árboles de forma independiente y paralela, LightGBM los construye secuencialmente, donde cada nuevo árbol se especializa en corregir los errores de los anteriores.
 
 \subsubsection*{Justificación del modelo}
 
@@ -41,11 +41,11 @@ Tras ello, entrenamos el modelo con los parámetros base, los datos de entrenami
 
 \subsubsection*{Validación cruzada estratificada}
 
-Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras esto aplicamos la validación cruzada tal y como hemos visto en \autoref{subsec:proc_exp}
+Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMClassifier}) que permite integrarse con las herramientas de validación cruzada estándar. El modelo que usamos es el mismo que el baseline (en cuanto a parámetros). Tras esto aplicamos la validación cruzada tal y como hemos visto en la \autoref{subsec:proc_exp}
 
 \subsubsection*{Optimización de hiperparámetros}
 
-LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en \autoref{subsubsec:eda_lgbm}. Estos difieren de los que declaramos en el modelo baseline, esta decisión es debido a que vamos a optimizar estos hiperparámetros por ser más influyentes.
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en aquellos que más influyen en el rendimiento, según lo visto en la \autoref{subsubsec:eda_lgbm}. Estos difieren de los que declaramos en el modelo baseline, esta decisión es debido a que vamos a optimizar estos hiperparámetros por ser más influyentes.
 
 \begin{itemize}
 	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.

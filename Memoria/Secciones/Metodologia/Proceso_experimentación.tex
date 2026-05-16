@@ -1,13 +1,13 @@
-\subsection{Proceso común de experimentación}
+\section{Proceso común de experimentación}
 \label{subsec:proc_exp}
 
 En este apartado vamos a hablar de los procesos comunes que vamos a usar en varios (dos o más) modelos, para evitar repetir explicarlos múltiples veces.
 
-\subsubsection{División de los datos}
+\subsection{División de los datos}
 
 Sobre el dataset que ya hemos comentado, hemos tomado un subset de 100 audios de cada idioma. La mitad son audios naturales y la otra mitad audios generados. De estos 100 audios entrenaremos con 80 audios y probaremos los modelos con 20, de cambiar la partición lo mencionaremos explícitamente, pero un 80-20 será lo normal. Más adelante, probaremos a usar más cantidad de audios y compararemos el rendimiento.
 
-\subsubsection{Validación Cruzada y Grid Search}
+\subsection{Validación Cruzada y Grid Search}
 
 En algunos modelos aplicamos Validación Cruzada Estratificada y/o Grid Search para ver la estabilidad de un modelo y buscar los mejores parámetros de un modelo, respectivamente.
 
@@ -17,10 +17,10 @@ El Grid Search lo que hace es buscar la mejor combinación de parámetros de un 
 
 Hay que tener en cuenta que estos procesos toman bastante tiempo, ya que tienen que entrenar múltiples veces, por lo que es posible que solo los apliquemos a modelos cuyo entrenamiento base no tarde tanto, como Random Forest, o LightGBM
 
-\subsubsection{Funciones de explicación}
+\subsection{Funciones de explicación}
 
 Para algunos modelos, los que usan datos tabulares hemos diseñado unas funciones generales de XAI las cuales generan la explicación sin saber cual es el modelo. Esto funciona gracias a que los modelos de XAI que usamos aquí (SHAP, LIME, DiCE) no son específicas para un modelo, es decir, son \textit{model agnostic}, por lo que funcionan para varios. También hemos hecho una función que permite eliminar ciertas características de la lista de características de entrenamiento además de generar una explicación de cualquier modelo de XAI que hemos mencionado en este apartado. Para esto es necesario reentrenar el modelo, por lo que es importante que sea un modelo de ``entrenamiento rápido'', como los mencionados en el apartado anterior. Además, ya que volvemos a entrenar el modelo, podemos volver a ver el rendimiento de este si así lo queremos para ver qué tal lo hace sin algunas características. 
 
-\subsubsection{Estado aleatorio}
+\subsection{Estado aleatorio}
 
 Un parámetro muy importante si queremos que nuestros experimentos sean reproducibles es el estado aleatorio o \textit{random state}. Este parámetro establece una semilla generadora, dicha semilla sirve para generar los valores que sean aleatorios como en separación y mezcla de datos o en modelos que se inicializan aleatoriamente como KNN. Cuando declaramos el parámetro estamos forzando al modelo/algoritmo a usar dicha semilla, no cualquiera. Por este motivo si queremos que nuestros resultados sean reproducibles, es decir, sean iguales cada vez que lo ejecutamos, necesitamos definir el estado aleatorio. Lo hemos establecido, trivialmente, al valor 1221182

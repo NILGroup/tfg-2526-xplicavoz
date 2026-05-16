@@ -1,7 +1,7 @@
-\subsubsection{SHAP}
+\subsection{SHAP}
 \label{subsubsec:eda_shap}
 
-Basado en la teoría de juegos cooperativos, SHAP (Shapley Additive Explanations) es una técnica cuyo objetivo es cuantificar la contribución de cada característica a la decisión final de un modelo \parencite{2017shap}. Su fundamento teórico proviene de los valores de Shapley, método utilizado para repartir de manera justa los beneficios obtenidos entre los distintos jugadores que participan en un juego. 
+Basado en la teoría de juegos cooperativos, SHAP (Shapley Additive Explanations) es una técnica cuyo objetivo es cuantificar la contribución de cada característica a la decisión final de un modelo~\parencite{2017shap}. Su fundamento teórico proviene de los valores de Shapley, método utilizado para repartir de manera justa los beneficios obtenidos entre los distintos jugadores que participan en un juego. 
 
 Trasladado al contexto de la detección de audios generados, la idea principal de SHAP consiste en medir cuánto aporta cada característica acústica cuando se usa junto a distintas combinaciones del resto de variables. De este modo, no se evalúa únicamente la contribución aislada de una característica, sino también el impacto de cada característica en presencia de otras, permitiendo captar mejor las relaciones entre variables. A partir de esta idea, SHAP asigna a cada característica un valor que representa su contribución marginal a la predicción del modelo. Entonces, una variable con un valor positivo empuja la clasificación hacia valores altos respecto a un valor de referencia, mientras que un valor negativo provoca lo contrario.
 

@@ -1,7 +1,7 @@
-\subsubsection{Support Vector Machines (SVM)}
+\subsection{Support Vector Machines (SVM)}
 \label{subsubsec:eda_svm}
 
-Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990. Originalmente diseñadas para clasificación binaria, las SVM se han convertido en uno de los métodos más robustos y teóricamente fundamentados del aprendizaje automático.
+Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990 ~\cite{1995svm}. Originalmente diseñadas para clasificación binaria, las SVM se han convertido en uno de los métodos más robustos y teóricamente fundamentados del aprendizaje automático.
 
 \subsubsection*{Fundamento conceptual: El hiperplano óptimo}
 
@@ -57,7 +57,7 @@ Los kernels más comúnmente utilizados son:
 
 \subsubsection*{Hiperparámetros}
 
-Vamos a ver cuáles son los hiperparámetros más importantes en los SVM.
+Vamos a ver cuáles son los hiperparámetros más importantes en los SVM ~\cite{sklearn_svm}.
 
 \begin{itemize}
     \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
@@ -86,5 +86,3 @@ Vamos a ver cuáles son los hiperparámetros más importantes en los SVM.
     
     \item \textbf{Interpretabilidad limitada pero útil}: Aunque no tan interpretable como los árboles de decisión, el análisis de los vectores de soporte puede revelar qué audios son más representativos o ambiguos en la frontera de decisión.
 \end{itemize}
-
-Fuentes: \cite{1995svm}, 

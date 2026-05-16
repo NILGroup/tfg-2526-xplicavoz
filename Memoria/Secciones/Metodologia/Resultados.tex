@@ -1,17 +1,15 @@
-\subsection{Resultados}
+\section{Resultados}
+\label{sec:resultados}
 
-\subsubsection{Modelos de datos tabulares}
+\subsection{Modelos de datos tabulares}
 
 En este apartado vamos a agrupar y revisar los resultados de los modelos de datos tabulares, los cuales se mencionan en \ref{subsec:modelos}, sin incluir los resultados de IA explicable. Para comodidad en las tablas, los modelos los hemos acortado por sus siglas y, de ser exactamente iguales los resultados, la tabla de resultados mostrará todos los resultados compactados.
 
-\subsubsection*{Modelos baseline}
+\subsection*{Modelos baseline}
 
 Como vemos en las tablas \ref{tab:metricas_principales_modelos_base} \ref{tab:classification_report_modelos_base} \ref{tab:analisis_errores_modelos_base}, estos modelos clasifican correctamente entre reales y generados. 
 
-% ESTO VA EN ANALISIS DE RESULTADOS
-Esto puede deberse a que los audios, cuando se escuchan directamente por una persona, se detectan algunos donde no se entiende lo que está diciendo el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas'' y otros aspectos que nos llevan a pensar que dichos audios son falsos.
-
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
@@ -28,7 +26,7 @@ RL & 1 & 1 & 1 & 1 & 1 & 1\\
 \label{tab:metricas_principales_modelos_base}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lccccc}
 \toprule
@@ -44,7 +42,7 @@ Nº Instancias & 10 & 10 & 20 & 20 & 20 \\
 \label{tab:classification_report_modelos_base}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
@@ -61,7 +59,7 @@ modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
 
 Los resultados revelan que los modelos son estables en los 5 folds y que clasifican bien, como se ve en \ref{tab:cv_modelos_base}.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcc}
 \toprule
@@ -82,7 +80,7 @@ En primer lugar veamos cuáles son los mejores parámetros del grid que hemos de
 
 Para Random Forest podemos ver que los parámetros difieren ligeramente a lo que hemos definido en el modelo baseline (ver Tabla \ref{tab:grid_search_rf}). Teniendo que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han disminuido.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -99,9 +97,9 @@ max\_features & sqrt \\
 \label{tab:grid_search_rf}
 \end{table}
 
-En el Grid Search del modelo LightGBM tomamos otro rumbo, como se menciona en \autoref{subsubsec:mod_lgbm},
+Como se mencionó en \autoref{subsubsec:mod_lgbm}, el Grid Search de LightGBM usaba parámetros distintos. Los resultados podemos verlos en la tabla \ref{tab:grid_search_lgbm}.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -123,7 +121,7 @@ reg\_lambda & 0 \\
 
 El Grid Search del modelo SVM puede parecer más simple, pero es interesante ver los valores que devuelve (ver Tabla \ref{tab:grid_search_svm}. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajo hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -138,186 +136,36 @@ kernel & rbf \\
 \label{tab:grid_search_svm}
 \end{table}
 
+\subsection{Random Forest}
 
-\subsubsection{Random Forest}
-
-En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI). 
-
-\subsubsection*{Modelo baseline}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lccccc}
-\toprule
-\textbf{Métrica} & \textbf{Valor RF} & \textbf{Valor LGBM} & \textbf{Valor SVM} & \textbf{Valor KNN} & \textbf{Valor Regresión Logística}\\
-\midrule
-Accuracy & 1 & 1 & 1 & 1 & 1 \\
-Precision & 1 & 1 & 1 & 1 & 1 \\
-Recall & 1 & 1 & 1 & 1 & 1 \\
-F1-Score & 1 & 1 & 1 & 1 & 1  \\
-AUC-ROC & 1 & 1 & 1 & 1 & 1 \\
-MCC & 1 & 1 & 1 & 1 & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de los modelos baseline de datos tabulares}
-\label{tab:res_modelos_base}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de Random Forest baseline}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de Random Forest baseline}
-\end{table}
-
-Observamos que este modelo baseline clasifica correctamente entre audios reales y generados. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, se notan claramente las pausas ``robóticas''.
-
-\subsubsection*{Validación Cruzada Estratificada}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica}\\
-\midrule
-Accuracy & 1 & +/- 0 \\
-F1-Score & 1 & +/- 0 \\
-AUC-ROC & 1 & +/- 0 \\ 
-\bottomrule
-\end{tabular}
-\caption{Resultados de Validación Cruzada con 5 folds de Random Forest baseline}
-\end{table}
-
-Estos resultados revelan que el modelo es estable en los 5 folds y que, como hemos visto, clasifica bien, por su alta media.
-
-\subsubsection*{Grid Search}
-
-En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Hiperparámetro} & \textbf{Valor}\\
-\midrule
-n\_estimators & 100 \\
-max\_depth & 5 \\
-min\_samples\_split & 2 \\
-min\_samples\_leaf & 1  \\
-max\_features & sqrt \\
-\bottomrule
-\end{tabular}
-\caption{Mejores hiperparámetros para Random Forest con Grid Search y CV de 5 folds}
-\end{table}
-
-% RESULTADOS
-Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, lo que es comprensible puesto la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor. Tenemos que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han bajado respecto de los que definimos inicialmente.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de Random Forest optimizado}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de Random Forest óptimo}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de Random Forest optimizado}
-\end{table}
-
-Al igual que el modelo baseline, este modelo optimizado también clasifica correctamente entre las dos clases.
-
-\subsubsection*{Resultados de explicación}
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Random Forest.
 
 Como podemos observar en las gráficas \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
 
 % SHAP
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_local_1.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de Random Forest con SHAP}
 	\label{fig:1_shap_rf_local}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_local_2.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de Random Forest con SHAP}
 	\label{fig:2_shap_rf_local}
 \end{figure}
 
 Como se muestra en la gráfica \ref{fig:shap_rf_global}, la importancia de las características en la explicación global de SHAP concuerda con las que vimos antes, en mismo orden y magnitud. Además, en colores podemos ver mejor, por ejemplo en spectral flatness, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_global.png}
-	\caption{Explicación global con SHAP}
+	\caption{Explicación global de Random Forest con SHAP}
 	\label{fig:shap_rf_global}
 \end{figure}
 
 Ya que hemos visto que ``spectral flatness'' es la característica más influyente con diferencia, hemos decidido eliminarla y entrenar un modelo, cuyos resultados podemos ver en las tablas \ref{tab:metricas_principales_rf_sin_specflat}, \ref{tab:classification_report_rf_sin_specflat} y \ref{tab:analisis_errores_rf_sin_specflat}. Aquí vemos que el modelo deja de clasificar correctamente, debido a que, al perder la característica más influyente, el modelo pierde rendimiento en clasificación.
-\begin{table}[H]
+
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -335,7 +183,7 @@ MCC & 0.8000 \\
 \label{tab:metricas_principales_rf_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -352,7 +200,7 @@ weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \label{tab:classification_report_rf_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -372,21 +220,21 @@ Error tipo II & 10\% \\
 
 Tras quitar la característica ``spectral flatness'' del modelo, la explicación que genera la podemos ver en las gráficas \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}. Aquí vemos que otras características adquieren peso, ya que la falta de una característica hace que las importancias se reestructuren. En particular vemos que ``spectral bandwidth'' mantiene una alta importancia, mientras que ``mfcc 1'' la mantiene solo en la predicción de clase negativa.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de Random Forest con SHAP tras quitar spectral flatness}
 	\label{fig:1_shap_rf_local_sin_specflat}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de Random Forest con SHAP tras quitar spectral flatness}
 	\label{fig:2_shap_rf_local_sin_specflat}
 \end{figure}
 
 Con la nueva distribución de importancias, hemos decidido quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1''. Los resultados del modelo los encontramos en las tablas \ref{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_rf_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_rf_sin_sflat_mfcc1_sband}. Estos son algo inferiores a los previos, y es consecuente con que al eliminar características, el modelo pierde rendimiento.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -404,7 +252,7 @@ MCC & 0.5025 \\
 \label{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -421,7 +269,7 @@ weighted avg & 0.7525 & 0.7500 & 0.7494 & 20 \\
 \label{tab:classification_report_rf_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -441,225 +289,73 @@ Error tipo II & 30\% \\
 
 Como se puede observar en las gráficas \ref{fig:1_shap_rf_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}, las importancias vuelven a redistribuirse, ganando más en este caso ``silence ratio''. Es interesante ver que ahora la segunda predicción, que hasta ahora predecía como positiva, ahora la predice como negativa (falso negativo), debido a que con las características que tiene no es capaz de clasificarla correctamente.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\caption{Explicación local de Random Forest con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
 	\label{fig:1_shap_rf_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_rf_sin_sflat_mfcc1_sband_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
+	\caption{Explicación local de Random Forest con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwith}
 	\label{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-% LIME
-\begin{figure}[H]
+Como vemos en la imagen \ref{fig:lime_rf}, la explicación que genera LIME tiene ``spectral flatness'' como característica insignia, aunque también aparecen, con menor relevancia, ``mfcc 1'' y ``spectral bandwidth''.
+
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/lime_rf.png}
-	\caption{Explicación local con LIME}
+	\caption{Explicación local de Random Forest con LIME}
 	\label{fig:lime_rf}
 \end{figure}
 
-% DiCE
-\begin{table}[H]
+Los cambios (counterfactuals) que nos devuelve Dice para Random Forest nos muestran, como ya hemos visto, que ``spectral flatness'' y ``mfcc 1'' son importantes, pues en las tres instancias deberían cambiar de valor, como observamos en la tabla \ref{tab:dice_rf}.
+
+\begin{table}
 \centering
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 1} & \textbf{mfcc 3} & \textbf{mfcc 8} & \textbf{Etiqueta} \\
 \midrule
-Explicada & 0.11064121127128601 & -330.396484375 & -8.681960105895996 & -9.581953048706055 & 0 \\
-Counter factual 1 & 0.0289179996 & -270.65508 &  &  & 1 \\
-Counter factual 2 & 0.0289179996 & -270.65508 &  & -7.9201774 & 1 \\
-Counter factual 3 & 0.0289179996 & -270.65508 & 14.76117919 & -7.9201774 & 1 \\
+Explicada & 0.11064 & -330.39648 & -8.68196 & -9.58195 & 0 \\
+Counter factual 1 & 0.02891 & -270.65508 &  &  & 1 \\
+Counter factual 2 & 0.02891 & -270.65508 &  & -7.92017 & 1 \\
+Counter factual 3 & 0.02891 & -270.65508 & 14.76117 & -7.92017 & 1 \\
 \bottomrule
 \end{tabular}
-\caption{Counter factuals generados por DiCE}
+\caption{Counter factuals generados por DiCE para Random Forest}
+\label{tab:dice_rf}
 \end{table}
 
-\subsubsection{LightGBM}
+\subsection{LightGBM}
 
-En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
-
-\subsubsection*{Modelo baseline}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de LightGBM baseline}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de LightGBM baseline}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de LightGBM baseline}
-\end{table}
-
-% RESULTADOS
-Podemos ver que, pese a ser un modelo baseline, ya funciona perfectamente. Esto puede deberse a que los audios, cuando se escuchan, se detectan algunos donde no se entiende lo que está hablando el locutor y otros donde pese a entenderse mejor, por lo que hasta un modelo simple como este ya clasifica bien.
-
-\subsubsection*{Validación Cruzada Estratificada}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica} \\
-\midrule
-Accuracy & 1 & +/- 0 \\
-F1-Score & 1 & +/- 0 \\
-AUC-ROC & 1 & +/- 0 \\
-\bottomrule
-\end{tabular}
-\caption{Resultados de Validación Cruzada con 5 folds de LightGBM baseline}
-\end{table}
-
-% RESULTADOS
-Estos resultados arrojan una pequeña desviación en exactitud y en f1, lo cual puede indicar que en el modelo baseline aprendía con dicha partición más fácilmente que con otras.
-
-\subsubsection*{Grid Search}
-
-En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Hiperparámetro} & \textbf{Valor}\\
-\midrule
-num\_leaves & 15 \\
-learning\_rate & 0.01 \\
-n\_estimators & 300 \\
-min\_child\_samples & 20  \\
-subsample & 0.6 \\
-colsample\_bytree & 0.6 \\
-reg\_alpha & 0 \\
-reg\_lambda & 0 \\
-\bottomrule
-\end{tabular}
-\caption{Mejores hiperparámetros para LightGBM con Grid Search y CV de 5 folds}
-\end{table}
-
-% RESULTADOS
-Vemos que difieren de los que nosotros definimos previamente en el modelo baseline, y tiene sentido pues la máquina, tras entrenar con todas las posibilidades, ha evaluado este conjunto de parámetros como el mejor, maximizando f1 como vimos. Veamos entonces qué resultados obtenemos con estos parámetros, aunque viendo el resultado del modelo anterior, nos hacemos una idea.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de LightGBM optimizado}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de LightGBM óptimo}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de LightGBM optimizado}
-\end{table}
-
-% RESULTADOS
-Como observamos y como la intuición nos decía, los resultados son iguales que los de antes, todo perfecto. Posiblemente la razón sea la misma: una mezcla entre un buen split y pocos datos y/o datos poco representativos.
-
-\subsubsection*{Resultados de explicación}
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a LightGBM.
 
 Como se puede ver en las gráficas \ref{fig:1_shap_lgbm_local} y \ref{fig:2_shap_lgbm_local}, el modelo clasifica únicamente con ``spectral flatness''. Esto nos dice que, pese a que antes no observamos un sobreajuste, el modelo realmente lo tiene con esta característica.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local_1.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de LightGBM con SHAP}
 	\label{fig:1_shap_lgbm_local}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_local_2.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de LightGBM con SHAP}
 	\label{fig:2_shap_lgbm_local}
 \end{figure}
 
-La importancia de características en la explicación global es congruente con las explicaciones locales: la característica ``spectral flatness'' tiene mucho peso, mientras que las otras tienen peso casi 0.
+La importancia de características en la explicación global es congruente con las explicaciones locales: la característica ``spectral flatness'' tiene mucho peso, mientras que las otras tienen peso cercano a 0.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_global.png}
-	\caption{Explicación global con SHAP}
+	\caption{Explicación global de LightGBM con SHAP}
 	\label{fig:shap_lgbm_global}
 \end{figure}
 
 Hemos quitado dicha característica para ver cómo se comporta el modelo, lo que podemos ver en las tablas \ref{tab:metricas_principales_lgbm_sin_specflat}, \ref{tab:classification_report_lgbm_sin_specflat} y \ref{tab:analisis_errores_lgbm_sin_specflat}. Como era de esperar al ver el sobreajuste del modelo el rendimiento ha bajado, aunque mantiene valores de predicción muy altos.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -677,7 +373,7 @@ MCC & 0.8000 \\
 \label{tab:metricas_principales_lgbm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -694,7 +390,7 @@ weighted avg & 0.9000 & 0.9000 & 0.9000 & 20 \\
 \label{tab:classification_report_lgbm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -714,34 +410,35 @@ Error tipo II & 10\% \\
 
 Para ver ahora la importancia de cada característica veamos las gráficas \ref{fig:1_shap_lgbm_local_sin_specflat} y \ref{fig:2_shap_lgbm_local_sin_specflat}. Podemos ver que en la instancia que clasifica como negativa los pesos se redistribuyen razonablemente bien, mientras que en la instancia que clasifica como positiva encontramos que ``spectral flatness'' recibe casi todo el peso.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de LightGBM con SHAP tras quitar spectral flatness}
 	\label{fig:1_shap_lgbm_local_sin_specflat}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de LightGBM con SHAP tras quitar spectral flatness}
 	\label{fig:2_shap_lgbm_local_sin_specflat}
 \end{figure}
 
+Tras quitar ``spectral flatness'' y ``mfcc 1'' encontramos que la característica que más explica es ``spectral bandwidth'', característica que, como ya hemos visto, tiene bastante importancia, como vemos en las gráficas \ref{fig:1_shap_lgbm_local_sin_sflat_mfcc1} y \ref{fig:2_shap_lgbm_local_sin_sflat_mfcc1}. Se ve que la importancia de dicha característica es muy alta, el resto de características no tienen mucho peso en la clasificación.
 
-
-
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
+	\caption{Explicación local de LightGBM con SHAP tras quitar spectral flatness y mfcc 1}
 	\label{fig:1_shap_lgbm_local_sin_sflat_mfcc1}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_lgbm_sin_sflat_mfcc1_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness y mfcc 1}
+	\caption{Explicación local de LightGBM con SHAP tras quitar spectral flatness y mfcc 1}
 	\label{fig:2_shap_lgbm_local_sin_sflat_mfcc1}
 \end{figure}
 
-\begin{table}[H]
+Los resultados de este modelo siguen siendo buenos, como vemos en las tablas \ref{tab:metricas_principales_lgbm_sin_sflat_mfcc1}, \ref{tab:classification_report_lgbm_sin_sflat_mfcc1} y \ref{tab:classification_report_lgbm_sin_sflat_mfcc1}. Podemos ver que el rendimiento no ha bajado demasiado pese a quitar dichas características y que mantiene una baja tasa de falsos positivos y falsos negativos.
+
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -759,7 +456,7 @@ MCC & 0.7035 \\
 \label{tab:metricas_principales_lgbm_sin_sflat_mfcc1}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -776,7 +473,7 @@ weighted avg & 0.8535 & 0.8500 & 0.8496 & 20 \\
 \label{tab:classification_report_lgbm_sin_sflat_mfcc1}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -794,262 +491,61 @@ Error tipo II & 10\% \\
 \label{tab:analisis_errores_lgbm_sin_sflat_mfcc1}
 \end{table}
 
-% LIME
-\begin{figure}[H]
+Como vemos en la imagen \ref{fig:lime_lgbm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar. También encontramos otras que hemos visto antes como ``mfcc 1'' o `` spectral bandwidth'' con pesos relevantes.
+
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/lime_lgbm.png}
-	\caption{Explicación local con LIME}
+	\caption{Explicación local de LightGBM con LIME}
 	\label{fig:lime_lgbm}
 \end{figure}
 
-% DiCE
-\begin{table}[H]
+La explicación que genera DiCE para LGBM nos muestra tres instancias con alteraciones de, principalmente, ``spectral flatness'', aunque también se ven modificaciones de ``mfcc 1'' y ``mfcc 5'', como vemos en la tabla \ref{tab:dice_lgbm}.
+
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 1} & \textbf{mfcc 5} & \textbf{Etiqueta} \\
 \midrule
-Explicada & 0.11064121127128601 & -330.396484375 & 6.072022438049316 & 0 \\
-Counter factual 1 & 0.0170038721 &  &  & 1 \\
-Counter factual 2 & 0.0270864069 & -382.50071 &  & 1 \\
-Counter factual 3 & 0.0294502619 &  & 13.439346927 & 1 \\
+Explicada & 0.11064 & -330.39648 & 6.07202 & 0 \\
+Counter factual 1 & 0.01700 &  &  & 1 \\
+Counter factual 2 & 0.02708 & -382.50071 &  & 1 \\
+Counter factual 3 & 0.02945 &  & 13.43934 & 1 \\
 \bottomrule
 \end{tabular}
-\caption{Counter factuals generados por DiCE}
+\caption{Counter factuals generados por DiCE para LightGBM}
+\label{tab:dice_lgbm}
 \end{table}
 
-\subsubsection{Support Vector Machine}
+\subsection{Support Vector Machine}
 
 En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
 
-\subsubsection*{Modelo baseline con kernel lineal}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de SVM con kernel lineal}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de SVM con kernel lineal}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de SVM con kernel lineal}
-\end{table}
-
-% RESULTADOS
-Podemos ver que, pese a ser un modelo baseline, y tener un kernel lineal (que suelen ser peores que los no lienales) ya clasifica correctamente entre voces generadas por IA y reales.
-
-\subsubsection*{Modelo baseline con kernel no lineal}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de SVM con kernel no lineal}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de SVM con kernel no lineal}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de SVM con kernel no lineal}
-\end{table}
-
-Como en el caso anterior, este modelo baseline clasifica correctamente entre las dos clases.
-
-\subsubsection*{Validación Cruzada Estratificada}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica} \\
-\midrule
-Accuracy & 1 & +/- 0 \\
-F1-Score & 1 & +/- 0 \\
-AUC-ROC & 1 & +/- 0 \\
-\bottomrule
-\end{tabular}
-\caption{Resultados Validación Cruzada}
-\end{table}
-   
-% RESULTADOS
-Estos resultados nos dicen que el modelo es estable en estos 5 folds, al tener una desviación típica baja (0), y que clasifica bien, ya que la media es alta (1).
-
-\subsubsection*{Grid Search}
-
-En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Hiperparámetro} & \textbf{Valor}\\
-\midrule
-C & 1 \\
-gamma & 0.01 \\
-kernel & rbf \\
-\bottomrule
-\end{tabular}
-\caption{Mejores hiperparámetros para SVM con Grid Search y CV de 5 folds}
-\end{table}
-
-% RESULTADOS
-Aunque este sea un Grid Search más simple, es interesante ver los valores que devuelve. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajor hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Métrica} & \textbf{Valor}\\
-\midrule
-Accuracy & 1 \\
-Precision & 1 \\
-Recall & 1 \\
-F1-Score & 1  \\
-AUC-ROC & 1 \\
-MCC & 1 \\ 
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de SVM óptimo}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Dato} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Nº Instancias} \\
-\midrule
-Real (1) & 1 & 1 & 1 & 10 \\
-IA (0) & 1 & 1 & 1 & 10 \\
-accuracy &  &  & 1 & 20 \\
-macro avg & 1 & 1 & 1 & 20 \\
-weighted avg & 1 & 1 & 1 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de SVM con kernel no lineal}
-\end{table}
-
-\begin{table}[H]
-\centering
-\begin{tabular}{lc}
-\toprule
-\textbf{Tipo de predicción} & \textbf{Cantidad}\\
-\midrule
-Verdaderos Negativos & 10 \\
-Verdaderos Positivos & 10 \\
-Falsos Positivos & 0 \\
-Falsos Negativos & 0  \\
-Error tipo I & 0\% \\
-Error tipo II & 0\% \\ 
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de SVM óptimo}
-\end{table}
-
-% RESULTADOS
-Los resultados no varían de los anteriores, lo que es de esperar en este caso. Interesa ver que, pese a que SVM con $gamma = 0,01$ y $gamma = scale$ arrojan los mismos resultados, y el GridSearch eligió uno sobre otro, quizá al funcionar igual, en este contexto, eligió el más ``simple'' (como vimos, scale se calcula mediante una fórmula).
-
-\subsubsection*{Resultados de explicacion}
-
 Como podemos ver en las gráficas \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_1.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de SVM con SHAP}
 	\label{fig:1_shap_svm_local}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_local_2.png}
-	\caption{Explicación local con SHAP}
+	\caption{Explicación local de SVM con SHAP}
 	\label{fig:2_shap_svm_local}
 \end{figure}
 
 Con estas dos instancias no tenemos una clara idea de cuál es la característica más influyente. Como vemos en la gráfica \ref{fig:shap_svm_global}, la más influyente es ``spectral flatness'', como en los casos anteriores. Aunque en este caso no tiene un peso excesivamente alto, pues hay otras como ``spectral bandwidth'' o ``mfcc 1'' que también tienen un peso notable.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_global.png}
-	\caption{Explicación global con SHAP}
+	\caption{Explicación global de SVM con SHAP}
 	\label{fig:shap_svm_global}
 \end{figure}
 
 Para ver si ``spectral flatness'' tiene una alta dominancia en la clasificación, entrenamos un modelo sin ella, esto se puede ver en las tablas \ref{tab:metricas_principales_svm_sin_specflat}, \ref{tab:classification_report_svm_sin_specflat} y \ref{tab:analisis_errores_svm_sin_specflat}. Como vemos, el modelo sigue clasificando correctamente aún sin dicha característica.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1067,7 +563,7 @@ MCC & 1 \\
 \label{tab:metricas_principales_svm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -1084,7 +580,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \label{tab:classification_report_svm_sin_specflat}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1104,21 +600,21 @@ Error tipo II & 0\% \\
 
 Para ver ahora la nueva distribución de importancia de características mostramos las gráficas \ref{fig:1_shap_svm_local_sin_specflat} y \ref{fig:2_shap_svm_local_sin_specflat}. Como se puede observar las importancias siguen estando bien distribuidas, aunque sí vemos que ``spectral bandwidth'' está en la zona de alta importancia en ambas instancias predichas.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de SVM con SHAP tras quitar spectral flatness}
 	\label{fig:1_shap_svm_local_sin_specflat}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_specflat_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness}
+	\caption{Explicación local de SVM con SHAP tras quitar spectral flatness}
 	\label{fig:2_shap_svm_local_sin_specflat}
 \end{figure}
 
 Ahora probamos a quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1'', resultados en las tablas \ref{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_svm_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}. Vemos que el modelo sigue clasificando correctamente.
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1136,7 +632,7 @@ MCC & 1 \\
 \label{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lcccc}
 \toprule
@@ -1153,7 +649,7 @@ weighted avg & 1.0000 & 1.0000 & 1.0000 & 20 \\
 \label{tab:classification_report_svm_sin_sflat_mfcc1_sband}
 \end{table}
 
-\begin{table}[H]
+\begin{table}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -1173,28 +669,27 @@ Error tipo II & 0\% \\
 
 Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las gráficas \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que ``spectral rolloff'' toma un alto valor, pero no deja a 0 el resto de importancias.
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_1.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\caption{Explicación local de SVM con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
 	\label{fig:1_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/shap_svm_sin_sflat_mfcc1_sband_2.png}
-	\caption{Explicación local con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
+	\caption{Explicación local de SVM con SHAP tras quitar spectral flatness, mfcc 1 y spectral bandwidth}
 	\label{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}
 \end{figure}
 
-% LIME
-\begin{figure}[H]
+Como vemos en la imagen \ref{fig:lime_svm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar.
+
+\begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/lime_svm.png}
-	\caption{Explicación local con LIME}
+	\caption{Explicación local de SVM con LIME}
 	\label{fig:lime_svm}
 \end{figure}
 
-% DiCE
-
-\subsubsection{AASIST}
+\subsection{AASIST}
 \label{subsubsec:res_aasist}
 Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como ``bona fide'' y alguna como ``spoof'' pero sin mucho acierto lo que da una sensación de clasificación al azar.
 Ante estos resultados, decidimos realizar ``\textbf{fine-tunning}'' sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
@@ -1218,12 +713,337 @@ En lo referido a las épocas, lo más destacable es que superar las 40 épocas e
 
 \input{Secciones/Metodologia/Modelos/AASIST/resultados.tex}
 
-\subsubsection{Perceptrón}
-\input{Secciones/Metodologia/Modelos/Perceptron/resultados.tex}
+\subsection{Perceptrón}
 
-\subsubsection{Wav2Vec2}
-\input{Secciones/Metodologia/Modelos/Wav2Vec2/resultados.tex}
+Como podíamos esperar, se produce un gran sobreajuste en el modelo por lo que no emplearemos ninguna de las métricas típicas para evaluarlo.
 
-\subsubsection{Regresión Logística}
+Las conclusiones que podemos sacar sobre este modelo a la vista de los resultados son que para crear un modelo de clasificación desde 0 y que sea eficaz en su labor, necesitaríamos muchísimos más audios de los que disponemos, además, en lo que se refiere a la posterior tarea de aplicar elementos de IA explicable al modelo, al usar embeddings como entrada, no podemos aplicarle directamente ninguna de esas técnicas.
 
-\subsubsection{KNN}
+\subsection{Wav2Vec2}
+
+\subsubsection*{Evaluación del modelo}
+
+\begin{enumerate}
+ \item Accuracy = 0.90: Porcentaje de aciertos.
+ \item F1-Score = 0.909: Balance precisión-recall.
+ \item ROC-AUC = 0.92: Capacidad discriminativa.
+\end{enumerate}
+
+Las métricas nos muestran que el modelo tiene un porcentaje de aciertos del 90\% y una capacidad discriminativa del 92\%, lo que nos permite concluir que en general es un modelo bastante preciso.
+
+\subsubsection*{Salida del modelo}
+
+Ahora vamos a procesar la salida del modelo para hacerla más interpretable, ya que actualmente el modelo devuelve una tupla con dos valores de pertenencia a las distintas clases. Lo que se busca es transformar esto en un número entre 0 y 1 que indique el grado de pertenencia del audio a la clase generada. Cuanto más cercano a 1, más pertenece ese audio a la clase generada.
+
+Para lograrlo, se aplica una función sigmoide que mide qué tan mayor es $x_2$ (clase generada) con respecto a $x_1$ (clase real):
+
+\[
+\frac{1}{1 + e^{-(x_2 - x_1)}}
+\]
+
+\noindent donde:
+\begin{itemize}
+ \item $x_1$: valor de pertenencia devuelto por el modelo a la clase 1.
+ \item $x_2$: valor de pertenencia devuelto por el modelo a la clase 2.
+\end{itemize}
+
+Por último, estos nuevos resultados se guardan en un \textit{dataframe} que servirá para aplicar posteriormente modelos de XAI. Este dataframe contiene el nombre del audio, el valor devuelto por el modelo y la categoría binaria a la que pertenece.
+
+Cabe recalcar que en los nombres la primera letra indica el idioma (E: español, I: inglés), el número es su identificador y la última letra indica si es natural (N) o generado (G).
+
+Podemos ver en los resultados de las predicciones cómo el modelo falla clasificando algunos audios naturales como generados. Esto puede deberse a ruido o a otras imperfecciones en los audios.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{Name} & \textbf{Score} & \textbf{Label} \\
+\hline
+I\_32\_N & 0.34013117 & 0 \\
+E\_47\_G & 0.77316723 & 1 \\
+I\_12\_N & 0.29058788 & 0 \\
+I\_3\_N  & 0.76783361 & 0 \\
+E\_7\_G  & 0.77251038 & 1 \\
+I\_2\_G  & 0.66493000 & 1 \\
+E\_11\_N & 0.30043659 & 0 \\
+E\_23\_N & 0.26705380 & 0 \\
+E\_16\_G & 0.77921332 & 1 \\
+I\_6\_G  & 0.76163065 & 1 \\
+I\_49\_N & 0.27409548 & 0 \\
+I\_5\_G  & 0.65449655 & 1 \\
+E\_35\_G & 0.78612722 & 1 \\
+I\_41\_N & 0.27259401 & 0 \\
+E\_37\_N & 0.33313831 & 0 \\
+E\_2\_N  & 0.37300991 & 0 \\
+E\_40\_G & 0.73222093 & 1 \\
+E\_41\_G & 0.77680456 & 1 \\
+I\_2\_N  & 0.74845369 & 0 \\
+E\_43\_G & 0.76308837 & 1 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsubsection*{Resultados explicación Wav2Vec2}
+
+Los resultados de los primeros cinco surrogate models implementados (orientados a datos tabulares) son los siguientes. 
+
+Cabe recalcar que para todos los modelos usaremos la instancia I\_12\_N cuya clase es 0 (audio real) y el modelo Wav2Vec2 predijo 0,2905, es decir, lo clasificó como real.
+
+En cuanto al Shap mostraremos dos gráficas por modelo y la predicción del modelo para ese audio. La primera gráfica nos mostrará la explicación global para ese modelo mientras que la segunda nos mostrará una explicación local de uno de los audios. 
+
+Aquí proporcionamos un enlace a la tabla con todas las características que extrajimos del audio: ~\ref{fig:caracteristicas_audio}
+
+\begin{enumerate}
+ \item Energía: En este modelo~\ref{fig:shap_energia_wav2vec2} podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_wav2vec2.png}
+	\caption{Shap global energía.}
+	\label{fig:shap_energia_wav2vec2}
+ \end{figure}
+ 
+ Antes de pasar con la explicación local debemos detenernos en la predicción del modelo que fue de 0,52822. Esto nos da a entender que ninguna de las características observadas por el modelo son verdaderamente relevantes a la hora de decidir si el audio es real o generado.  
+ 
+  Pasando ahora con la explicación local~\ref{fig:shap_energia_instancia_wav2vec2} podemos ver que ninguna de las características influye demasiado en la predicción pero si que se mantiene el orden global y se puede ver con cuanta fuerza influirían y en que dirección. En este caso y por la fuerza que se le presupone a las características, este audio es más real que generado.
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_instancia_wav2vec2.png}
+	\caption{Ejemplo concreto.}
+	\label{fig:shap_energia_instancia_wav2vec2}
+ \end{figure}
+ 
+
+ \item Espectrales: En este modelo las características más influyentes son el spectral\_centroid, el spectral\_rolloff y el spectral\_bandwidth y la predicción del surrogate model de los espectrales fue de 0,49076. 
+ 
+ Imágenes del shap para el surrogate model de los espectrales: ~\ref{fig:shap_espectrales_wav2vec2}
+ 
+ \item Pitch: En este modelo hay un claro dominio por parte del pitch std en comparación con el pitch mean. La predicción del surrogate model del pitch fue de 0,48127.
+ 
+ Imágenes del shap para el surrogate model del pitch: ~\ref{fig:shap_pitch_wav2vec2}
+ 
+ \item Formantes: En este modelo la f1 y la f3 tienen una influencia similar y muy superior a la de f2. La predicción del surrogate model de las formantes fue de 0,57039.
+ 
+  Imágenes del shap para el surrogate model del pitch: ~\ref{fig:shap_formantes_wav2vec2}
+ 
+ \item MFCC: En este modelo los coeficientes cepstrales de Mel 5,6 y 7 son los que más influyen mientras que los coeficientes 1,13 y 12 son los que menos influyen. La predicción del surrogate model de los mfccs fue de 0,29669.
+ 
+ Imágenes del shap para el surrogate model del pitch: ~\ref{fig:shap_mfccs_wav2vec2} 
+ 
+\end{enumerate}
+
+A la vista de todas las predicciones de los surrogate models (Energía: 0,52822, Espectrales: 0,49076, Pitch: 0,48127, Formantes: 0,57039 y MFCC: 0,29669) podemos concluir que los mfccs son el grupo de características más relevante a la hora de decidir si este audio (I\_12\_N) es real o generado.
+
+Ahora, buscando también algo que complemente la explicación del Shap, vamos a usar Lime para explicar los mismos modelos y la misma instancia particular (I\_12\_N).
+
+\begin{enumerate}
+ \item Energía: En este modelo podemos ver como la kurtosis es la única característica que tiene un impacto relevante en la predicción del modelo. ~\ref{fig:lime_energía_wav2vec2} 
+ 
+ \begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Influencia_caracteristicas_energia_lime_wav2vec2.png}
+	\caption{Explicación local energía Lime.}
+	\label{fig:lime_energía_wav2vec2}
+ \end{figure}
+
+ \item Espectrales: En este modelo podemos ver como todas las características tienen algo de impacto, sin embargo predominan claramente el espectral bandwidth y el espectral centroid hacia reducir la predicción y el espectral rolloff hacia aumentarla. 
+ 
+ Imagen del lime de los espectrales: ~\ref{fig:lime_espectrales_wav2vec2} 
+ 
+ \item Pitch: En este modelo se ve como el pitch std influye más que el pitch mean. Ambas características empujan la predicción hacia abajo.
+ 
+  Imagen del lime del pitch: ~\ref{fig:lime_pitch_wav2vec2} 
+  
+ \item Formantes: En este modelo la f1 domina sobre las demás siendo la que más empuja la predicción hacia alguna dirección, en este caso, contribuye a reducirla mientras que la f3 la empuja hacia arriba aunque con menos fuerza de lo que la f1 lo hace hacia abajo.
+ 
+  Imagen del lime de las formantes: ~\ref{fig:lime_formants_wav2vec2} 
+ 
+ \item MFCC: En este modelo los coeficientes 5,7,9 y 11 son los que más influyen en las decisiones del modelo siendo que el 5 es el coeficiente que más disminuye la predicción mientras que el 7, el 9 y el 11 son los que más la aumentan.
+ 
+  Imagen del lime de los mfccs: ~\ref{fig:lime_mfccs_wav2vec2} 
+ 
+\end{enumerate}
+
+Ahora que ya tenemos tanto Shap como Lime de todas las características de los audios, vamos a agregar los resultados de los cinco surrogate models para ver de forma general cuales son las características más influyentes a la hora de clasificar los audios en reales o generados.
+
+Para esta tarea se ha hecho lo siguiente, primero calculamos la importancia promedio de cada característica usando sus valores Shap, luego calculamos la importancia de cada grupo de características y con esto podemos promediar la importancia de cada característica entre todos los grupos de características. Por último los ordenamos de mayor a menor importancia y los mostramos.
+
+En esta gráfica~\ref{fig:ranking_shap_Wav2Vec2} podemos ver las 15 características más importantes para la predicción destacando sobre todo el centroide espectral y el 5º coeficiente cepstral de Mel.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_shap_wav2vec2.png}
+	\caption{Ranking características Shap.}
+	\label{fig:ranking_shap_Wav2Vec2}
+\end{figure}
+
+Para Lime hacemos exactamente lo mismo. 
+
+Aquí~\ref{fig:ranking_lime_Wav2Vec2} vemos que destacan las mismas características que en la de Shap pero con ligeras variaciones de posición entre ellas.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_lime_wav2vec2.png}
+	\caption{Ranking características Lime.}
+	\label{fig:ranking_lime_Wav2Vec2}
+\end{figure}
+
+Para acabar con la explicación de las características, vamos a juntar ambas explicaciones en una sola combinada para obtener el orden global de influencia de las características. Este orden será calculado haciendo la media aritmética de su importancia en Shap y Lime.
+
+En esta gráfica combinada~\ref{fig:ranking_agregado_Wav2Vec2} podemos ver el ranking global de las características según su importancia. Podemos observar que a la hora de agregar ambas gráficas las diferencias respecto a las gráficas anteriores de los rankings de Shap y Lime no son demasiado grandes ya que ambas exponían uno similar.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/Ranking_caracteristicas_final_wav2vec2.png}
+	\caption{Ranking agregado de características.}
+	\label{fig:ranking_agregado_Wav2Vec2}
+\end{figure}
+
+Sobre el sexto surrogate model aplicaremos Shap, Lime, Integrated gradients y Grad cam.
+
+De cada una de estas técnicas sacaremos tres imágenes. La dos primeras se corresponderán con la actuación de la técnica de XAI sobre un audio concreto (I\_12\_N) y el espectrograma de dicho audio. La última imagen nos mostrará los patrones de actuación global de la técnica empleada. 
+
+\subsubsection*{Shap}
+
+Aquí podemos ver en las imágenes~\ref{fig:shap_local_espectrogramas_Wav2Vec2} cómo la parte del audio que más influye en la predicción es la parte final del audio, correspondiente a las bandas de mel entre 25 y 45, que simbolizan frecuencias medio-altas. Estas bandas contienen las formantes F2 y F3, así como elementos clave para la inteligibilidad del habla. Si nos fijamos en el espectrograma, esto coincide con el final, donde parece que el audio está distorsionado. Esto se aprecia claramente al escuchar el audio (I\_12\_N: audio 12 natural en inglés), donde la última palabra es ``next'', y ese final que parece distorsionado corresponde al sonido de la pronunciación del grupo consonántico ``xt''. También se puede observar cómo la parte donde ya no hay espectrograma, en la explicación de SHAP, no tiene prácticamente influencia.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{shap_espectrogramas_wav2vec2.png}
+        \caption{Shap de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    \caption{shap local espectrogramas Wav2Vec2}
+    	\label{fig:shap_local_espectrogramas_Wav2Vec2}
+\end{figure}
+
+En esta imagen~\ref{fig:shap_global_espectrogramas_Wav2Vec2} sobre la influencia global del shap podemos ver como las partes que más influyen en la clasificación del audio son el principio y el final del audio. Comparando esta gráfica con la anterior podemos confirmar la importancia que tienen las bandas de mel medias. También podemos ver como el audio elegido para la explicación global no es representativo de la explicación global ya que esta última si que usa mucho la parte final del audio para la explicación.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/shap_global_espectrogramas_wav2vec2.png}
+	\caption{Shap general de los espectrogramas}
+	\label{fig:shap_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+\subsubsection*{Lime}
+
+
+En esta imagen~\ref{fig:lime_local_espectrogramas_Wav2Vec2} se muestra la explicación local de lime sobre mismo audio que en el shap. En ella podemos ver como, al igual que en el shap, las bandas medias son las más relevantes y la pronunciación final es lo que más mueve la predicción hacia la clase real. Por último podemos ver como en estas bandas medias al principio estas empujan la predicción hacia generado, esto se puede deber a que el audio tarda en comenzar y a como pronuncia el principio de la primera palabra ``what''.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{lime_espectrogramas_wav2vec2.png}
+        \caption{Lime de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:lime_local_espectrogramas_Wav2Vec2}
+    	\caption{lime local espectrogramas Wav2Vec2}
+\end{figure}
+
+Aquí~\ref{tab:lime_global_espectrogramas_Wav2Vec2} a diferencia de en shap, según lime, el modelo toma las decisiones principalmente gracias al principio de los audios aunque el final también tiene algo de influencia.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/lime_global_espectrogramas_wav2vec2.png}
+	\caption{Lime general de los espectrogramas}
+	\label{fig:lime_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+\subsubsection*{Integrated gradients}
+
+Aquí~\ref{fig:ig_local_espectrogramas_Wav2Vec2} podemos ver como no está analizando el audio del todo bien ya que las partes más rojas son las que más influyes a una predicción hacia generado pero si vemos el espectrograma del audio, en esas partes como tal no hay nada, son zonas negras, también la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma. Si ignoramos esas partes y nos centramos solo donde si que hay evidencia de audio, podemos ver como esas son zonas más blancas - azuladas que empujan la predicción hacia real. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{ig_espectrogramas_wav2vec2.png}
+        \caption{IG de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:ig_local_espectrogramas_Wav2Vec2}
+    	\caption{IG local espectrogramas Wav2Vec2}
+\end{figure}
+
+En la predicción global~\ref{fig:ig_global_espectrogramas_Wav2Vec2} se puede apreciar cierta similitud con las dos explicaciones generales anteriores donde las principales zonas de influencia en la clasificación son la parte inicial y la parte final de los audios en las bandas medias.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/ig_global_espectrogramas_wav2vec2.png}
+	\caption{Integrated gradients general de los espectrogramas}
+	\label{fig:ig_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+\subsubsection*{Grad Cam}
+
+Aquí~\ref{fig:gc_local_espectrogramas_Wav2Vec2}, al igual que en la explicación local de integrated gradients, podemos ver que en las partes donde no hay audio son las partes que más influyen en la predicción aunque aquí si que distingue bien que la parte final donde no hay espectrograma no tiene ningún peso en la predicción. De todas formas, fijándonos donde hay audio podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{gc_espectrogramas_wav2vec2.png}
+        \caption{Grad Cam de un audio.}
+        \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{espectrograma_audio.png}
+        \caption{Espectrograma de un audio.}
+    \end{subfigure}
+    	\label{fig:gc_local_espectrogramas_Wav2Vec2}
+    	\caption{Grad Cam local espectrogramas Wav2Vec2}
+\end{figure}
+
+La explicación global del grad cam~\ref{fig:gc_global_espectrogramas_Wav2Vec2} se caracteriza por darle el mayor peso a los instantes iniciales del espectrograma, dándole un peso prácticamente nulo al centro del espectrograma, curiosamente donde están los audios, y otorgándole un peso relevante también al final del espectrograma.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/gc_global_espectrogramas_wav2vec2.png}
+	\caption{Grad cam general de los espectrogramas}
+	\label{fig:gc_global_espectrogramas_Wav2Vec2}
+\end{figure}
+
+Ahora vamos a ver como se ve la agregación de los cuatro modelos de XAI sobre los espectrogramas. Esto se ha calculado para cada frame del espectrograma, se ha sacado su valor en cada una de las explicaciones globales de los distintos modelos y se ha hecho la media aritmética sobre ellos. Antes de poder hacer esto, hemos tenido que normalizar todos las explicaciones ya que estaban en diferentes escalas.
+
+La agregación de las explicaciones globales~\ref{fig:agregado_espectrogramas_Wav2Vec2} nos deja claro donde se encuentran las zonas más influyentes siendo el principio y el final del espectrograma dejando al centro con un peso mucho menos relevante.
+
+\begin{figure}[H]
+	\includegraphics[width=\textwidth]{imagenes/influencia_global_espectrogramas_wav2vec2.png}
+	\caption{Influencia general de los espectrogramas}
+	\label{fig:agregado_espectrogramas_Wav2Vec2}
+\end{figure}
+
+Como conclusiones podemos sacar que a la vista de los modelos de explicación, parece que el modelo Wav2Vec2 se fija más en los alrededores del audio que en el audio en sí mismo. Esto puede explicartes gracias a las siguitentes propiedades de los espectrogramas de voz:
+
+\begin{enumerate}
+
+ \item Coarticulación: Este es un fenómeno típico de la voz humana donde esta no está formada por unidades aisladas, es decir, cada sonido depende de los anteriores y posteriores. Esto hace que las transiciones entre fonemas contengan más información que el fonema en sí haciendo que lo que está alrededor del audio tenga más peso.
+ 
+ \item Dinámica espectro-temporal: Las partes centrales de los audios tienden a ser más estables y redundantes mientras que las zonas de cambio contienen mayor variabilidad lo que hace que contengan la mayoría de la información discriminativa del audio.
+ 
+ \item Estructura de formantes y transiciones: Las trayectorias de las formantes, claves para identificar fonemas, suelen estar en los bordes de los segmentos por lo que las zonas de alrededor del audio contienen más información 	dinámica de las formantes.
+ 
+ \item Efectos de ventana del espectrograma: Como el espectrograma se calcula usando ventanas, cada punto del espectrograma mezcla información de un intervalo temporal siendo que en los bordes del espectrograma se incluyen partes de dos sonidos distintos haciendo que estos sean más informativos al incluir mezclas de contextos.
+ 
+ \item Relación señal-ruido: En muchos audios el inicio y el final de los mismos pueden tener cambios de energía o ruido de fondo que el modelo puede usar como señales útiles.
+ 
+ \item Información prosódica: Los elementos como la entonación, el ritmo o el énfasis no están concentrados en un punto sino que ocurren durante las transiciones.
+
+\end{enumerate}
+
+
+\subsection{Regresión Logística}
+
+\subsection{KNN}

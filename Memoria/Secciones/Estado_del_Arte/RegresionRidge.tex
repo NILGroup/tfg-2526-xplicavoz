@@ -1,12 +1,9 @@
-\subsubsection{Regresión Ridge}
+\subsection{Regresión Ridge}
 \label{subsubsec:eda_reg_rid}
 
-El método de regresión Ridge permite detectar la multicolinealidad dentro de un modelo de regresión lineal. Fue propuesto por Hoerl y Kennard y es usado para trabajar con modelos que presentan sesgo. 
+El método de regresión Ridge permite detectar la multicolinealidad dentro de un modelo de regresión lineal. Fue propuesto por Hoerl y Kennard y es usado para trabajar con modelos que presentan sesgo ~\cite{dialnet5116534, ibmRidgeRegression}. 
 
 Este método consiste en que dado una matriz $(X^T X)$ altamente condicionada o cercana a singular, esto es, que es extremadamente sensible a pequeñas variaciones de los datos de entrada, es posible agregar constantes positivas a los elementos de la diagonal para asegurar que la matriz resultante no sea altamente condicionada.
-
-Referencia 1: %fuente: https://dialnet.unirioja.es/servlet/articulo?codigo=5116534
-
 
 En relación con el machine learning, la regresión Ridge sirve para corregir el sobreajuste de los datos de entrenamiento. 
 
@@ -32,5 +29,3 @@ Término de regularización $L2 = ||B||^2 = B_1^2 + B_2^2 + ... + B_n^2$. Esto h
 $RSS_L2 = sum_{i=1}^{n} (Y_i - \hat{Y}_l)^2 + \lambda sum_{j=1}^{p} B_j^2$.
 
 La agregación del L2 al RSS contrarresta los coeficientes especialmente altos al reducir todos los valores de los coeficientes.
-
-Referencia 2: %fuente : https://www.ibm.com/es-es/think/topics/ridge-regression

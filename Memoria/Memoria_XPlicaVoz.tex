@@ -1,0 +1,83 @@
+\documentclass[tfg,estilo=digital,portada=normativa]{fdi-simplex}
+
+
+\titulo{Detección explicable de voz generada con IA}
+\autor{Jorge Aured Zarzoso}
+\autor{Germán Bravo Quintián}
+\autor{Rafael López Rodríguez}
+\autor{Iván Pastor Sacristán}
+\director{Marta Caro Martínez}
+\director{Antonio Fernando García Sevilla}
+
+\titulacion{Ingeniería del Software, Ingeniería de computadores}
+\cursoAcademico{2025/2026}
+
+\palabrasClave{TODO}
+\keywords{TODO}
+
+\addbibresource{bibliografia.bib}
+
+\logo{imagenes/Escudo_UCM}
+
+% paquetes estudiantes (tomado de Config.tex)
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{float} % NO DEBERIAIS USAR [H]
+\graphicspath{{./imagenes/}{../imagenes/}{../../imagenes/}}
+
+\begin{document}
+
+\makeportada
+
+\frontmatter
+
+\begin{resumen}
+En este proyecto se aborda el problema de la clasificación de voces reales y generadas mediante el uso de modelos de clasificación y la posterior aplicación de métodos de inteligencia artificial explicable para entender en qué se basan las clasificaciones y ver si son fiables. Para ello se ha investigado sobre los diferentes datasets públicos con voz y sobre las distintas características que presenta la voz humana y cómo afecta cada una en la voz, es decir, qué efecto tiene en la voz cada característica. Ya que se tienen suficientes datos, se han aplicado modelos de clasificación para datos tabulares (SVM, KNN, etc.), imágenes (AASIST, etc.), y audios crudos (Wav2Vec2). En la explicación de los distintos modelos se han aplicado modelos agnósticos (SHAP, LIME, etc.) que toman \emph{casi} cualquier modelo y generan explicaciones sobre las predicciones; AYUDA CON ESTO, INCLUIR MAS COSAS QUE SE HAYAN HECHO.
+
+En lo referente a las pruebas, se ha utilizado un subconjunto del dataset ODSS, el cual tiene voces en diferentes idiomas, de los que hemos escogido inglés y español, por ser, de los que incluye dicho dataset, dos de los más importantes hoy en día. Se ha visto un buen rendimiento de los modelos a la hora de clasificar los audios, aunque COMPLETAR.  Sin embargo, se consideran los resultados como un buen comienzo hacia la detección de voz generada.
+
+
+ESTO ES UNA PRIMERA VERSION, USAR LO QUE SIRVA, BORRAR DESPUES
+    En este proyecto se aborda el problema de la clasificación de voces reales y generadas, por lo que se busca: (1) entender qué elementos de la voz son importantes para distinguir entre dos o más, (2) buscar modelos que puedan aprender de dichos elementos y encuentren las diferencias entre ambos tipos de voces, y (3) aplicar métodos de inteligencia artificial explicable para entender en qué se basan las clasificaciones y ver si son fiables.
+    
+    Así, se han utilizado diversos modelos de clasificación aplicados sobre audios del dataset ODSS, de los cuales se han extraido sus características, y se han aplicado varios métodos de inteligencia artificial explicable para profundizar en las predicciones hechas por los modelos. Los modelos mostraron buen rendimiento, aunque es posible que los audios no fueran lo suficientemente representativos. 
+    
+\palabrasClave{voz generada; modelos de clasificación; inteligencia artificial explicable; características de la voz}    
+    
+\end{resumen}
+
+\begin{abstract}
+    TODO abstract en ingles
+\end{abstract}
+
+% Para tener índice (compilar 2 veces, a veces se traba)
+\tableofcontents
+
+\listoffigures
+\listoftables
+
+\mainmatter
+
+\include{Secciones/Introduccion.tex}
+
+\include{Secciones/Estado_del_Arte.tex}
+
+\include{Secciones/Metodologia.tex}
+
+\include{Secciones/Conclusiones.tex}
+
+\include{Secciones/Pipeline.tex}
+
+\include{Secciones/Trabajo_Individual.tex}
+
+\backmatter
+
+% Esto carga el archivo .bib. El nombre del archivo es "bibliografia.bib"
+\printbibliography[heading=bibintoc]
+
+\input{Secciones/Anexo.tex}
+
+\end{document}
