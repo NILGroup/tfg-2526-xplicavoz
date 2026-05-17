@@ -26,6 +26,9 @@
 \usepackage{longtable}
 \usepackage{float} % NO DEBERIAIS USAR [H]
 \graphicspath{{./imagenes/}{../imagenes/}{../../imagenes/}}
+\usepackage{morefloats}
+\extrafloats{200}
+\maxdeadcycles=200
 
 \begin{document}
 
@@ -78,6 +81,7 @@ ESTO ES UNA PRIMERA VERSION, USAR LO QUE SIRVA, BORRAR DESPUES
 \printbibliography[heading=bibintoc]
 
 \input{Secciones/Anexo.tex}
+\clearpage
 \input{Secciones/Anexo2.tex}
 
 \end{document}
