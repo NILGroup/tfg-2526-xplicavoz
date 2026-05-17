@@ -1,7 +1,7 @@
 \chapter{Pipeline}
 \label{sec:pipeline}
 
-Como cierre para el proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único ``notebook'' todos los modelos desarrollados a lo largo del proyecto. De este modo, permite facilitar la comparación de resultados y explicaciones entre modelos.
+Como cierre del proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo de \nameref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único ``notebook'' todos los modelos desarrollados a lo largo del proyecto. De este modo, facilita la comparación de resultados y explicaciones entre modelos.
 
 Cabe mencionar que el diseño de este pipeline constituye una de las aportaciones prácticas del proyecto, al integrar en una misma estructura modelos de distinta naturaleza y técnicas de explicabilidad complementarias. Esto permite analizar un mismo audio desde múltiples perspectivas, comparando no solo el resultado de clasificación, sino también la forma en que cada modelo justifica su decisión.
 
@@ -15,15 +15,12 @@ Con el fin de representar su estructura general, se ha diseñado un diagrama de 
 
 Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \emph{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
 
-La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
-
-Además, el ``notebook'' está organizado en secciones correspondientes a cada modelo, lo que permite ejecutar cada uno de ellos de forma independiente.
-
+La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección ejecutable independiente, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
 \section{AASIST}
 
 Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
 
-Una vez cargado, se usan las funciones cargadas del archivo funciones\_AASIST.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
+Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
 
 A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.
 
@@ -70,3 +67,11 @@ Antes de ver la explicación de los nuevos audios con SVM, observamos que el mod
 En SHAP local vemos que las importancias cambian: en el audio generado tienen un peso mayor en ``spectral flatness'', mientras que en el audio real tienen un peso distribuido entre varias características, entre las que ``spectral flatness'' no aparece, como vemos en \ref{fig:pipe_shap_svm_esp_1} y \ref{fig:pipe_shap_svm_esp_2}. Por otro lado, en SHAP global podemos apreciar mejor que los audios clasificados como generados sí toman en cuenta dicha característica (con alto valor), mientras que los clasificados como reales tienen pesos más moderados, como aparece en \ref{fig:pipe_shap_svm_global}. Por último hemos probado a hacer, como antes, la explicación de los audios en inglés y podemos ver que tiene un rendimiento similar al de los modelos anteriores, es decir, pesos moderados y tendencia a clasificar como real. Esto lo encontramos en \ref{fig:pipe_shap_svm_eng_1} y \ref{fig:pipe_shap_svm_eng_2}.
 
 LIME nos dice que la característica más importante, en el audio nuevo generado, es ``spectral flatness'' y, además, mantiene unos umbrales de clasificación similares a los que ya habíamos visto (ver \ref{fig:pipe_lime_svm}).
+
+\section{Conclusiones}
+
+En conjunto, el pipeline desarrollado reúne en una única propuesta práctica los distintos modelos de IA y XAI utilizados a lo largo del proyecto. Su estructura facilita tanto la ejecución individual de cada modelo como la comparación de sus predicciones y explicaciones sobre un mismo audio, lo que aporta una visión más completa del problema abordado.
+
+Asimismo, el pipeline es una de las principales aportaciones del proyecto ya que permite trasladar a un plano conjunto todo el trabajo desarrollado anteriormente, convirtiéndose en una propuesta práctica y cohesionada. De este modo, no solo actúa como parte final del proyecto, sino como una forma de materializar en un mismo entorno las decisiones tomadas durante el desarrollo, desde la selección de modelos hasta la incorporación de técnicas XAI.
+
+A partir de este notebook que engloba de forma práctica el resumen de los modelos, el siguiente capítulo recoge una visión global más teórica del proyecto como conclusión a este, aportando, también, opciones para continuar el desarrollo del pipeline y del proyecto.
