@@ -2,24 +2,29 @@
 
 \begin{itemize}
 
-	\item Investigué sobre las motivaciones para investigar sobre la detección de voz generada por IA con dos papers. En estos se hablaba de cómo las personas hemos perdido la capacidad de detectar correctamente cuando un audio es real o no.
+	\item Investigué sobre las motivaciones para investigar sobre la detección de voz generada por IA con dos papers. En estos se hablaba de cómo las personas hemos perdido la capacidad de detectar correctamente cuando un audio es real o no. Es importante ver que este es un problema que ha ganado popularidad en los úlitmos años de la mano de los avances de los modelos de inteligencia artificial. También investigué sobre las técnicas de clonación de voz para su análisis en relación con las ciencias forenses, donde es vital identificar a las diferentes personas en un caso.
 	
-	\item Investigué sobre qué características son relevantes en la voz y cómo extraerlas mediante código. Esto ya que es crucial saber qué representa cada característica para tener una noción de qué puede tener en cuenta los modelos a la hora de predecir si un audio es real o no.  
+	\item Investigué sobre qué características son relevantes en la voz y cómo extraerlas mediante código. Esto ya que es crucial saber qué representa cada característica para tener una noción de qué puede tener en cuenta los modelos a la hora de predecir si un audio es real o no.  Apliqué las funciones que extraen las distintas características y creé un pipeline completo de extracción, así como una función a las que se le pasan n audios y devuelve las características de cada uno.
 	
 	\item Investigué parcialmente sobre la extracción de gráficas de la voz, para su uso en redes convolucionales (CNN).	
 	
-	 \item paper deepShap
+	 \item Sobre XAI investigué un enfoque de interpretabilidad dual (visual y auditiva), usando espectrogramas y reconstrucción de audio a partir de los scores de atribución. Se analiza cómo diferentes arquitecturas (CNN vs CNN-LSTM) y métodos XAI (LRP, Deep Taylor, Integrated Gradients) afectan la localización de formantes y la varianza rítmica, permitiendo una explicación al nivel de percepción humana.
 	 
-	 \item paper peru
+	 \item Investigué sobre el estado del arte de modelos que entrenan con datos tabulares. En concreto revisé los modelos LightGBM, Random Forest basados en árboles de decisión y SVM basado en separación óptima mediante hiperplano, para clasificación, leyendo varios papers y páginas oficiales. En dicha investigación profundicé en el funcionamiento de los modelos, viendo qué hiperparámetros tiene cada uno y para qué sirven, y qué ventajas tienen para la clasificación de audios en reales o generados.
 	 
-	 \item Investigué sobre el estado del arte de los modelos LightGBM, Random Forest y SVM para clasificación. En dicha investigación profundicé en el funcionamiento de los modelos, viendo qué hiperparámetros tiene cada uno y para qué sirven, y qué ventajas tienen para la clasificación de audios en reales o generados.
+	 \item Investigué sobre datasets que nos pudieran servir para la investigación. Encontré audioMNIST y HABLA, el primero de los números del 0 al 9 y el segundo son voces en español de hispanoamérica. audioMNIST solo cuenta con voces reales, mientras que HABLA tiene tanto clonaciones de voz como ataques (hacer que una voz se parezca a otra). El primero lo descartamos por tener solo voces reales, y el segundo lo descartamos por solo tener audios en español.
 	 
-	 \item Investigué sobre datasets que nos pudieran servir para la clasificación. Encontré audioMNIST y HABLA, el primero de los números del 0 al 9 y el segundo son voces en español de hispanoamérica. audioMNIST solo cuenta con voces reales, mientras que HABLA tiene tanto clonaciones de voz como ataques (hacer que una voz se parezca a otra).
+	 \item Para cada uno de los tres modelos he hecho un pipeline completo con tres partes claras: (1) un modelo baseline (dos en el caso de SVM debido al tipo de kernel) donde establezco a mano los hiperparámetros y lo entreno para ver sus resultados; (2) una validación cruzada para entrenar el modelo baseline con varios conjuntos de entrenamiento-validación y comprobar su estabilidad y overfitting; (3) una búsqueda de los hiperparámetros óptimos de cada modelo mediante un grid search; y (4) entrenar un modelo con dichos hiperparámetros óptimos y revisar su rendimiento. Por último, guardé cada modelo como archivo .pkl para poder usarlos en otros archivos.
 	 
 	 \item He hecho un pipeline completo para cada uno de los tres modelos, entrenándolos de varias formas para ver cuál funcionaba mejor. Este pipeline consta de un modelo baseline, una fase de cross validation y un grid search optimizando los parámetros. En cada paso visualicé los resultados de los modelos viendo su rendimiento. Al final del pipeline guardé como archivo .pkl los mejores modelos
 	 
-	 \item He aplicado técnicas de Inteligencia Artificial explicable (XAI) a mi modelo óptimo de Random Forest, aunque las pruebas son extrapolables a los demás modelos. Dichas técnicas muestran cómo el modelo hace las predicciones. Las he hecho globales y locales. He aplicado SHAP (local y global), LIME (local) y DiCE (local, contrafactual). 
-
+	\item He creado diversas funciones para generar explicaciones de los modelos, en concreto he hecho una función para SHAP (local y global), otra para LIME y otra para DiCE, y una cuarta para poder extraer características, reentrenar, y poder generar la explicación con una de las tres funciones anteriores. Además, esta última función permite reevaluar las métricas del modelo para ver su rendimiento tras eliminar algunas caracrterísticas. Con esto Apliqué las funciones a los tres modelos, haciendo pruebas según los resultados. 
+	
+	\item He aplicado los tres modelos en una prueba donde simulamos una aplicación real donde entran audios nuevos y debemos clasificarlos y generar las explicaciones. He cargado los modelos .pkl (ya entrenados) y he reutilizado las funciones de explicación que cree anteriormente, salvo la de extraer características.
+	
+	\item He redactado las partes de la memoria asociadas a mis modelos: estado del arte, experimentos y resultados.
+	
+	\item He escrito la sección de extracción de características, la de métricas de evaluación de los modelos, y la de proceso común de experimentación. También he escrito parcialmente la sección del dataset, la introducción, el resumen, y las conclusiones finales del proyecto.
 
 \end{itemize}
 \end{contribucion}
