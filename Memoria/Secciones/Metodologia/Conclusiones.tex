@@ -1,2 +1,14 @@
 \section{Conclusiones}
 \label{sec:conclusiones_metodologia}
+
+Como punto final a este capítulo vamos a comentar que conclusiones hemos sacado de todo este capítulo de la metodología.
+
+Empezando por el dataset, tras usarlo con modelos muy distintos y con enfoques muy diferentes, a la vista de los resultados sacamos en claro que el dataset, sobre todo la parte de los audios en español, es demasiado sencillo distinguir que audios son reales y que audios no lo son haciendo que los modelos más simples no aprendan características típicas de los audios generados sino patrones específicos del dataset.
+
+Ahora pasando con la extracción de características y complementando al párrafo anterior, tenemos que la gran cantidad de características que podemos extraer de los audios junto con las características de nuestro dataset, concluimos que la complejidad de nuestra entrada para los modelos en los que la usamos no ayuda a la hora de obtener resultados replicables en todo tipo de entornos.
+
+En cuanto a los modelos, podemos sacar como conclusiones de los modelos y sus resultados que, en el caso de los modelos basados en las características extraídas de los audios, aprenden patrones específicos del dataset con el que son entrenados, lo cual no implica que esos patrones sean correctos para la mayoría de audios fuera del dataset, lo cual ha resultado en unos resultados y métricas inflados por el entorno en el que están. Un claro ejemplo de esto es que, en todos estos modelos, al aplicarles XAI, se vio que todos usaban la misma característica para clasificar el audio siendo que cuanto más complejo era el modelo, más sobresalía dicha característica sobre las demás.
+
+En relación con los modelos que reciben la onda de audio cruda, estos modelos ya venían preentrenados con grandes datasets para una tarea específica. De esto podemos sacar la primera conclusión que es con respecto a la flexibilidad y al gran abanico de posibilidades que se nos abrió al emplear esta técnica ya que nos permitió emplear modelos muy complejos de aprendizaje profundo sin necesidad de entrenarlos desde cero lo cual era inviable para el desarrollo del trabajo. En relación con los resultados tenemos que estos modelos presentan unos resultados más creíbles que se complementan cuando les aplicas XAI y ves que ambos aprenden distintos patrones dependiendo de su arquitectura. Con esto llegamos a la conclusión de que estos modelos no verán su rendimiento tan perjudicado como lo verán los otros modelos empleados a la hora de probarlos con otros datos fuera del dataset.
+
+Con esto finalizamos el capítulo de la metodología y procederemos a aplicar todas las funciones y modelos desarrollados para construir un notebook en el cual a partir del enlace a un archivo de voz, lo pases por todos los modelos y sus explicaciones para tener diversas clasificaciones y explicaciones de por qué ese audio es real o generado.
