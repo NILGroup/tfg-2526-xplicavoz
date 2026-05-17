@@ -13,14 +13,14 @@ El rendimiento del modelo de clasificación no es el único factor determinante 
 Para solventar este problema ha surgido la IA explicable (XAI), la cual toma dichos modelos ``caja negra'' y proporciona una justificación de qué características de los datos afectan más a la decisión del modelo. En esta investigación, abordamos el problema dual de maximizar la capacidad de discriminación entre audios reales y generados y, simultáneamente, dotar al sistema de una interpretación humana coherente mediante la aplicación de XAI.
 
 \section{Objetivos}
-El objetivo principal de este trabajo es desarrollar un marco de trabajo (pipeline) integral para la detección de audio generado sintéticamente, priorizando no solo la eficacia y precisión en la clasificación, sino también la transparencia y la interpretabilidad de sus resultados. Para ello, se plantean los siguientes objetivos específicos:
+El objetivo principal de este trabajo es desarrollar un marco de trabajo integral para la detección de audios generados sintéticamente, priorizando no solo la eficacia y precisión en la clasificación, sino también la transparencia y la interpretabilidad de sus resultados. Para ello, se plantean los siguientes objetivos específicos:
 
 \begin{itemize}
     \item \textbf{Revisión del estado del arte e investigación de modelos:} Realizar un estudio exhaustivo para identificar las arquitecturas de clasificación (desde métodos tradicionales hasta \textit{deep learning}) y los métodos de explicabilidad (XAI) más prometedores en el procesamiento de voz.
-    \item \textbf{Construcción del dataset y extracción de características:} Diseñar y consolidar un corpus de datos equilibrado que contenga muestras tanto de voz real como clonada, extrayendo además las variables acústicas y espectrales determinantes para el entrenamiento de los modelos.
+    \item \textbf{Búsqueda del dataset y extracción de características:} Buscar o, en su defecto, diseñar un corpus de datos equilibrado que contenga muestras tanto de voz real como clonada, extrayendo además las variables acústicas y espectrales determinantes para el entrenamiento de los modelos.
     \item \textbf{Evaluación y experimentación preliminar de modelos y de técnicas de explicabilidad:} Desarrollar pruebas unitarias y experimentales previas con los distintos enfoques algorítmicos y herramientas de XAI seleccionadas para analizar su viabilidad teórica, ajustar hiperparámetros básicos y comprobar su capacidad inicial de interpretación.
+    	\item \textbf{Análisis de los resultados obtenidos:} Evaluar críticamente el rendimiento global del sistema integrado mediante métricas cuantitativas de clasificación.
     \item \textbf{Implementación e integración del pipeline completo:} Diseñar y construir un sistema unificado que integre de manera fluida los componentes de preprocesamiento, extracción de características, clasificación y generación de explicaciones en un único flujo de trabajo.
-    \item \textbf{Análisis de los resultados obtenidos:} Evaluar críticamente el rendimiento global del sistema integrado mediante métricas cuantitativas de clasificación.
 \end{itemize}
 
 \section{Planificación}

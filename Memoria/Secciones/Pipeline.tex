@@ -39,7 +39,9 @@ Para generar las explicaciones de ese audio necesitamos usar los 200 audios de n
 
 Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
 
-Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap e Integrated Gradients.
+Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap, Integrated Gradients, Lime y Grad Cam.
+
+Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
 
 \section{Random Forest}
 
