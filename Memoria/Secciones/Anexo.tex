@@ -835,20 +835,98 @@ Counter factual 3 & -0.09155 &  &  & -2.39793 & 1 \\
 \end{table}
 
 % Pipe LGBM SHAP local
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_lgbm_local_1.png}
+	\caption{Explicación local de LGBM con SHAP para audios nuevos en español}
+	\label{fig:pipe_shap_lgbm_esp_1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_lgbm_local_2.png}
+	\caption{Explicación local de LGBM con SHAP para audios nuevos en español}
+	\label{fig:pipe_shap_lgbm_esp_2}
+\end{figure}
 
 % Pipe LGBM SHAP local ingles
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_lgbm_local_eng_1.png}
+	\caption{Explicación local de LGBM con SHAP para audios nuevos en inglés}
+	\label{fig:pipe_shap_lgbm_eng_1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_lgbm_local_eng_2.png}
+	\caption{Explicación local de LGBM con SHAP para audios nuevos en inglés}
+	\label{fig:pipe_shap_lgbm_eng_1}
+\end{figure}
 
 % Pipe LGBM SHAP global
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_lgbm_global.png}
+	\caption{Explicación global de LGBM con SHAP}
+	\label{fig:pipe_shap_lgbm_global}
+\end{figure}
 
 % Pipe LGBM LIME
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_lime_lgbm.png}
+	\caption{Explicación local de LGBM con LIME}
+	\label{fig:pipe_lime_lgbm}
+\end{figure}
 
 % Pipe LGBM DiCE
-
+\begin{table}
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 4} & \textbf{Etiqueta} \\
+\midrule
+Explicada & 3.30119 & -1.61693 & 0 \\
+Counter factual 1 & -0.23885 &  & 1 \\
+Counter factual 2 & -0.77720 &  & 1 \\
+Counter factual 3 & -0.75138 & -2.12114 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Counter factuals generados por DiCE para RF con audios nuevos}
+\label{tab:pipe_dice_rf}
+\end{table}
 
 % Pipe SVM SHAP local
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_svn_local_1.png}
+	\caption{Explicación local de SVM con SHAP para audios nuevos en español}
+	\label{fig:pipe_shap_svm_esp_1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_svm_local_2.png}
+	\caption{Explicación local de SVM con SHAP para audios nuevos en español}
+	\label{fig:pipe_shap_svm_esp_2}
+\end{figure}
 
 % Pipe SVM SHAP local ingles
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_svm_local_eng_1.png}
+	\caption{Explicación local de SVM con SHAP para audios nuevos en inglés}
+	\label{fig:pipe_shap_svm_eng_1}
+\end{figure}
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_svm_local_eng_2.png}
+	\caption{Explicación local de SVM con SHAP para audios nuevos en inglés}
+	\label{fig:pipe_shap_svm_eng_1}
+\end{figure}
 
 % Pipe SVM SHAP global
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_shap_svm_global.png}
+	\caption{Explicación global de SVM con SHAP}
+	\label{fig:pipe_shap_svm_global}
+\end{figure}
 
 % Pipe SVM LIME
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/pipe_lime_svm.png}
+	\caption{Explicación local de SVM con LIME}
+	\label{fig:pipe_lime_svm}
+\end{figure}
