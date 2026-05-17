@@ -136,7 +136,7 @@ def preprocesamiento(df,base):
 
     espectrogramas(df)
 
-    aux = pd.read_csv(os.path.join(base,"Iván\\todosLosAudiosMezcladosyDivididos\\out.csv"))
+    aux = pd.read_csv(os.path.join(base,"Ivan\\todosLosAudiosMezcladosyDivididos\\out.csv"))
 
     df["salida_wav2vec2"] = aux["score"]
 
