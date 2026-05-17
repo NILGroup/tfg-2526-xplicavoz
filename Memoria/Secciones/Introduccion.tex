@@ -13,21 +13,23 @@ El rendimiento del modelo de clasificación no es el único factor determinante 
 Para solventar este problema ha surgido la IA explicable (XAI), la cual toma dichos modelos ``caja negra'' y proporciona una justificación de qué características de los datos afectan más a la decisión del modelo. En esta investigación, abordamos el problema dual de maximizar la capacidad de discriminación entre audios reales y generados y, simultáneamente, dotar al sistema de una interpretación humana coherente mediante la aplicación de XAI.
 
 \section{Objetivos}
-El objetivo principal de este trabajo es desarrollar un marco de trabajo para la detección de audio generado sintéticamente, que priorice no solo la eficacia en la clasificación, sino también la transparencia de sus resultados. Para ello, se plantean los siguientes objetivos específicos:
+El objetivo principal de este trabajo es desarrollar un marco de trabajo (pipeline) integral para la detección de audio generado sintéticamente, priorizando no solo la eficacia y precisión en la clasificación, sino también la transparencia y la interpretabilidad de sus resultados. Para ello, se plantean los siguientes objetivos específicos:
 
 \begin{itemize}
-    \item \textbf{Exploración de Modelos de Clasificación:} Evaluar la viabilidad de distintos enfoques algorítmicos, desde métodos estadísticos tradicionales hasta arquitecturas de aprendizaje profundo de última generación, para identificar cuál se adapta mejor a la naturaleza del audio clonado.
-    \item \textbf{Estudio de Características Acústicas:} Investigar qué rasgos del habla (frecuencia, timbre, periodicidad o pausas) contienen la información más relevante para distinguir la huella de una IA frente a la de un humano.
-    \item \textbf{Integración de Métodos de Explicabilidad:} Proponer el uso de herramientas de interpretación que permitan visualizar qué partes del audio están influyendo en la decisión del sistema, convirtiendo el modelo en una herramienta útil para un análisis humano posterior.
+    \item \textbf{Revisión del estado del arte e investigación de modelos:} Realizar un estudio exhaustivo para identificar las arquitecturas de clasificación (desde métodos tradicionales hasta \textit{deep learning}) y los métodos de explicabilidad (XAI) más prometedores en el procesamiento de voz.
+    \item \textbf{Construcción del dataset y extracción de características:} Diseñar y consolidar un corpus de datos equilibrado que contenga muestras tanto de voz real como clonada, extrayendo además las variables acústicas y espectrales determinantes para el entrenamiento de los modelos.
+    \item \textbf{Evaluación y experimentación preliminar de modelos y de técnicas de explicabilidad:} Desarrollar pruebas unitarias y experimentales previas con los distintos enfoques algorítmicos y herramientas de XAI seleccionadas para analizar su viabilidad teórica, ajustar hiperparámetros básicos y comprobar su capacidad inicial de interpretación.
+    \item \textbf{Implementación e integración del pipeline completo:} Diseñar y construir un sistema unificado que integre de manera fluida los componentes de preprocesamiento, extracción de características, clasificación y generación de explicaciones en un único flujo de trabajo.
+    \item \textbf{Análisis de los resultados obtenidos:} Evaluar críticamente el rendimiento global del sistema integrado mediante métricas cuantitativas de clasificación.
 \end{itemize}
 
 \section{Planificación}
-Para garantizar la consecución de los objetivos propuestos, el proyecto se ha estructurado siguiendo un flujo de trabajo sistemático. La metodología planificada se divide en las siguientes fases consecutivas:
+Para asegurar el correcto desarrollo del proyecto y el cumplimiento de los objetivos dentro del plazo académico establecido, se ha adoptado una metodología de gestión sistemática que se basa en una comunicación continua.
 
-\begin{enumerate}
-    \item \textbf{Investigación de modelos y técnicas:} Estudio exhaustivo del estado del arte para identificar las arquitecturas de clasificación y los métodos de explicabilidad más prometedores en el dominio del procesamiento de voz y la detección de anomalías.
-    \item \textbf{Adquisición y preparación de los datos:} Selección y procesamiento de un conjunto de datos equilibrado que contenga muestras de audio tanto reales como sintéticas, asegurando la correcta extracción de características y la adecuación de los formatos para el entrenamiento.
-    \item \textbf{Prueba de los modelos y técnicas:} Fase de experimentación preliminar donde se evalúa el comportamiento individual de distintos algoritmos, ajustando parámetros básicos y analizando su capacidad inicial para discriminar entre las clases propuestas.
-    \item \textbf{Implementación del pipeline completo:} Integración de los componentes de preprocesamiento, clasificación y explicabilidad en un sistema unificado, permitiendo una transición fluida desde la entrada del audio en crudo hasta la generación de un veredicto justificado.
-    \item \textbf{Análisis de los resultados:} Evaluación crítica del sistema mediante métricas de rendimiento y auditorías de interpretabilidad, comparando los hallazgos obtenidos con las hipótesis iniciales para extraer conclusiones sólidas sobre la viabilidad del enfoque propuesto.
-\end{enumerate}
+Con el fin de mitigar riesgos, evaluar el progreso y corregir posibles desviaciones en el desarrollo del proyecto, se han establecido las siguientes dinámicas de trabajo:
+
+\begin{itemize}
+    \item \textbf{Reuniones bisemanales de seguimiento:} Se han fijado reuniones quincenales de manera sistemática con los tutores del proyecto. En estas sesiones se presenta el estado actual del desarrollo, se discuten los obstáculos técnicos encontrados (como limitaciones en los datasets o problemas de convergencia en los modelos) y se validan las soluciones propuestas.
+    \item \textbf{Gestión y registro de actas:} Tras la finalización de cada reunión, se elabora un acta de la sesión donde se anotan los comentarios y correcciones de los tutores, los acuerdos alcanzados y la asignación de tareas específicas para la siguiente quincena. Este registro actúa como bitácora y control de cambios del TFG.
+    \item \textbf{Herramientas de colaboración y entornos de desarrollo:} Para el desarrollo del código y del pipeline de audio/XAI se utiliza un repositorio privado en GitHub gestionado desde el entorno de desarrollo Visual Studio Code, lo que permite un control de versiones estricto. Por su parte, la redacción de la presente memoria en LaTeX se realiza mediante el editor TextMaker. Asimismo, las anotaciones de las reuniones se gestionan a través de documentos compartidos en Google Drive.
+\end{itemize}
