@@ -1,0 +1,30 @@
+\subsection{SincNet}
+\label{subsubsec:mod_sincnet}
+
+SincNet es una arquitectura de red neuronal convolucional (CNN) diseñada específicamente para procesar señales de audio directamente en el dominio del tiempo (audio en bruto o \textit{raw waveform}). A diferencia de las CNN convencionales, que aprenden de forma libre todos los coeficientes de sus filtros en la primera capa, SincNet restringe estos filtros utilizando funciones sinc o filtros de paso de banda parametrizados.
+
+\subsubsection*{Justificación del modelo}
+
+Se seleccionó SincNet debido a su capacidad para extraer características acústicas críticas directamente de la forma de onda de la voz, eliminando la necesidad de depender exclusivamente de extracciones de características de alto nivel precalculadas. Al inicializar y restringir la primera capa convolucional con funciones matemáticas inspiradas en el procesamiento digital de señales (DSP), el modelo reduce drásticamente el número de parámetros a aprender. Esto no solo mitiga el riesgo de sobreajuste en conjuntos de datos pequeños, sino que mejora la interpretabilidad física del espacio latente, ya que cada filtro aprende explícitamente frecuencias de corte ($\text{f}_1$ y $\text{f}_2$) con significado físico audible.
+
+\subsubsection*{Configuración de la arquitectura}
+
+La arquitectura implementada en PyTorch procesa los vectores tabulares de características de entrada mediante una adaptación lineal que emula el comportamiento de los filtros SincNet, estructurándose de la siguiente forma:
+
+\begin{itemize}
+    \item \textbf{Capa de Convolución Sinc (\textit{SincConv})}: Es el núcleo del modelo. Recibe las 29 dimensiones de entrada y aplica una capa lineal parametrizada de 64 filtros de paso de banda. En lugar de aprender de forma libre todos los pesos de la convolución, el modelo solo aprende las frecuencias de corte inferior y superior para cada filtro. La respuesta en frecuencia se define matemáticamente mediante la diferencia de dos funciones sinc:
+    $$g(n, f_1, f_2) = 2f_2 \text{sinc}(2\pi f_2 n) - 2f_1 \text{sinc}(2\pi f_1 n)$$
+    Esto obliga a la red a enfocarse exclusivamente en sintonizar anchos de banda específicos que resulten relevantes para discriminar entre audios auténticos y clonados.
+    \item \textbf{Bloque de Extracción Latente}: Tras la capa Sinc, la señal pasa por una función de activación no lineal \textit{ReLU} y se proyecta a través de una segunda capa densa hacia un espacio latente de menor dimensionalidad ($\text{latent\_dim} = 32$).
+    \item \textbf{Clasificador}: Una capa lineal de salida que mapea las 32 características latentes hacia las 2 clases objetivo (\textit{Bonafide} frente a \textit{Spoof}).
+\end{itemize}
+
+\subsubsection*{Configuración experimental y entrenamiento}
+
+El proceso de partición y preparación de datos mantuvo la coherencia metodológica del proyecto:
+
+\begin{itemize}
+    \item \textbf{División y Escalado}: El dataset se dividió de forma estratificada en entrenamiento (80\%) y prueba (20\%). Las características se normalizaron mediante \texttt{StandardScaler} para garantizar que las magnitudes de los vectores de entrada no distorsionaran el cálculo de los pesos y las frecuencias en la capa Sinc.
+    \item \textbf{Estrategia de Entrenamiento}: El modelo se optimizó utilizando el algoritmo \textit{Adam} con una tasa de aprendizaje ($\text{learning\_rate}$) de 0.001 a lo largo de 100 épocas.
+    \item \textbf{Función de Pérdida}: Al verificar que el ratio de balanceo entre las clases del dataset era simétrico ($1.00\times$), se empleó la función de pérdida de entropía cruzada estándar (\texttt{nn.CrossEntropyLoss}) sin necesidad de incorporar pesos de penalización adicionales por desequilibrio de categorías.
+\end{itemize}

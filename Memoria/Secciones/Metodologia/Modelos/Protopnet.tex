@@ -1,0 +1,39 @@
+\subsection{ProtoPNet}
+\label{subsubsec:mod_protopnet}
+
+A diferencia de los modelos basados en cajas negras, las Redes de Prototipos por Partes o \textit{Prototype Part Networks} (ProtoPNet) introducen una capa intermedia de razonamiento basada en casos. Este método clasifica cada muestra evaluando su similitud con un conjunto de vectores aprendibles denominados ``prototipos'', los cuales representan ejemplos canónicos de cada clase en un espacio latente común.
+
+\subsubsection*{Justificación del modelo}
+
+Se seleccionó ProtoPNet debido a la necesidad de contar con un modelo de aprendizaje profundo que no solo ofrezca una alta capacidad de discriminación, sino que además sea **inherentemente interpretable**. En lugar de recurrir a técnicas de explicabilidad \textit{post-hoc} (como SHAP o LIME), ProtoPNet fundamenta su decisión en un proceso análogo al razonamiento humano: \textit{``esta entrada se clasifica como spoof porque se parece al prototipo $X$, y se diferencia del prototipo $Y$''}. Aplicado al anti-spoofing de voz, esto permite desglosar qué patrones acústicos concretos del espacio latente definen a una señal auténtica frente a una sintética.
+
+\subsubsection*{Configuración de la arquitectura}
+
+La red se implementó sobre el \textit{framework} PyTorch utilizando una arquitectura adaptada para datos tabulares, estructurada en los siguientes bloques funcionales:
+
+\begin{itemize}
+    \item \textbf{Encoder (\textit{Extractor de características})}: Un perceptrón multicapa constituido por una capa de entrada conectada a una capa oculta de 64 neuronas con activación \textit{ReLU}, que proyecta las 29 características originales hacia un espacio latente de menor dimensionalidad ($\text{latent\_dim} = 32$).
+    \item \textbf{Capa de Prototipos}: Un tensor de parámetros aprendibles de dimensiones $(10, 32)$, correspondiente a un banco total de \textbf{10 prototipos} repartidos de manera equitativa entre las clases (5 prototipos asignados a la clase \textit{Bonafide} y 5 a la clase \textit{Spoof}).
+    \item \textbf{Mecanismo de Similitud}: Se calcula la distancia de redondeo o distancia de matriz (\texttt{torch.cdist}) entre el embedding de la muestra y cada prototipo. Esta distancia ($d$) se convierte en una métrica de similitud ($s$) mediante una función exponencial decreciente:
+    $$s = \exp(-d)$$
+    \item \textbf{Clasificador Lineal}: Una capa densa final (\texttt{nn.Linear}) sin sesgo (\textit{bias}) de dimensiones $(10, 2)$, que pondera las similitudes obtenidas para generar los \textit{logits} de las dos clases.
+\end{itemize}
+
+\subsubsection*{Proceso de optimización y funciones de pérdida}
+
+Para obligar a que los prototipos se organicen de forma semánticamente correcta en el espacio latente, el entrenamiento no se limitó a la entropía cruzada convencional. Se empleó un optimizador \textit{Adam} ($\text{learning\_rate} = 0.001$) durante 100 épocas bajo una función de pérdida compuesta:
+
+$$\text{Loss} = \text{CrossEntropy} + \lambda_{R1} \cdot R_1 + \lambda_{R2} \cdot R_2$$
+
+Donde los hiperparámetros de penalización se fijaron en $\lambda_{R1} = 0.1$ y $\lambda_{R2} = 0.1$, desglosando las pérdidas adicionales de la siguiente manera:
+
+\begin{itemize}
+    \item \textbf{Cluster Loss ($R_1$)}: Minimiza la distancia entre cada prototipo y alguna de las muestras pertenecientes a su propia clase. Su propósito es garantizar que los prototipos ``vivan'' densamente dentro de las agrupaciones de su categoría correspondiente.
+    \item \textbf{Separation Loss ($R_2$)}: Minimiza la distancia entre cada muestra de entrenamiento y su prototipo idéntico más cercano. Esto asegura que cada caso real cuente siempre con un prototipo de su misma clase que lo respalde geométricamente.
+\end{itemize}
+
+\subsubsection*{Etapa de proyección (\textit{Push Step})}
+
+Una vez concluida la fase de optimización por descenso de gradiente, se ejecutó un algoritmo de proyección denominado \textbf{\textit{Push Step}}. Dado que los vectores de los prototipos se optimizan en un espacio latente continuo, este proceso busca de forma determinista la muestra real del conjunto de entrenamiento más cercana a cada uno de ellos y clona su vector exacto. 
+
+Mediante esta operación, los 10 prototipos abstractos quedan formalmente ``anclados'' a 10 muestras físicas reales del dataset, asegurando que la interpretabilidad del sistema sea absoluta y esté respaldada por registros acústicos tangibles.

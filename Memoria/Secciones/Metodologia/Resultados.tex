@@ -74,6 +74,40 @@ AUC-ROC & 1 & +/- 0 \\
 \label{tab:cv_modelos_base}
 \end{table}
 
+Sin embargo, los modelos de K-Nearest Neighbors (KNN) y Regresión Logística (RL) no obtuvieron medidas perfectas en esta fase de evaluación previa al ajuste de hiperparámetros. 
+
+Este comportamiento puede deberse a que, en determinadas particiones o combinaciones aleatorias del conjunto de datos, se concentraron en el grupo de validación aquellos audios cuyas características morfológicas y espectrales resultan intrínsecamente más difíciles de diferenciar para algoritmos basados en distancias geométricas o separabilidad puramente lineal. El desglose detallado del rendimiento obtenido por cada fold y sus promedios ponderados se puede observar en la Tabla \ref{tab:cv_knn} para el caso de KNN y en la Tabla \ref{tab:cv_rl} para el de Regresión Logística.
+
+\begin{table}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica}\\
+\midrule
+Accuracy & 0.8875 & +/- 0.0935 \\
+F1-Score & 0.8877 & +/- 0.1012 \\
+AUC-ROC & 0.9422 & +/- 0.1076 \\ 
+\bottomrule
+\end{tabular}
+\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
+\label{tab:cv_knn}
+\end{table}
+
+\begin{table}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica}\\
+\midrule
+Accuracy & 0.9625 & +/- 0.1500 \\
+F1-Score & 0.9647 & +/- 0.1412 \\
+AUC-ROC & 0.9938 & +/- 0.0250 \\ 
+\bottomrule
+\end{tabular}
+\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
+\label{tab:cv_rl}
+\end{table}
+
 \subsubsection*{Grid Search}
 
 En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido en los distintos modelos.
@@ -136,6 +170,40 @@ kernel & rbf \\
 \label{tab:grid_search_svm}
 \end{table}
 
+La optimización por Grid Search para KNN determina que la mejor configuración se logra extendiendo el vecindario a 21 elementos ($n\_neighbors=21$), calculando la distancia con la métrica de Manhattan y aplicando una ponderación basada en el inverso de la distancia (\textit{distance}) (ver Tabla \ref{tab:grid_search_knn}).
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{Valor}\\
+\midrule
+n\_neighbors & 21 \\
+weights & distance \\
+metric & manhattan \\
+\bottomrule
+\end{tabular}
+\caption{Mejores hiperparámetros para KNN con Grid Search y CV de 5 folds}
+\label{tab:grid_search_knn}
+\end{table}
+
+Por último, el Grid Search de la Regresión Logística (RL) escoge junto con la penalización de tipo L2 emplear el optimizador \textit{liblinear}, para garantizar la convergencia óptima del modelo, y un inverso de la fuerza de regularización establecido en $C = 0.1$ (ver Tabla \ref{tab:grid_search_rl}).
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Hiperparámetro} & \textbf{Valor}\\
+\midrule
+C & 0.1 \\
+penalty & l2 \\
+solver & liblinear \\
+\bottomrule
+\end{tabular}
+\caption{Mejores hiperparámetros para Regresión Logística con Grid Search y CV de 5 folds}
+\label{tab:grid_search_rl}
+\end{table}
+
 \subsection{Random Forest}
 \label{res_xai_rf}
 
@@ -196,6 +264,12 @@ Ahora probamos a quitar, además de ``spectral flatness'', ``spectral bandwidth'
 Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las gráficas \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que ``spectral rolloff'' toma un alto valor, pero no deja a 0 el resto de importancias.
 
 Como vemos en la imagen \ref{fig:lime_svm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar.
+
+\subsection{KNN}
+\label{res_xai_knn}
+
+\subsection{Regresión Logística}
+\label{res_xai_lr}
 
 \subsection{AASIST}
 \label{subsubsec:res_aasist}
@@ -551,7 +625,131 @@ Como conclusiones podemos sacar que a la vista de los modelos de explicación, p
 
 \end{enumerate}
 
+\subsection{ProtoPNet}
+\label{subsec:res_protopnet}
 
-\subsection{Regresión Logística}
+En este apartado se exponen y analizan los resultados prácticos del modelo ProtoPNet adaptado para datos tabulares, cuyo funcionamiento y justificación teórica de interpretabilidad intrínseca han sido detallados en la metodología (\autoref{subsubsec:mod_protopnet}).
 
-\subsection{KNN}
+\subsubsection*{Dinámica de Entrenamiento y Evolución de Pérdidas}
+
+La arquitectura se configuró siguiendo las dimensiones del codificador de 64 neuronas ocultas y el banco parametrizado de 10 prototipos equitativos. Como se observa en la evolución del entrenamiento a lo largo de las 100 épocas programadas (ver Tabla \ref{tab:evolucion_loss_protopnet}), las pérdidas de penalización geométrica $\lambda_{R1} \cdot R_1$ y $\lambda_{R2} \cdot R_2$ disminuyeron de forma coordinada con la entropía cruzada, demostrando que las restricciones forzaron con éxito el agrupamiento compacto de las categorías dentro del espacio latente común de 32 dimensiones.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Época} & \textbf{Pérdida Total} & \textbf{Entropía Cruzada ($L_{CE}$)} & \textbf{Cluster Loss ($R_1$)} & \textbf{Separation Loss ($R_2$)} \\
+\midrule
+20/100  & 2.2493 & 0.6909 & 8.9038 & 6.6810 \\
+40/100  & 1.9231 & 0.6788 & 7.9014 & 4.5408 \\
+60/100  & 1.7107 & 0.6636 & 7.1358 & 3.3350 \\
+80/100  & 1.5805 & 0.6466 & 6.4507 & 2.8879 \\
+100/100 & 1.4659 & 0.6323 & 5.6120 & 2.7245 \\
+\bottomrule
+\end{tabular}
+\caption{Evolución de los componentes de la función de pérdida durante el entrenamiento de ProtoPNet.}
+\label{tab:evolucion_loss_protopnet}
+\end{table}
+
+\subsubsection*{Análisis del Rendimiento}
+
+Una vez finalizado el entrenamiento por gradiente, se aplicó la etapa de proyección descripta en la sección de metodología (\autoref{subsubsec:mod_protopnet}) para anclar físicamente los vectores abstractos a registros acústicos tangibles del dataset. Evaluando el modelo resultante sobre el conjunto de test independiente ($20$ muestras), se obtiene una matriz de confusión perfecta para los audios generados y tres falsos negativos en los audios reales, obteniendo una precisión global (\textit{Accuracy}) del $85.00\%$ y un Equal Error Rate ($EER$) de $0.0000$ con un umbral de decisión óptimo de $0.0486$. Las métricas detalladas se presentan en la Tabla \ref{tab:metricas_protopnet}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Clase} & \textbf{Precisión} & \textbf{Recall} & \textbf{F1-Score} & \textbf{Soporte} \\
+\midrule
+FAKE (0) & 0.77 & 1.00 & 0.87 & 10 \\
+REAL (1) & 1.00 & 0.70 & 0.82 & 10 \\
+\midrule
+\textbf{macro avg} & 0.88 & 0.85 & 0.85 & 20 \\
+\textbf{weighted avg} & 0.88 & 0.85 & 0.85 & 20 \\
+\bottomrule
+\end{tabular}
+\caption{Reporte de clasificación del modelo ProtoPNet en el conjunto de test.}
+\label{tab:metricas_protopnet}
+\end{table}
+
+\subsubsection*{Resultados de Explicabilidad Local Basada en Casos}
+
+Aprovechando el mecanismo de similitud exponencial decreciente expuesto en la configuración del modelo (\autoref{subsubsec:mod_protopnet}), la red descompone la predicción de cualquier instancia basándose exclusivamente en su cercanía a los prototipos físicos anclados. A continuación, se analizan dos casos concretos de predicciones locales del test set:
+
+\begin{enumerate}
+    \item \textbf{Muestra \#12 (Etiqueta Real: REAL):} El modelo predice correctamente la clase \textbf{REAL} con una confianza del $50.50\%$. La Tabla \ref{tab:explicacion_m12} revela el desglose de similitudes de la instancia frente a los prototipos. Se observa que la decisión es motivada principalmente por los prototipos de su misma clase, destacando el \textbf{Prototipo 5} (Similitud: $0.3038$, Distancia: $1.1914$) y el \textbf{Prototipo 7} (Similitud: $0.2475$), mientras que se mantiene una distancia geométrica elevada frente a todos los prototipos de la clase FAKE.
+    
+    \begin{table}[h!]
+    \centering
+    \begin{tabular}{cccc}
+    \toprule
+    \textbf{Prototipo ID} & \textbf{Clase Asignada} & \textbf{Similitud ($\exp(-d)$)} & \textbf{Distancia Euclídea ($d$)} \\
+    \midrule
+    5 & REAL & 0.3038 & 1.1914 \\
+    7 & REAL & 0.2475 & 1.3962 \\
+    9 & REAL & 0.0518 & 2.9596 \\
+    6 & REAL & 0.0518 & 2.9596 \\
+    1 & FAKE & 0.0425 & 3.1592 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Top 5 de prototipos influyentes para la explicación de la Muestra \#12.}
+    \label{tab:explicacion_m12}
+    \end{table}
+
+    \item \textbf{Muestra \#0 (Etiqueta Real: FAKE):} El modelo clasifica la instancia de forma correcta como \textbf{FAKE} con una confianza del $52.83\%$. En este escenario, la activación se concentra casi exclusivamente en un único prototipo representativo de su clase: el \textbf{Prototipo 4}, que registra una similitud dominante de $0.4701$ y una distancia muy estrecha de $0.7549$. Los restantes prototipos (tanto de la clase FAKE como de la clase REAL) muestran una relevancia residual insignificante, con valores de similitud inferiores a $0.0763$, demostrando cómo el modelo es capaz de realizar activaciones locales sumamente focalizadas en un único caso prototípico conocido para identificar audios falsificados.
+\end{enumerate}
+
+\subsection{SincNet}
+\label{subsec:res_sincnet}
+
+En este apartado se detallan y analizan los resultados prácticos obtenidos mediante la arquitectura SincNet, cuyos fundamentos matemáticos, justificación y bloques de extracción latente han sido descritos detalladamente en el bloque de metodología (\autoref{subsubsec:mod_sincnet}).
+
+\subsubsection*{Resultados de la Arquitectura y Dinámica de Entrenamiento}
+
+Para la ejecución del experimento empírico con el dataset en español ($100$ audios distribuidos simétricamente), se adaptó la primera capa convolucional parametrizada a $80$ canales de salida, un filtro de tamaño $101$ y frecuencias iniciales distribuidas entre $30$~Hz y $8000$~Hz bajo una ventana de Hamming \cite{cite: Sincnet.ipynb}. El clasificador final se configuró con un bloque lineal intermedio de $128$ neuronas y técnicas de regularización mediante \textit{Dropout} al $30\%$ antes de mapear la salida definitiva \cite{cite: Sincnet.ipynb}. El proceso de optimización real se llevó a cabo durante $50$ épocas utilizando la pérdida por entropía cruzada analizada en la sección experimental del modelo.
+
+\subsubsection*{Análisis del Rendimiento}
+
+A pesar de las ventajas teóricas de la arquitectura parametrizada, el modelo entrenado desde cero con el dataset reducido mostró un comportamiento inestable. Como se puede observar en la evolución de la pérdida durante el entrenamiento, tras la época 0 la función de pérdida comenzó a divergir, devolviendo valores indeterminados (\textit{NaN}), estancando la precisión del conjunto de entrenamiento de forma constante en un $50.00\%$.
+
+Consecuentemente, la evaluación del modelo en el conjunto de test independiente reflejó el mismo comportamiento, alcanzando un \textit{Accuracy} final exacto del $50.00\%$. Al analizar el desglose detallado de las predicciones por muestra (ver Tabla \ref{tab:detalle_predicciones_sincnet}), se evidencia que el modelo sufrió un colapso de clase, tendiendo a predecir sistemáticamente todas las instancias como pertenecientes a la clase \textbf{Generado}.
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{l|c|c|c}
+\toprule
+\textbf{Audio de Test} & \textbf{Clase Real} & \textbf{Predicción} & \textbf{Estado} \\
+\midrule
+E\_29\_G.wav & Generado & Generado & Correcto \\
+E\_14\_G.wav & Generado & Generado & Correcto \\
+E\_41\_G.wav & Generado & Generado & Correcto \\
+E\_39\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_8\_G.wav  & Generado & Generado & Correcto \\
+E\_41\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_3\_N.wav  & Natural  & Generado & Incorrecto (X) \\
+E\_49\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_43\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_46\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_5\_G.wav  & Generado & Generado & Correcto \\
+E\_48\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_23\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_10\_G.wav & Generado & Generado & Correcto \\
+E\_12\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_42\_G.wav & Generado & Generado & Correcto \\
+E\_31\_N.wav & Natural  & Generado & Incorrecto (X) \\
+E\_37\_G.wav & Generado & Generado & Correcto \\
+E\_40\_G.wav & Generado & Generado & Correcto \\
+E\_47\_G.wav & Generado & Generado & Correcto \\
+\bottomrule
+\end{tabular}
+\caption{Desglose detallado de las predicciones por muestra en el conjunto de test para SincNet.}
+\label{tab:detalle_predicciones_sincnet}
+\end{table}
+
+Este fenómeno implica que el modelo clasifica de manera puramente aleatoria (equivalente a lanzar una moneda), debido a la incapacidad de converger durante el entrenamiento con un volumen tan limitado de datos, lo que corrobora la hipótesis de que las arquitecturas neuronales complejas entrenadas desde cero requieren un corpus de audios sustancialmente mayor para aprender los filtros biológicamente inspirados de forma efectiva.
+
+\subsubsection*{Explicabilidad Ante-Hoc (Activación por Bandas)}
+
+Una de las principales ventajas de SincNet es su capacidad de ofrecer explicabilidad intrínseca o \textit{ante-hoc} mediante el análisis directo de los filtros aprendidos en la primera capa. El modelo permite inspeccionar qué bandas de frecuencia específicas presentan los picos de energía promedio más altos ante una determinada entrada, ayudando a interpretar qué zonas del espectro son determinantes para la decisión.
+
+Sin embargo, debido a la divergencia de los gradientes sufrida en la fase de optimización, el análisis matemático de los filtros arrojó valores indeterminados. Al extraer las bandas más activas para muestras de test específicas (como \texttt{E\_29\_G.wav}, \texttt{E\_14\_G.wav} o \texttt{E\_41\_G.wav}), el cálculo de la energía de los filtros devolvió valores \textit{NaN}, impidiendo identificar con precisión los rangos en hercios (Hz) de los filtros más relevantes (como los filtros de índice \#079, \#078, \#021, \#022 y \#023). Esto demuestra que cuando un modelo sufre inestabilidad numérica en su entrenamiento, las herramientas de interpretabilidad ante-hoc reflejan dicha degradación interna, imposibilitando un análisis cualitativo del espectro sonoro.

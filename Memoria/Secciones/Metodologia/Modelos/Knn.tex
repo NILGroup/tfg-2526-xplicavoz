@@ -1,5 +1,43 @@
-\input{Secciones/Metodologia/Modelos/Knn/introduccion}
+\subsection{K-Nearest Neighbors (KNN)}
+\label{subsubsec:mod_knn}
 
-\input{Secciones/Metodologia/Modelos/Knn/resultados}
+El clasificador K-Nearest Neighbors (KNN) es un método de aprendizaje supervisado basado en instancias que clasifica cada muestra en función de la proximidad y el voto mayoritario de sus vecinos más cercanos en el espacio de características.
 
-\input{Secciones/Metodologia/Modelos/Knn/explicacion}
+\subsubsection*{Justificación del modelo}
+
+Se seleccionó KNN como uno de los clasificadores base debido a su simplicidad conceptual y su naturaleza no paramétrica, lo que le permite adaptarse a fronteras de decisión complejas sin asumir una distribución previa de los datos. Dado que el algoritmo se fundamenta estrictamente en el cálculo de distancias geométricas, resulta idóneo para evaluar el grado de agrupamiento y separabilidad de las características extraídas de las señales de audio (voces reales frente a generadas).
+
+\subsubsection*{Configuración experimental}
+
+El proceso experimental para el modelo KNN se estructuró en tres fases: (1) establecimiento de un modelo baseline junto con el escalado de características, (2) validación cruzada para evaluar la robustez de la configuración inicial, (3) optimización de hiperparámetros mediante búsqueda sistemática en rejilla.
+
+\subsubsection*{División de datos y escalado}
+
+El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
+
+Debido a la alta sensibilidad de KNN a la magnitud de las variables (ya que las características con rangos mayores dominarían el cálculo de las distancias), se aplicó una estandarización mediante \texttt{StandardScaler}. El escalador se ajustó exclusivamente con el conjunto de entrenamiento y se utilizó para transformar ambos subconjuntos.
+
+\subsubsection*{Modelo baseline}
+
+Se estableció una configuración inicial utilizando los hiperparámetros por defecto para obtener una referencia de comportamiento del algoritmo. Los parámetros más críticos que definen este clasificador base son:
+
+\begin{itemize}
+	\item \textbf{n\_neighbors}: 5. El algoritmo busca las 5 instancias más cercanas en el espacio de características para determinar la clase por mayoría de votos.
+	\item \textbf{weights}: \texttt{'uniform'}. Todos los vecinos en la vecindad tienen el mismo peso en la votación, independientemente de su distancia a la muestra de consulta.
+	\item \textbf{metric}: \texttt{'minkowski'} con \textbf{p} = 2. Equivalente matemáticamente a calcular la distancia euclídea estándar entre los vectores de características escalados.
+	\item \textbf{algorithm}: \texttt{'auto'}. Permite que la librería determine automáticamente la estrategia más eficiente para resolver los vecinos más cercanos en función de la estructura de los datos.
+\end{itemize}
+
+\subsubsection*{Validación cruzada estratificada}
+
+Para evaluar la robustez del modelo y evitar que las conclusiones dependan de una única partición de los datos, se realizó validación cruzada estratificada con 5 folds, empleando únicamente el conjunto de entrenamiento tal como se comentó en la \autoref{subsec:proc_exp}.
+
+\subsubsection*{Optimización de hiperparámetros}
+
+Se realizó una búsqueda sistemática de hiperparámetros mediante \texttt{GridSearchCV} con validación cruzada de 5 folds, optimizando el F1-score. El espacio de búsqueda incluyó las siguientes variantes:
+
+\begin{itemize}
+	\item \textbf{n\_neighbors}: Probamos los valores impares del 3 al 21 (\texttt{[3, 5, 7, 9, 11, 13, 15, 17, 19, 21]}).
+	\item \textbf{weights}: Probamos las estrategias \texttt{'uniform'} y \texttt{'distance'}. Esta última pondera el voto de manera inversamente proporcional a la distancia del vecino.
+	\item \textbf{metric}: Probamos las métricas de distancia \texttt{'euclidean'} y \texttt{'manhattan'}.
+\end{itemize}

@@ -1,5 +1,43 @@
-\input{Secciones/Metodologia/Modelos/RegresionLogistica/introduccion.tex}
+\subsection{Regresión Logística}
+\label{subsubsec:mod_lr}
 
-\input{Secciones/Metodologia/Modelos/RegresionLogistica/resultados.tex}
+La Regresión Logística es un método de aprendizaje supervisado utilizado para modelar la probabilidad de una variable objetivo binaria. A diferencia de otros clasificadores basados en fronteras complejas o distancias, este modelo estima la probabilidad de pertenencia a una clase mediante el uso de la función logística aplicada a una combinación lineal de las características de entrada.
 
-\input{Secciones/Metodologia/Modelos/RegresionLogistica/explicacion.tex}
+\subsubsection*{Justificación del modelo}
+
+Se seleccionó la Regresión Logística como uno de los clasificadores base debido a su alta eficiencia computacional, su simplicidad y su gran interpretabilidad a través del análisis de los coeficientes asignados a cada variable. Al actuar como un clasificador lineal, resulta de gran utilidad para establecer una base de referencia clara que permita evaluar si las características extraídas de los audios son linealmente separables en un espacio normalizado.
+
+\subsubsection*{Configuración experimental}
+
+El proceso experimental para el modelo de Regresión Logística se estructuró en tres fases diferenciadas: (1) escalado de datos y establecimiento de un modelo baseline, (2) validación cruzada estratificada para medir la consistencia del algoritmo base, y (3) optimización de hiperparámetros mediante una búsqueda sistemática en rejilla.
+
+\subsubsection*{División de datos y escalado}
+
+El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) aplicando un muestreo estratificado para conservar la misma proporción de clases en ambos subconjuntos. Esta distribución es crucial para asegurar que las evaluaciones no se vean sesgadas debido al desbalance entre las muestras de voz real y las sintéticas.
+
+Dado que la Regresión Logística calcula una combinación lineal de las características y es sensible a la escala de las variables (especialmente cuando se aplican técnicas de regularización), se empleó una estandarización mediante \texttt{StandardScaler}. El escalador se ajustó exclusivamente con los datos de entrenamiento y se aplicó posteriormente a ambos conjuntos.
+
+\subsubsection*{Modelo baseline}
+
+Se configuró un modelo inicial utilizando los parámetros por defecto de la librería \textit{scikit-learn} con el fin de obtener una referencia de rendimiento directa. Las especificaciones principales de este clasificador base incluyeron:
+
+\begin{itemize}
+    \item \textbf{max\_iter}: 1000. Se incrementó el límite de iteraciones por defecto para garantizar la correcta convergencia del algoritmo de optimización sobre el espacio de características estandarizado.
+    \item \textbf{C}: 1.0. Valor por defecto que determina una fuerza de regularización inversa intermedia.
+    \item \textbf{penalty}: \texttt{'l2'}. Penalización de tipo Ridge por defecto para evitar coeficientes desproporcionadamente altos.
+    \item \textbf{solver}: \texttt{'lbfgs'}. Algoritmo de optimización quasi-Newton por defecto para resolver los coeficientes del modelo lineal.
+\end{itemize}
+
+\subsubsection*{Validación cruzada estratificada}
+
+Para validar el comportamiento del clasificador lineal de manera independiente a la partición de prueba, se aplicó una validación cruzada estratificada de 5 folds (\texttt{StratifiedKFold}) utilizando únicamente el conjunto de entrenamiento, evaluando la estabilidad de las métricas sobre distintas muestras de control.
+
+\subsubsection*{Optimización de hiperparámetros}
+
+Se llevó a cabo una búsqueda exhaustiva a través de \texttt{GridSearchCV} combinada con una validación cruzada de 5 folds para maximizar la métrica F1-score. El espacio de búsqueda diseñado para este clasificador lineal contempló los siguientes parámetros:
+
+\begin{itemize}
+    \item \textbf{C} (Inversa de la fuerza de regularización): Se evaluaron los valores \texttt{[0.01, 0.1, 1, 10, 100]}. Valores más bajos implican una regularización más estricta para simplificar el modelo, mientras que valores altos permiten un ajuste más preciso a los datos de entrenamiento.
+    \item \textbf{solver} (Algoritmo de optimización): Se contrastaron los optimizadores \texttt{'lbfgs'} y \texttt{'liblinear'}. Este último resulta especialmente eficiente en conjuntos de datos pequeños o con un número moderado de muestras.
+    \item \textbf{penalty} (Tipo de penalización): Se fijó en \texttt{'l2'}, asegurando la total compatibilidad matemática con ambos algoritmos de optimización evaluados.
+\end{itemize}
