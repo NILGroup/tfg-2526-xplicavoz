@@ -16,29 +16,6 @@ Con el fin de representar su estructura general, se ha diseñado un diagrama de 
 Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \emph{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
 
 La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección ejecutable independiente, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
-\section{AASIST}
-
-Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
-
-Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
-
-A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.
-
-\section{Wav2Vec2}
-
-Para poder reutilizar el modelo, es necesario guardar tanto el modelo entrenado como el extractor de características. Para ello, se utiliza el método \texttt{save\_model()} de la clase \texttt{Trainer}, junto con el método \texttt{save\_pretrained()} de \texttt{Wav2Vec2FeatureExtractor}. Ambas clases provienen de la librería \texttt{Transformers}.
-
-Una vez guardados, con la función \texttt{from\_pretrained} de las clases \texttt{Wav2Vec2ForSequenceClassification} y \texttt{Wav2Vec2FeatureExtractor} puedes cargar tanto el modelo como el extractor de características.
-
-Tras cargar lo que necesitamos, emplearemos la función \texttt{generar\_predicciones} del archivo \texttt{funciones\_wav2vec2} a la que pasándole el modelo, el extractor y el audio te devolverá tanto la salida del modelo (logits) como su predicción para ese audio (score).
-
-Para generar las explicaciones de ese audio necesitamos usar los 200 audios de nuestro dataframe junto con su label. Con los audios usaremos la función \texttt{preprocesamiento} de \texttt{funciones\_wav2vec2} que nos devolverá los espectrogramas de todos los audios en forma de tensor de \texttt{torch} y agruparemos todos los labels en otro tensor.
-
-Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
-
-Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap, Integrated Gradients, Lime y Grad Cam.
-
-Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
 
 \section{Random Forest}
 
@@ -67,6 +44,54 @@ Antes de ver la explicación de los nuevos audios con SVM, observamos que el mod
 En SHAP local vemos que las importancias cambian: en el audio generado tienen un peso mayor en ``spectral flatness'', mientras que en el audio real tienen un peso distribuido entre varias características, entre las que ``spectral flatness'' no aparece, como vemos en \ref{fig:pipe_shap_svm_esp_1} y \ref{fig:pipe_shap_svm_esp_2}. Por otro lado, en SHAP global podemos apreciar mejor que los audios clasificados como generados sí toman en cuenta dicha característica (con alto valor), mientras que los clasificados como reales tienen pesos más moderados, como aparece en \ref{fig:pipe_shap_svm_global}. Por último hemos probado a hacer, como antes, la explicación de los audios en inglés y podemos ver que tiene un rendimiento similar al de los modelos anteriores, es decir, pesos moderados y tendencia a clasificar como real. Esto lo encontramos en \ref{fig:pipe_shap_svm_eng_1} y \ref{fig:pipe_shap_svm_eng_2}.
 
 LIME nos dice que la característica más importante, en el audio nuevo generado, es ``spectral flatness'' y, además, mantiene unos umbrales de clasificación similares a los que ya habíamos visto (ver \ref{fig:pipe_lime_svm}).
+
+\section{KNN)}
+
+Este modelo, a diferencia de otros, requiere que los datos de entrada estén normalizados, por lo que se guardaron tanto el modelo y su \emph{scaler} en formato pkl para poder usarlos en el pipeline y así realizar las predicciones. 
+
+En las prediccines podemos ver como los dos auidos españoles son clasificados como generados, lo cual no cuadra con los datos del modelo del 100\% de acierto.
+
+Al comprobar los resultados de los métodos de ia explicable vemos que la técnica de explicabilidad SHAP global refleja que KNN asigna una alta importancia a la característica \emph{"spectral flatness"}, un patrón consistente con los resultados obtenidos en la fase de metodología (ver \ref{fig:pipe_knn_shap_global}). Pero al evaluar localmente con shap cada muestra vemos que la que detecta como generada correctamente la característica más predominante es el \emph{"spectral flatness"}, lo que corrobora lo visto anteriormente en los resultados, sin embargo, cuando vemos la imagen de la muestra que clasifica como generada erróneamente nos damos cuenta que la característica que más influye no es el \emph{"spectral flatness"} si no que lo son el \emph{"silence ratio"} y el \emph{"mfcc_1_mean"} (ver \ref{fig:pipe_knn_shap_local_1} y \ref{fig:pipe_knn_shap_local_2}) y por ello no actúa cómo actuaba con los otros audios.
+
+Esto mismo se puede ver reflejado en las gráficas de lime \ref{fig:pipe_knn_lime_1} y \ref{fig:pipe_knn_lime_2}. 
+
+Por último, vemos como Dice genera 3 instancias contrafactuales que indican qué alteraciones mínimas en las características analizadas transformarían la clasificación de un audio generado a uno real. Como se aprecia en la \autoref{tab:pipe_dice_knn}, estas modificaciones se concentran de manera prioritaria en ajustar los valores de \emph{"spectral flatness"}.
+
+\section{Regresión Logística}
+
+Este modelo, al igual que en KNN y a diferencia de otros, requiere que los datos de entrada estén normalizados, así que se guardaron el modelo y su \emph{scaler} en formato pkl para poder usarlos en el pipeline y así realizar las predicciones. 
+
+Al resliazar las predicciones vemos como, al igual que en knn, los dos audios españoles los clasifica como generados.
+
+Al comprobar los resultados de los métodos de ia explicable vemos que la técnica de explicabilidad SHAP global refleja que la Regresión Logística asigna una alta importancia a la característica \emph{"spectral flatness"},exactamente igual que ocurría en el knn (ver \ref{fig:pipe_lr_shap_global}). Por otro lado al evaluar localmente con shap cada muestra vemos que en la que detecta como generada correctamente la característica más predominante es el \emph{"spectral flatness"}, lo que corrobora lo visto anteriormente en los resultados. Sin embargo, cuando vemos la imagen de la muestra que clasifica como generada erróneamente nos damos cuenta de que, al igual que pasaba en KNN, la característica que más influye no es el \emph{"spectral flatness"} sino que lo son el \emph{"silence ratio"} y el \emph{"mfcc_1_mean"} con valores más altos que los vistos en knn, aún así vemos que en este modelo aparece la \emph{"kurosis"} intentando decantar la balanza para el otro lado por encima del \emph{"spectral flatness"} de nuevo (ver \ref{fig:pipe_lr_shap_local_1} y \ref{fig:pipe_lr_shap_local_2}).
+
+Esto mismo se puede ver reflejado en las gráficas de lime \ref{fig:pipe_lr_lime_1} y \ref{fig:pipe_lr_lime_2}. 
+
+Por último, se observa cómo DiCE genera tres instancias contrafactuales que indican las alteraciones mínimas requeridas en las características analizadas para transformar la clasificación de un audio generado a uno real. Como se aprecia en la \autoref{tab:pipe_dice_lr}, estas modificaciones se concentran de manera prioritaria en ajustar los valores de \emph{"spectral flatness"}, siendo en este modelo la única característica capaz de alterar la predicción final.
+
+\section{Wav2Vec2}
+
+Para poder reutilizar el modelo, es necesario guardar tanto el modelo entrenado como el extractor de características. Para ello, se utiliza el método \texttt{save\_model()} de la clase \texttt{Trainer}, junto con el método \texttt{save\_pretrained()} de \texttt{Wav2Vec2FeatureExtractor}. Ambas clases provienen de la librería \texttt{Transformers}.
+
+Una vez guardados, con la función \texttt{from\_pretrained} de las clases \texttt{Wav2Vec2ForSequenceClassification} y \texttt{Wav2Vec2FeatureExtractor} puedes cargar tanto el modelo como el extractor de características.
+
+Tras cargar lo que necesitamos, emplearemos la función \texttt{generar\_predicciones} del archivo \texttt{funciones\_wav2vec2} a la que pasándole el modelo, el extractor y el audio te devolverá tanto la salida del modelo (logits) como su predicción para ese audio (score).
+
+Para generar las explicaciones de ese audio necesitamos usar los 200 audios de nuestro dataframe junto con su label. Con los audios usaremos la función \texttt{preprocesamiento} de \texttt{funciones\_wav2vec2} que nos devolverá los espectrogramas de todos los audios en forma de tensor de \texttt{torch} y agruparemos todos los labels en otro tensor.
+
+Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
+
+Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap, Integrated Gradients, Lime y Grad Cam.
+
+Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
+
+\section{AASIST}
+
+Para poder usar el modelo, lo primero ha sido guardarlo con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
+
+Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
+
+A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en \nameref{subsubsec:res_aasist}.
 
 \section{Conclusiones}
 
