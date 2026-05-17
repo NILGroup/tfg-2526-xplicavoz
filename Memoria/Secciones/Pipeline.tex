@@ -13,7 +13,7 @@ Con el fin de representar su estructura general, se ha diseñado un diagrama de 
     \label{fig:Arquitectura_pipeline}
 \end{figure}
 
-Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos, que se explicarán en el apartado correspondiente a cada modelo.
+Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \emph{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
 
 La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
 
@@ -40,3 +40,15 @@ Para generar las explicaciones de ese audio necesitamos usar los 200 audios de n
 Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
 
 Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap e Integrated Gradients.
+
+\section{Random Forest}
+
+Para empezar, vemos que el modelo, al predecir sobre los nuevos audios en español, los clasifica correctamente. Luego, para ver las explicaciones llamamos a las distintas funciones que habíamos definido
+
+\section{LightGBM}
+
+
+
+\section{Support Vector Machine}
+
+
