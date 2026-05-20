@@ -37,13 +37,17 @@
 \frontmatter
 
 \begin{resumen}
-En este proyecto se aborda el problema de la clasificación de voces reales y generadas mediante el uso de modelos de clasificación y la posterior aplicación de métodos de inteligencia artificial explicable para entender en qué se basan las clasificaciones y ver si son fiables. Para ello se ha investigado sobre los diferentes datasets públicos con voz y sobre las distintas características que presenta la voz humana y cómo afecta cada una en la voz, es decir, qué efecto tiene en la voz cada característica. Ya que se tienen suficientes datos, se han aplicado modelos de clasificación para datos tabulares (SVM, KNN, etc.), imágenes (AASIST, etc.), y audios crudos (Wav2Vec2). En la explicación de estos se han aplicado modelos agnósticos (SHAP, LIME, etc.) que toman \emph{casi} cualquier modelo y generan explicaciones sobre las predicciones tanto para un audio en particular como para el compendio total de los audios del dataset. También se exploraron algunos modelos ante-hoc como Protopnet y Sincnet.
+En este proyecto se aborda el problema de la suplantación de voz humana mediante IA empleando modelos de clasificación de voz y técnicas de IA explicable (XAI) para hacer sus resultados más interpretables.
 
-En lo referente a las pruebas, se ha utilizado un subconjunto del dataset ODSS, el cual tiene voces en diferentes idiomas, de los que hemos escogido inglés y español, por ser, de los que incluye dicho dataset, dos de los más importantes hoy en día. Se ha visto un buen rendimiento de los modelos a la hora de clasificar los audios, aunque este puede deberse a la naturaleza de los audios del dataset y a la escasez de estos.  Sin embargo, se consideran los resultados como un buen comienzo hacia la detección de voz generada.
+Para ello investigamos sobre los diferentes datasets públicos con voces generadas por IA y sobre las distintas características que presenta la voz humana y qué efectos tienen en la voz. Sobre los datos, aplicaremos modelos de clasificación de diversas naturalezas y complejidades que serán explicados gracias a modelos agnósticos (SHAP, LIME, etc.) que toman casi cualquier modelo y generan explicaciones locales y globales sobre las predicciones de los mismos. También exploraremos la viabilidad de algunos modelos ante-hoc como Protopnet y Sincnet.
 
-Por último se combinó todo en un notebook para poder usar fácilmente todos los modelos teniendo como entrada un audio.
+En lo referente a las pruebas, se ha utilizado un subconjunto del dataset ODSS, del que hemos escogido pares de voces reales y generadas tanto en inglés como en español. Con estos datos, evaluaremos el rendimiento de los modelos a la hora de clasificar los audios.
+
+Por último se construyó un método que combina los modelos estudiados anteriormente. El método ejecuta los modelos entrenados, y los modelos de XAI, de forma que a partir de un audio de voz, se puede determinar si ha sido generado por IA o es una voz real.
+
+Enlace al repositorio: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz}{https://github.com/NILGroup/tfg-2526-xplicavoz}''
     
-\palabrasClave{voz generada; modelos de clasificación; inteligencia artificial explicable; características de la voz}    
+\palabrasClave{voz generada; modelos de clasificación; inteligencia artificial explicable; características de la voz generada por IA}    
     
 \end{resumen}
 
