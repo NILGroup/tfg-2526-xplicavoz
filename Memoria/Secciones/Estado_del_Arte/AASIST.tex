@@ -16,7 +16,6 @@ El modelo tiene las siguientes fases:
             \item A continuación, esta primera representación se pasa por seis bloques residuales con \textbf{pre-activación} que van comprimiendo y transformando la información útil para tener una representación lo más compacta posible.
         \end{itemize}
     \item Posteriormente, se generan dos \textbf{grafos completos} que modelan, de forma independiente, los dominios temporal y espectral, siendo $G_t$ y $G_s$ respectivamente. A cada grafo, se le aplica ``\textbf{graph pooling}'' para reducir el número de nodos, conservando los más relevantes lo que permite bajar el coste computacional posterior.
-    
     Estos nodos son representaciones vectoriales resultantes del mapa de características producido por el encoder y las aristas que los unen representan las relaciones entre estos.
     \item Ambos grafos se combinan estructuralmente en un tercer grafo, $G_{st}$ con $N_t+N_s$ nodos entre los que se generan todas las aristas nuevas posibles en ambas direcciones, manteniendo las aristas de los grafos anteriores.
     \item Bloque HS-GAL (Heterogeneous Stacking Graph Attention Layer) + ``pooling'': 

@@ -1,5 +1,5 @@
 Las gráficas y mapas que se analizan en esta subsección son los resultados de la ejecución de este~``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_XAI_aplicacion.ipynb}{notebook}''.
-\subsubsection*{Resultados}
+
 Antes de interpretar los resultados, es importante detallar la composición del conjunto de audios utilizado. Para ello, se seleccionaron 20 muestras, distribuidas de forma equilibrada según idioma y clase: 10 audios en español y 10 en inglés, de los cuales 10 son naturales y 10 generados. 
 
 En esta primera~\autoref{fig:AASIST_global_occlusion_temporal_logit}, vemos cómo ayuda cada tramo a los logits de los audios de cada clase. En lo referido a la clase ``bona'', podemos destacar tres fases: 
@@ -37,15 +37,15 @@ En la~\autoref{fig:AASIST_global_occlusion_frecuencial_margin} podemos destacar 
 
 Antes de empezar a analizar la~\autoref{fig:AASIST_global_LIG_mapas}, cabe recordar que mostramos la magnitud absoluta de atribución, no signo, por lo que solo podemos destacar relevancia espectral, pero no si una región empuja a cierta clase.
 
-Interpretando los comportamientos, por un lado, observamos actividad predominantemente focalizada en los filtros bajos en el mapa de ``bonas''. Por otro lado, en el mapa de ``spoofs'', aunque también observamos esta predominancia, se observa una actividad algo mayor en las frecuencias altas. Esto podría reforzar la idea mencionada de patrones artificiales o irregularidades espectrales en frecuencias superiores.
+Interpretando los comportamientos, por un lado, observamos actividad predominantemente focalizada en los filtros de baja frecuencia en el mapa de ``bonas''. Por otro lado, en el mapa de ``spoofs'', aunque también observamos esta predominancia, se observa una actividad algo mayor en las frecuencias altas. Esto podría reforzar la idea mencionada de patrones artificiales o irregularidades espectrales en frecuencias superiores.
 
 Los mapas normalizados explican mejor cómo se reparte la importancia entre filtros y a lo largo del tiempo al reducir el efecto de las bandas con mayor magnitud absoluta.
 
-En ambas gráficas de la~\autoref{fig:AASIST_global_LIG_mapas_norm}, seguimos observando actividad casi continua de los filtros bajos en los 4 segundos. Respecto al mapa de ``bonas'', destaca la región entre \textbf{1 y 2} segundos, donde hay más actividad. Esto coincide con lo mencionado en la gráfica temporal con ``logits'' de Occlusion. 
+En ambas gráficas de la~\autoref{fig:AASIST_global_LIG_mapas_norm}, seguimos observando actividad casi continua de los filtros de baja frecuencia en los 4 segundos. Respecto al mapa de ``bonas'', destaca la región entre \textbf{1 y 2} segundos, donde hay más actividad. Esto coincide con lo mencionado en la gráfica temporal con ``logits'' de Occlusion. 
 
 En el mapa de ``spoofs'', vemos una actividad más fragmentada y localizada en eventos temporales concretos, como, por ejemplo, entre los segundos \textbf{1 y 1,5}, y entre los segundos \textbf{3,6 y 3,9}. Ambas regiones también coinciden con las conclusiones extraídas en Occlusion temporal.
 
-La~\autoref{fig:AASIST_global_LIG_grafica} aporta información más detallada sobre las bandas de frecuencias bajas y nos señala con mayor precisión dentro de este conjunto, cuáles son las más excitadas. En particular, se observan varios picos destacados entre los filtros 5 y 20, lo que sugiere que la contribución del modelo no se distribuye de forma uniforme entre todos los filtros bajos.
+La~\autoref{fig:AASIST_global_LIG_grafica} aporta información más detallada sobre las bandas de frecuencias bajas y nos señala con mayor precisión dentro de este conjunto, cuáles son las más excitadas. En particular, se observan varios picos destacados entre los filtros 5 y 20, lo que sugiere que la contribución del modelo no se distribuye de forma uniforme entre todos los filtros de baja frecuencia.
 
 En la~\autoref{fig:AASIST_global_IG_audio}, volvemos a ver el patrón en el que entre los segundos \textbf{1 y 1,8} hay una región importante para ambas clases. Posteriormente, entre los segundos \textbf{2 y 3,5}, la atribución es menor, y finalmente, sobre el segundo \textbf{3,9}, un pico de relevancia de la curva ``bona'' claramente diferenciable. Este patrón refuerza la interpretación obtenida en otras gráficas temporales.
 

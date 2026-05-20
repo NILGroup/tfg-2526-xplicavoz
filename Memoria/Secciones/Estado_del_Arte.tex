@@ -1,11 +1,13 @@
 \chapter{Estado del arte}
 \label{sec:estado_del_arte}
 
-En este capítulo, se presenta el marco teórico que sirve de base para el desarrollo del proyecto. En primer lugar, en la sección de \nameref{subsec:modelos_clasificacion}, se contemplan los distintos modelos seleccionados para la tarea de clasificación de los audios. En este bloque, se explica teóricamente tanto su arquitectura como las principales innovaciones, propiedades o ventajas específicas que consideramos relevantes para la detección de audio falsificado.
+En este capítulo, se presenta el marco teórico que sirve de base para el desarrollo del proyecto. En primer lugar, en la sección~\textbf{\ref{subsec:modelos_clasificacion}}, se contemplan los distintos modelos seleccionados para la tarea de clasificación de los audios. En este bloque, se explica teóricamente tanto su arquitectura como las principales innovaciones, propiedades o ventajas específicas que consideramos relevantes para la detección de audio falsificado.
 
-Asimismo, también se contempla una sección de \nameref{subsec:modelos_explicacion}, donde se exponen los fundamentos teóricos de los distintos modelos de XAI que consideramos de interés para este trabajo. Para la elección de los modelos de clasificación, se ha buscado diversidad en diversos aspectos, como el alcance de la explicación, el grado de adaptabilidad a diferentes modelos o el momento del proceso de aprendizaje donde se incorpora la explicabilidad.
+Asimismo, también se contempla una sección~\textbf{\ref{subsec:modelos_explicacion}}, donde se exponen los fundamentos teóricos de los distintos modelos de XAI que consideramos de interés para este trabajo. Para la elección de los modelos XAI, se ha buscado diversidad en diversos aspectos, como el alcance de la explicación, el grado de adaptabilidad a diferentes modelos o el momento del proceso de aprendizaje donde se incorpora la explicabilidad.
 
-En conjunto, esta sección permite identificar las herramientas más importantes del proyecto y fundamentar las decisiones metodológicas desarrolladas en capítulos posteriores.
+Por último, se resumen las conclusiones del capítulo en la sección~\textbf{\ref{sec:conc_eda}}.
+
+En conjunto, esta capítulo permite identificar las herramientas más importantes del proyecto y fundamentar las decisiones metodológicas desarrolladas en capítulos posteriores.
 
 \section{Modelos de clasificación}
 \label{subsec:modelos_clasificacion}
@@ -41,7 +43,7 @@ Por último, modelos como \textbf{Wav2Vec2} y \textbf{AASIST} procesan la señal
 
 La adopción de modelos de aprendizaje profundo ha permitido alcanzar una precisión sin precedentes en la detección de audio sintético. Sin embargo, estos sistemas operan frecuentemente como ``cajas negras'', lo que dificulta su aplicación en ámbitos críticos como en forense o ciberseguridad. La Inteligencia Artificial Explicable (XAI) surge como la solución técnica para dotar a estos modelos de transparencia, permitiendo a los expertos entender el ``por qué'' de cada clasificación.
 
-A continuación, se describen las técnicas de explicabilidad, organizados según el siguiente enfoque técnico:
+A continuación, se describen las técnicas de explicabilidad que hemos contemplado para este proyecto, organizados según el siguiente enfoque técnico:
 
 \begin{itemize}
     \item \textbf{Métodos de Atribución y Perturbación}: Se analizan técnicas post-hoc, es decir, que no dependen del modelo al que se aplican, como \textbf{SHAP} y \textbf{LIME}, que permiten identificar qué características acústicas individuales son determinantes para el modelo; métodos basados en perturbaciones, como \textbf{Occlusion} y \textbf{RISE}, que miden la importancia de regiones modificando de forma controlada la entrada; y métodos basados en gradientes, como \textbf{Grad-CAM} e \textbf{Integrated Gradients}, fundamentales para visualizar la relevancia en el plano tiempo-frecuencia.
@@ -75,6 +77,7 @@ Por último, también pueden clasificarse en ``ante-hoc'' y ``post-hoc'': los m�
 \input{Secciones/Estado_del_Arte/RISE.tex}
 
 \section{Conclusiones}
+\label{sec:conc_eda}
 
 Una vez revisados los modelos de clasificación considerados en este trabajo, puede observarse que no todos responden al mismo grado de especialización respecto a la tarea de detección de audio falsificado. Por un lado, se han estudiado modelos de carácter más general, ampliamente utilizados en problemas de clasificación de distinta naturaleza, como \textbf{Random Forest}, \textbf{k-NN}, \textbf{LightGBM}, \textbf{SVM} o la \textbf{Regresión Logística}. Por otro lado, se han incluido enfoques más específicos para el ámbito del procesamiento de señal y al análisis de voz, como el \textbf{Perceptrón Multicapa}, \textbf{Wav2Vec2} o \textbf{AASIST}, este último diseñado para tareas de ``\textbf{anti-spoofing}''. Esta diversidad permite abordar el problema desde perspectivas complementarias, permitiendo comparar soluciones más generales y fácilmente interpretables con otras más específicas y de mayor complejidad.
 
@@ -82,4 +85,4 @@ De manera paralela, el bloque dedicado a explicabilidad muestra que la interpret
 
 En conjunto, ambos bloques, clasificación y explicabilidad, constituyen la base sobre la que se desarrolla el proyecto. En este sentido, los modelos de clasificación y las técnicas XAI no deben entenderse como bloques independientes, sino como componentes complementarios de un mismo sistema de análisis. Mientras que los primeros aportan distintas capacidades predictivas y distintos niveles de adaptación al problema, los segundos permiten interpretar y justificar en que evidencias técnicas se basan estas predicciones.
 
-A partir de este marco teórico, en el siguiente capítulo se explica el desarrollo práctico del trabajo, incluyendo tanto la metodología seguida como el análisis de los resultados obtenidos. En la siguiente sección, se concreta también la aportación propia del proyecto, como una propuesta orientada a adaptar, combinar y analizar distintas técnicas de IA y XAI para avanzar en la tarea de detección de ``spoof'', con el objetivo, no únicamente de construir un clasificador capaz de distinguir entre audios naturales y generados, sino también disponer de mecanismos que permitan comprender a nivel humano que características o patrones han determinado la clasificación.
+A partir de este marco teórico, en el siguiente capítulo se explica el desarrollo práctico del trabajo, incluyendo tanto la metodología seguida como el análisis de los resultados obtenidos. En la siguiente sección, se concreta también la aportación propia del proyecto, como una propuesta orientada a adaptar, combinar y analizar distintas técnicas de IA y XAI para avanzar en la tarea de detección de ``spoof''. Esta tarea se realiza con el objetivo, no únicamente de construir un clasificador capaz de distinguir entre audios naturales y generados, sino también disponer de mecanismos que permitan comprender a nivel humano que características o patrones han determinado la clasificación.
