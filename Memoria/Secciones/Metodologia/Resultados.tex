@@ -334,8 +334,7 @@ Podemos ver en los resultados~\ref{tab:resultados Wav2Vec2} de las predicciones 
 
 \begin{table}
 \centering
-\caption{Resultados de clasificación obtenidos por Wav2Vec2.}
-\label{tab:resultados Wav2Vec2}
+
 \begin{tabular}{|l|c|c|}
 \hline
 \textbf{Name} & \textbf{Score} & \textbf{Label} \\
@@ -362,6 +361,8 @@ I\_2\_N  & 0.74845369 & 0 \\
 E\_43\_G & 0.76308837 & 1 \\
 \hline
 \end{tabular}
+\caption{Resultados de clasificación obtenidos por Wav2Vec2.}
+\label{tab:resultados Wav2Vec2}
 \end{table}
 
 \subsubsection*{Resultados de explicación Wav2Vec2}
@@ -372,7 +373,7 @@ Cabe recalcar que para todos los modelos usaremos la instancia I\_12\_N cuya cla
 
 En cuanto al Shap mostraremos dos gráficas por modelo y la predicción del modelo para ese audio. La primera gráfica nos mostrará la explicación global para ese modelo mientras que la segunda nos mostrará una explicación local de uno de los audios. 
 
-Aquí proporcionamos un enlace a la tabla con todas las características que extrajimos del audio: ~\ref{tab:caracteristicas_audio}
+Aquí proporcionamos un enlace a la tabla con todas las características que extrajimos del audio:~\ref{tab:caracteristicas_audio}
 
 \begin{enumerate}
  \item Energía: En esta Figura~\ref{fig:shap_energia_wav2vec2} podemos ver como la kurtosis y el silence ratio son las características que más influyen mientras que el rms tiene una influencia nula en la predicción. 
@@ -438,7 +439,7 @@ Para esta tarea se ha hecho lo siguiente, primero calculamos la importancia prom
 En esta Figura~\ref{fig:ranking_shap_Wav2Vec2} podemos ver las 15 características más importantes para la predicción destacando sobre todo el centroide espectral y el 5º coeficiente cepstral de Mel.
 
 \begin{figure}
-	\includegraphics[width=0.5\textwidth]{imagenes/Ranking_caracteristicas_shap_wav2vec2.png}
+	\includegraphics[width=0.8\textwidth]{imagenes/Ranking_caracteristicas_shap_wav2vec2.png}
 	\caption{Ranking características Shap.}
 	\label{fig:ranking_shap_Wav2Vec2}
 \end{figure}
@@ -446,7 +447,7 @@ En esta Figura~\ref{fig:ranking_shap_Wav2Vec2} podemos ver las 15 característic
 Para Lime hacemos exactamente lo mismo. En la Figura~\ref{fig:ranking_lime_Wav2Vec2} vemos que destacan las mismas características que en la de Shap pero con ligeras variaciones de posición entre ellas.
 
 \begin{figure}
-	\includegraphics[width=0.5\textwidth]{imagenes/Ranking_caracteristicas_lime_wav2vec2.png}
+	\includegraphics[width=0.8\textwidth]{imagenes/Ranking_caracteristicas_lime_wav2vec2.png}
 	\caption{Ranking características Lime.}
 	\label{fig:ranking_lime_Wav2Vec2}
 \end{figure}
@@ -456,7 +457,7 @@ Para acabar con la explicación de las características, vamos a juntar ambas ex
 En esta gráfica combinada, Figura~\ref{fig:ranking_agregado_Wav2Vec2}, podemos ver el ranking global de las características según su importancia. Podemos observar que a la hora de agregar ambas gráficas las diferencias respecto a las gráficas anteriores de los rankings de Shap y Lime no son demasiado grandes ya que ambas exponían uno similar.
 
 \begin{figure}
-	\includegraphics[width=0.5\textwidth]{imagenes/Ranking_caracteristicas_final_wav2vec2.png}
+	\includegraphics[width=0.8\textwidth]{imagenes/Ranking_caracteristicas_final_wav2vec2.png}
 	\caption{Ranking agregado de características.}
 	\label{fig:ranking_agregado_Wav2Vec2}
 \end{figure}
@@ -512,8 +513,8 @@ En esta Figura~\ref{fig:lime_local_espectrogramas_Wav2Vec2} se muestra la explic
         \includegraphics[width=\linewidth]{espectrograma_audio.png}
         \caption{Espectrograma de un audio.}
     \end{subfigure}
-    	\label{fig:lime_local_espectrogramas_Wav2Vec2}
-    	\caption{lime local espectrogramas Wav2Vec2}
+    	\caption{Lime local sobre los espectrogramas con Wav2Vec2}
+	\label{fig:lime_local_espectrogramas_Wav2Vec2}
 \end{figure}
 
 En la Figura~\ref{fig:lime_global_espectrogramas_Wav2Vec2} a diferencia de en Shap, según Lime, el modelo toma las decisiones principalmente gracias al principio de los audios aunque el final también tiene algo de influencia.
@@ -526,7 +527,7 @@ En la Figura~\ref{fig:lime_global_espectrogramas_Wav2Vec2} a diferencia de en Sh
 
 \subsubsection*{Integrated Gradients}
 
-En la Figura~\ref{fig:lime_local_espectrogramas_Wav2Vec2} podemos ver como las partes rojas son las que más influyen en una predicción hacia generado, pero si vemos el espectrograma del audio, en esas partes hay silencio, son zonas negras. Esto nos muestra que los silencios son determinantes a la hora de decidir a que clase pertenece un audio. Sin embargo, la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma por lo que no nos podemos fiar del todo de la explicación. Si nos centramos solo dónde hay audio, podemos ver como esas son zonas más blancas - azuladas que, o empujan la predicción hacia la clase real, o bien no tienen influencia en la misma. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
+En la Figura~\ref{fig:ig_local_espectrogramas_Wav2Vec2} podemos ver como las partes rojas son las que más influyen en una predicción hacia generado, pero si vemos el espectrograma del audio, en esas partes hay silencio, son zonas negras. Esto nos muestra que los silencios son determinantes a la hora de decidir a que clase pertenece un audio. Sin embargo, la gran zona azul del final se corresponde con la parte donde no hay ni siquiera espectrograma por lo que no nos podemos fiar del todo de la explicación. Si nos centramos solo dónde hay audio, podemos ver como esas son zonas más blancas - azuladas que, o empujan la predicción hacia la clase real, o bien no tienen influencia en la misma. También se ve como los dos golpes de audio más fuertes en el espectrograma son las partes que más empujan la predicción hacia real.
 
 \begin{figure}
     \centering
@@ -541,21 +542,21 @@ En la Figura~\ref{fig:lime_local_espectrogramas_Wav2Vec2} podemos ver como las p
         \includegraphics[width=\linewidth]{espectrograma_audio.png}
         \caption{Espectrograma de un audio.}
     \end{subfigure}
-    	\label{fig:ig_local_espectrogramas_Wav2Vec2}
-    	\caption{IG local espectrogramas Wav2Vec2}
+    	\caption{IG local sbore los espectrogramas con Wav2Vec2}
+    \label{fig:ig_local_espectrogramas_Wav2Vec2}
 \end{figure}
 
-En la predicción global~\ref{fig:ig_local_espectrogramas_Wav2Vec2} se puede apreciar cierta similitud con las dos explicaciones generales anteriores donde las principales zonas de influencia en la clasificación son la parte inicial y la parte final de los audios en las bandas medias.
+En la predicción global~\ref{fig:ig_global_espectrogramas_Wav2Vec2} se puede apreciar cierta similitud con las dos explicaciones generales anteriores donde las principales zonas de influencia en la clasificación son la parte inicial y la parte final de los audios en las bandas medias.
 
 \begin{figure}
 	\includegraphics[width=\textwidth]{imagenes/ig_global_espectrogramas_wav2vec2.png}
-	\caption{Integrated gradients general de los espectrogramas}
+	\caption{Integrated Gradients general de los espectrogramas}
 	\label{fig:ig_global_espectrogramas_Wav2Vec2}
 \end{figure}
 
 \subsubsection*{Grad Cam}
 
-En la Figura~\ref{fig:gc_local_espectrogramas_Wav2Vec2} al igual que en la explicación local de integrated gradients, podemos ver que en las partes dónde hay audio son las partes que más influyen en la predicción. Aquí si distingue que la parte final, donde no hay espectrograma, no tiene ningún peso en la predicción. De todas formas, fijándonos en el audio, podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
+En la Figura~\ref{fig:gc_local_espectrogramas_Wav2Vec2} al igual que en la explicación local de Integrated Gradients, podemos ver que en las partes dónde hay audio son las partes que más influyen en la predicción. Aquí si distingue que la parte final, donde no hay espectrograma, no tiene ningún peso en la predicción. De todas formas, fijándonos en el audio, podemos apreciar como el primer golpe de voz y la parte final del audio tienen más influencia en la predicción que el resto del mismo.
 
 \begin{figure}
     \centering
@@ -570,8 +571,8 @@ En la Figura~\ref{fig:gc_local_espectrogramas_Wav2Vec2} al igual que en la expli
         \includegraphics[width=\linewidth]{espectrograma_audio.png}
         \caption{Espectrograma de un audio.}
     \end{subfigure}
+    	\caption{Grad Cam local sobre los espectrogramas con Wav2Vec2}
     	\label{fig:gc_local_espectrogramas_Wav2Vec2}
-    	\caption{Grad Cam local espectrogramas Wav2Vec2}
 \end{figure}
 
 La explicación global del Grad Cam, Figura~\ref{fig:gc_global_espectrogramas_Wav2Vec2}, se caracteriza por darle el mayor peso a los instantes iniciales del espectrograma, dándole un peso prácticamente nulo al centro del espectrograma, curiosamente donde están los audios, y otorgándole un peso relevante también al final del espectrograma.
