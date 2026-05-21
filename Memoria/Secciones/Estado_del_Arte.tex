@@ -53,11 +53,11 @@ A continuación, se describen las técnicas de explicabilidad que hemos contempl
     \item \textbf{Modelos Interpretables por Diseño:} Se profundiza en arquitecturas cuya transparencia es intrínseca, como SincNet, que utiliza filtros con significado físico, y ProtoPNet, que basa su decisión en la comparación con prototipos o ejemplos conocidos.
 \end{itemize}
 
-Además de esa clasificación, en interpretabilidad, los métodos suelen clasificarse según qué alcance tiene la explicación, a qué conjuntos de modelos se pueden aplicar y en qué momento aparece la interpretabilidad dentro del proceso de aprendizaje. 
-Por un lado, pueden distinguirse según el alcance de la explicación en métodos \textbf{locales}, \textbf{globales} o de \textbf{cohortes}: los locales explican una predicción concreta para una muestra individual; los globales describen el comportamiento del modelo sobre el conjunto total de datos; y los explicadores por cohortes analizan el comportamiento del modelo sobre un subconjunto de muestras que comparten cierta característica. 
-Por otro lado, según a qué modelos se aplican, existen métodos \textit{model-agnostic}, que pueden aplicarse a cualquier modelo porque solo necesitan acceder a sus entradas y salidas; métodos \textit{model-specific}, diseñados para modelos concretos; y métodos \textit{model-class-specific}, aplicables a una familia de modelos que comparten una estructura común, como árboles, redes neuronales o modelos lineales. 
+Además de esa clasificación, en interpretabilidad, los métodos suelen clasificarse según qué alcance tiene la explicación, a qué conjuntos de modelos se pueden aplicar y en qué momento aparece la interpretabilidad dentro del proceso de aprendizaje.
+Por un lado, pueden distinguirse según el alcance de la explicación en métodos \textbf{locales}, \textbf{globales} o de \textbf{cohortes}: los locales explican una predicción concreta para una muestra individual; los globales describen el comportamiento del modelo sobre el conjunto total de datos; y los explicadores por cohortes analizan el comportamiento del modelo sobre un subconjunto de muestras que comparten cierta característica.
+Por otro lado, según a qué modelos se aplican, existen métodos \textit{model-agnostic}, que pueden aplicarse a cualquier modelo porque solo necesitan acceder a sus entradas y salidas; métodos \textit{model-specific}, diseñados para modelos concretos; y métodos \textit{model-class-specific}, aplicables a una familia de modelos que comparten una estructura común, como árboles, redes neuronales o modelos lineales.
 Por último, también pueden clasificarse en \textit{ante-hoc} y \textit{post-hoc}: los métodos \textit{ante-hoc} son aquellos en los que la interpretabilidad viene incorporada en el diseño del propio modelo, mientras que los \textit{post-hoc} generan explicaciones una vez entrenado el modelo, sin necesidad de que este sea interpretable desde un primer momento.
-\hspace{.7cm} 
+\hspace{.7cm}
 \input{Secciones/Estado_del_Arte/SHAP.tex}
 
 \input{Secciones/Estado_del_Arte/LIME.tex}

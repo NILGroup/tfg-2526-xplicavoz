@@ -9,34 +9,34 @@ La elección de AASIST se justifica por tratarse de un modelo desarrollado espec
 \subsubsection*{Aplicación del modelo}
 
 \footnote{Enlace al notebook de aplicación del modelo: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/German/AASIST_modelo.ipynb}}
-Lo primero, al ser un modelo que produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios. 
+Lo primero, al ser un modelo que produce una predicción a partir del audio crudo, el primer paso es definir las rutas a los audios.
 Posteriormente, se lee el contenido del archivo ``.conf'' del modelo. Para ello, hemos creado una función que busca el elemento pasado por parámetro y devuelve el bloque superior que contiene ese elemento junto con los elementos al mismo nivel. Esto nos permite construir una variable, que vamos a llamar args, con los siguientes campos:
 \begin{itemize}
-    \item \textbf{first\_conv}: configuración del kernel de la primera capa de convolución, es decir, cuántas muestras de audio se utilizan para cada filtro. En este caso, 128.
-    \item \textbf{filts}: es un array de elementos siendo el primero el número de filtros en la primera capa de convolución. Los siguientes elementos son pares para cada bloque residual con el número de filtros de entrada y de salida.
-    \item \textbf{gat\_dims}: tamaño del \textit{embedding} que representa cada nodo. Tiene dos valores que hacen referencia al tamaño al construir los grafos de atención y al tamaño en las fases de HS-GAL + \textit{pooling} respectivamente.
-    \item \textbf{pool\_ratios}: se usa en la técnica de \textit{graph pooling} y significa el \textbf{ratio de reducción de nodos} en cada capa. Los dos primeros valores se usan para reducir los grafos espectral y temporal, respectivamente, antes de combinarlos en el grafo heterogéneo. El siguiente valor se usa para reducir el grafo heterogéneo después de cada capa HS-GAL. Aunque existe un cuarto valor, en el modelo final no se usa.
-    \item \textbf{temperatures}: controla lo suave o agresiva que es la atención en cada fase. Cuanto más bajo es este parámetro, mayor peso se concentra en pocos nodos vecinos.
+    \item \texttt{first\_conv}: configuración del kernel de la primera capa de convolución, es decir, cuántas muestras de audio se utilizan para cada filtro. En este caso, 128.
+    \item \texttt{filts}: es un array de elementos siendo el primero el número de filtros en la primera capa de convolución. Los siguientes elementos son pares para cada bloque residual con el número de filtros de entrada y de salida.
+    \item \texttt{gat\_dims}: tamaño del \textit{embedding} que representa cada nodo. Tiene dos valores que hacen referencia al tamaño al construir los grafos de atención y al tamaño en las fases de HS-GAL + \textit{pooling} respectivamente.
+    \item \texttt{pool\_ratios}: se usa en la técnica de \textit{graph pooling} y significa el \textbf{ratio de reducción de nodos} en cada capa. Los dos primeros valores se usan para reducir los grafos espectral y temporal, respectivamente, antes de combinarlos en el grafo heterogéneo. El siguiente valor se usa para reducir el grafo heterogéneo después de cada capa HS-GAL. Aunque existe un cuarto valor, en el modelo final no se usa.
+    \item \texttt{temperatures}: controla lo suave o agresiva que es la atención en cada fase. Cuanto más bajo es este parámetro, mayor peso se concentra en pocos nodos vecinos.
 \end{itemize}
-Con args ya creado, instanciamos el modelo. Posteriormente, se usa el checkpoint para cargar los pesos preentrenados. 
+Con args ya creado, instanciamos el modelo. Posteriormente, se usa el checkpoint para cargar los pesos preentrenados.
 
 El siguiente paso es definir las funciones de inferencia. Para esto, nos apoyamos primero en dos funciones auxiliares, una que convierte los audios a un \textbf{formato estándar}, un solo canal y 16 kHz, y otra que crea una ventana para recorrer audios largos. Esta última es importante ya que AASIST está diseñado para recibir segmentos de longitud de unos 4 segundos.
 Con esto preparado, creamos las tres funciones de inferencia para ver si conseguíamos mejores resultados alterando un poco el proceso. Las tres funciones se describen a continuación:
 \begin{itemize}
-    \item \textbf{average\_windows}: esta función devuelve la media de sumar las predicciones de cada ventana calculadas de forma independiente. 
-    \item \textbf{score\_without\_windows}: esta función devuelve solamente la puntuación del segmento inicial del audio en archivos largos o del audio en su totalidad en el caso contrario.
-    \item \textbf{average\_logits}: esta función fusiona todas las ventanas sumando sus logits antes de calcular una única probabilidad.
+    \item \texttt{average\_windows}: esta función devuelve la media de sumar las predicciones de cada ventana calculadas de forma independiente.
+    \item \texttt{score\_without\_windows}: esta función devuelve solamente la puntuación del segmento inicial del audio en archivos largos o del audio en su totalidad en el caso contrario.
+    \item \texttt{average\_logits}: esta función fusiona todas las ventanas sumando sus logits antes de calcular una única probabilidad.
 \end{itemize}
 Finalmente, se aplica el modelo y se vuelcan los resultados en un csv con el nombre del audio, la probabilidad de que sea \textit{bonafide} y su duración. Para esto, se recorre cada audio del dataset, se le aplica una de las funciones de inferencia y se escribe la información en el csv.
 
 Como hemos mencionado anteriormente, implementamos tres funciones de inferencia distintas para intentar obtener mejores resultados. Tras varias pruebas, alternando las tres funciones, obtuvimos resultados pésimos en los que el modelo tendía a clasificar cada muestra como \textit{bona fide} y alguna como \textit{spoof} pero sin mucho acierto lo que da una sensación de clasificación al azar.
 Ante estos resultados, decidimos realizar \textit{fine-tunning} sobre el propio modelo preentrenado, nuestro propio preentrenamiento con parte del dataset que creamos. Para conseguir esto, primero separamos el dataset en entrenamiento, evaluación y validación. Para cada fase, generamos los archivos de ``protocols'' de donde el modelo va leyendo el nombre y el tipo de los audios de cada partición. Adicionalmente, tuvimos que hacer ciertos ajustes en el .conf y en especial, ajustar el número de épocas.
 
-Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de épocas: 10, 20, 40 o 80. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente. 
+Para las pruebas, las hemos separado en tres tipos: audios en inglés por separado, español por separado y ambos idiomas juntos. Dentro de cada escenario, hay cuatro pruebas con distinto número de épocas: 10, 20, 40 o 80. También, cabe mencionar que siempre se ha mantenido una proporción en la separación en train, dev y eval de 72\%, 14\% y 14\%, respectivamente.
 
 A la hora de evaluar, hemos usado 4 medidas: accuracy, precision, recall y f1.
 
-En relación con la~\autoref{fig:AASIST_resultados_preentrenamiento}, lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica claramente mejor los audios en español ya que todas las métricas, a excepción de precisión en 40 épocas, tienen valores superiores. Esta diferencia explica el por qué la partición mixta lo hace peor que la que solo tiene muestras en inglés y permite deducir que ejecutar ambos idiomas juntos no le ayuda a clasificarlos mejor. 
+En relación con la~\autoref{fig:AASIST_resultados_preentrenamiento}, lo primero que podemos destacar sobre las gráficas, es que el modelo clasifica claramente mejor los audios en español ya que todas las métricas, a excepción de precisión en 40 épocas, tienen valores superiores. Esta diferencia explica el por qué la partición mixta lo hace peor que la que solo tiene muestras en inglés y permite deducir que ejecutar ambos idiomas juntos no le ayuda a clasificarlos mejor.
 
 En lo referido a las épocas, lo más destacable es que superar las 40 épocas empeora la predicción por lo que podemos suponer que está ocurriendo un fenómeno de sobreaprendizaje. También, podemos observar que en la partición en inglés, el aumento del valor de este parámetro no equivale en términos generales a una subida en la mejora de la predicción, fenómeno que no ocurre con la partición en español.
 
@@ -52,9 +52,9 @@ En relación a filtros de frecuencia, primero calculamos la banda de frecuencias
 
 Posteriormente, representamos en la~\autoref{fig:AASIST_top_filtros} los filtros que más activación han tenido en el primer procesado, de dos formas: en la gráfica de la izquierda, viendo qué frecuencias cubren, y en la gráfica de la derecha, viendo su activación a lo largo del audio.
 
-Con la primera gráfica, se observa que los 5 filtros más excitados se pueden separar en dos grupos por su consecución, mientras que en la segunda, se aprecia cómo tienen comportamientos muy parecidos. 
+Con la primera gráfica, se observa que los 5 filtros más excitados se pueden separar en dos grupos por su consecución, mientras que en la segunda, se aprecia cómo tienen comportamientos muy parecidos.
 
-En relación con las frecuencias, simulamos cómo sería la salida de la capa \textit{sinc-convolution} que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un \textit{heatmap} en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia. 
+En relación con las frecuencias, simulamos cómo sería la salida de la capa \textit{sinc-convolution} que podemos asemejar a un espectrograma. Para conseguir este mapa filtro-tiempo capturamos la salida de la capa durante la inferencia y la representamos en un \textit{heatmap} en cuyo eje Y se colocan los filtros de menor a mayor banda de frecuencia.
 
 Hemos creado dos mapas filtro-tiempo representados en la figura~\autoref{fig:AASIST_heatmaps}, el mapa de la izquierda sería el más fiel al modelo, mientras que el mapa de la derecha normaliza la activación de cada filtro por su máximo. Esta combinación nos permite determinar qué regiones de frecuencias se excitan más pero sin ocultar completamente a las menos determinantes.
 
@@ -63,12 +63,12 @@ Con estos mapas, podemos ver qué filtros, es decir, bandas de frecuencia se act
 \subsubsection*{Implementación de Occlusion}
 A continuación, vamos a aplicar Occlusion, técnica explicada en la sección~\ref{subsubsec:eda_occlusion}, tanto al ámbito espectral como al temporal. Esta técnica consiste en ir tapando fragmentos de la entrada y ver cómo cambia el logit final con estas variaciones para ver qué tramos han afectado más. Para tapar, en el ámbito temporal hemos puesto silencio en el tramo objetivo y en el ámbito frecuencial, hemos puesto silencio en la banda de frecuencia objetivo.
 
-Además, vamos a utilizar dos medidas complementarias. Por un lado, el cambio en el \textbf{logit} de la clase objetivo nos permite representar cuánto contribuye cada región a la evidencia bruta de dicha clase. Por otro, medimos el \textbf{margen} o diferencia entre los logits de ambas clases; esta métrica nos permite analizar separación entre clases durante el audio. Mientras que la primera aporta información importante sobre cierta clase, el margen resulta más valioso para entender la decisión final de AASIST ya que nos muestra si realmente una región ayuda a la clase objetivo o ayuda a ambas por igual. 
+Además, vamos a utilizar dos medidas complementarias. Por un lado, el cambio en el \textbf{logit} de la clase objetivo nos permite representar cuánto contribuye cada región a la evidencia bruta de dicha clase. Por otro, medimos el \textbf{margen} o diferencia entre los logits de ambas clases; esta métrica nos permite analizar separación entre clases durante el audio. Mientras que la primera aporta información importante sobre cierta clase, el margen resulta más valioso para entender la decisión final de AASIST ya que nos muestra si realmente una región ayuda a la clase objetivo o ayuda a ambas por igual.
 
 A la hora de llevar esta idea a código, hemos creado dos funciones separadas para cada dominio pero su idea es la misma. Primero, sacan los logits iniciales, seguidamente, con un bucle vamos tapando segmentos y sacando nuevos logits que nos permiten ver cómo ha variado el resultado al obviar ese segmento. Ambas funciones tienen un parámetro que permite decidir qué clase observar y en caso de no especificar, se mira la clase con la que se clasifico el audio.
 La única diferencia entre estas funciones, es que la del plano espectral necesita hacer uso de una FFT para poder cambiar entre ámbitos y así seleccionar correctamente qué banda de frecuencia silenciar.
 
-Las caídas en la probabilidad las mostramos en una gráfica y nos permite ver qué instantes del audio son más relevantes para el modelo. 
+Las caídas en la probabilidad las mostramos en una gráfica y nos permite ver qué instantes del audio son más relevantes para el modelo.
 Hemos usado instantes de 10 ms ya que hemos concluido que es un punto donde ya podemos ver cambios finos sin que los picos en tramos pequeños se compensen y obtengamos aportación nula.
 
 Tenemos como resultado las gráficas temporales, por un lado, de logit como en la~\autoref{fig:AASIST_global_occlusion_temporal_logit} y por otro, de margen del mismo modo que en la~\autoref{fig:AASIST_global_occlusion_temporal_margin}. Aunque con ellas todavía no sabemos qué fenómenos son los determinantes, sí nos permite saber en qué momento ocurren.
@@ -80,20 +80,20 @@ Con las gráficas frecuenciales, podemos ver en qué frecuencias ocurren. Asimis
 La siguiente técnica que vamos a aplicar es la explicada en la sección~\ref{subsubsec:eda_ig}. Para medir el error usando esta técnica usamos la métrica delta que devuelve la propia clase. Este valor mide la diferencia entre la variación real de la salida del modelo entre el input y el baseline y la suma de las atribuciones obtenidas. Un valor cercano a 0 significa buena convergencia.
 Primero, vamos a aplicar IG sobre los mapas filtro-tiempo que acabamos de ver. Para ello, usamos la clase \textbf{LayerIntegratedGradients} porque analizamos solo una capa concreta del modelo y nos devuelve la salida en el mismo formato que la entrada, lo que nos permite representarla de la misma manera. Esta clase usa los siguientes parámetros:
 \begin{itemize}
-    \item \textbf{inputs}: el tensor del propio audio.
-    \item \textbf{baselines}: utilizamos un vector silencio ya que la entrada es un audio.
-    \item \textbf{target}: la clase objetivo.
-    \item \textbf{n\_steps}: número de saltos entre el baseline y la entrada real.
-    \item \textbf{return\_convergence\_delta}: si es True, nos devuelve la métrica delta.
-    \item \textbf{attribute\_to\_layer\_input}: si es False, las atribuciones se calculan sobre las activaciones que salen de esta capa.
+    \item \texttt{inputs}: el tensor del propio audio.
+    \item \texttt{baselines}: utilizamos un vector silencio ya que la entrada es un audio.
+    \item \texttt{target}: la clase objetivo.
+    \item \texttt{n\_steps}: número de saltos entre el baseline y la entrada real.
+    \item \texttt{return\_convergence\_delta}: si es True, nos devuelve la métrica delta.
+    \item \texttt{attribute\_to\_layer\_input}: si es False, las atribuciones se calculan sobre las activaciones que salen de esta capa.
 \end{itemize}
 
 A diferencia de los mapas filtro-tiempo mostrados anteriormente, aquí representamos las zonas que más contribuyen al logit final.
 Sin embargo, igual que antes, representamos un mapa como en la~\autoref{fig:AASIST_global_LIG_mapas_norm} para apreciar más detalle y otro normalizado como en la~\autoref{fig:AASIST_global_LIG_mapas} para ver el mapa puro.
 
-Para mostrar esto de manera más visual, generamos una gráfica análoga a la~\autoref{fig:AASIST_global_LIG_grafica}, donde vemos los filtros en el eje x, proporcionando información sobre los más excitados. 
+Para mostrar esto de manera más visual, generamos una gráfica análoga a la~\autoref{fig:AASIST_global_LIG_grafica}, donde vemos los filtros en el eje x, proporcionando información sobre los más excitados.
 
-Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.  
+Siguiendo con IG, ahora lo aplicamos sobre el \textbf{audio crudo}, usando, a diferencia de con los mapas, la clase \textbf{IntegratedGradients}. Esta clase recibe los mismos parámetros que la usada antes a excepción de ``attribute\_to\_layer\_input''.
 
 Como resultado, obtenemos una gráfica de importancia temporal de forma similar a la~\autoref{fig:AASIST_global_IG_audio}, indicando lo importante que es cada instante según esta técnica.
 
@@ -121,17 +121,17 @@ En primer lugar, combinamos el csv de características de los audios y el csv de
 
 Cabe mencionar que transformamos el score del segundo csv a logit con la intención de intentar mejorar la imitación del modelo ya que los valores en logit crecen de manera más lineal y no están cerrados entre 0 y 1.
 
-Posteriormente, eliminamos del conjunto resultante aquellas columnas de características que no queremos que se usen en la entrada del \textit{surrogate} como el nombre de cada archivo. Asimismo, hemos eliminado las columnas no numéricas ya que ambos modelos requieren una entrada de solo datos númericos. Estos datos son pitch, f1, f2, f3 y los distintos MFCC. Aunque estas ausencias son importantes a la hora de interpretar los resultados, en el conjunto de datos sí se encuentran derivadas de estas características como la media, por lo que el modelo si recibe información de ellas. Finalmente, realizamos la división del dataset con la función ``train\_test\_split''. 
+Posteriormente, eliminamos del conjunto resultante aquellas columnas de características que no queremos que se usen en la entrada del \textit{surrogate} como el nombre de cada archivo. Asimismo, hemos eliminado las columnas no numéricas ya que ambos modelos requieren una entrada de solo datos númericos. Estos datos son pitch, f1, f2, f3 y los distintos MFCC. Aunque estas ausencias son importantes a la hora de interpretar los resultados, en el conjunto de datos sí se encuentran derivadas de estas características como la media, por lo que el modelo si recibe información de ellas. Finalmente, realizamos la división del dataset con la función ``train\_test\_split''.
 
 Por un lado, para estimar la fiabilidad del clasificador, hemos usado las métricas: precision, recall y F1. Como puede observarse en la salida de la celda donde utilizamos el modelo, ninguna de las métricas desciende de 0,92 al calcular la media entre ambas clases. En conjunto, estos datos sugieren que este primer modelo surrogate constituye una aproximación razonable al comportamiento de AASIST.
 
-Por otro lado, para medir la precisión del regresor a la hora de imitar correctamente usamos la métrica  $R^2$. En este contexto, $R^2$ mide qué tan bien el modelo del \textit{surrogate} reproduce correctamente la salida original de AASIST: 
+Por otro lado, para medir la precisión del regresor a la hora de imitar correctamente usamos la métrica  $R^2$. En este contexto, $R^2$ mide qué tan bien el modelo del \textit{surrogate} reproduce correctamente la salida original de AASIST:
 
 \[R^2 = 1 - \frac{\sum_{i=1}^{n} (y_i - \hat{y}_i)^2}{\sum_{i=1}^{n} (y_i - \bar{y})^2}\]
 
 donde $y_i$ es el valor real, $\hat{y}_i$ el valor predicho por el \textit{surrogate}, $\bar{y}$ la media de los valores reales.
 
-Esta fórmula se puede presentar de forma más intuitiva como: 
+Esta fórmula se puede presentar de forma más intuitiva como:
 \[
 R^2 = 1 - \frac{\text{error del surrogate}}{\text{variabilidad total de la salida}}
 \]
@@ -149,25 +149,16 @@ Como modelos, hemos escogido XGBRegressor y XGBClassifier. Además de por ser co
 
 En lo referido a los parámetros de entrenamiento ambos modelos reciben los mismos:
 \begin{itemize}
-    \item \textbf{n\_estimators}: número de árboles del modelo. Aumentarlo puede mejorar la capacidad de ajuste, aunque también puede favorecer el sobreajuste.
-    
-    \item \textbf{max\_depth}: profundidad máxima de cada árbol. Controla la complejidad de las reglas que puede aprender el modelo.
-    
-    \item \textbf{learning\_rate}: peso o contribución de cada árbol nuevo al resultado final. Valores bajos hacen el aprendizaje más gradual.
-    
-    \item \textbf{subsample}: porcentaje de audios o muestras que utiliza cada árbol durante el entrenamiento. Ayuda a introducir variedad y a reducir el sobreajuste.
-    
-    \item \textbf{colsample\_bytree}: porcentaje de características que usa cada árbol. Permite que no todos los árboles dependan exactamente de las mismas variables.
-    
-    \item \textbf{reg\_lambda}: término de regularización \(L_2\). Penaliza pesos grandes y ayuda a controlar el sobreajuste.
-    
-    \item \textbf{reg\_alpha}: término de regularización \(L_1\). Penaliza pesos pequeños y favorece modelos más simples.
-    
-    \item \textbf{min\_child\_weight}: controla la creación de nodos nuevos, evitando divisiones poco relevantes.
-    
-    \item \textbf{gamma}: coste mínimo necesario para realizar una partición en un nodo. Cuanto mayor es, más conservador es el crecimiento del árbol.
-    
-    \item \textbf{random\_state}: semilla de aleatoriedad, que permite reproducir siempre los mismos resultados.
+    \item \texttt{n\_estimators}: número de árboles del modelo. Aumentarlo puede mejorar la capacidad de ajuste, aunque también puede favorecer el sobreajuste.
+    \item \texttt{max\_depth}: profundidad máxima de cada árbol. Controla la complejidad de las reglas que puede aprender el modelo.
+    \item \texttt{learning\_rate}: peso o contribución de cada árbol nuevo al resultado final. Valores bajos hacen el aprendizaje más gradual.
+    \item \texttt{subsample}: porcentaje de audios o muestras que utiliza cada árbol durante el entrenamiento. Ayuda a introducir variedad y a reducir el sobreajuste.
+    \item \texttt{colsample\_bytree}: porcentaje de características que usa cada árbol. Permite que no todos los árboles dependan exactamente de las mismas variables.
+    \item \texttt{reg\_lambda}: término de regularización \(L_2\). Penaliza pesos grandes y ayuda a controlar el sobreajuste.
+    \item \texttt{reg\_alpha}: término de regularización \(L_1\). Penaliza pesos pequeños y favorece modelos más simples.
+    \item \texttt{min\_child\_weight}: controla la creación de nodos nuevos, evitando divisiones poco relevantes.
+    \item \texttt{gamma}: coste mínimo necesario para realizar una partición en un nodo. Cuanto mayor es, más conservador es el crecimiento del árbol.
+    \item \texttt{random\_state}: semilla de aleatoriedad, que permite reproducir siempre los mismos resultados.
 \end{itemize}
 
-Por último, aplicamos SHAP sobre los modelos para generar las gráficas en forma ``waterfall''. Para agrupar las contribuciones locales de las gráficas anteriores, usamos una gráfica tipo ``beeswarm'' análoga a las de la~\autoref{fig:AASIST_global_SHAP}. En esta técnica, cada punto representa una muestra, su posición horizontal indica el valor SHAP asociado y su color refleja el valor original de la característica. 
+Por último, aplicamos SHAP sobre los modelos para generar las gráficas en forma ``waterfall''. Para agrupar las contribuciones locales de las gráficas anteriores, usamos una gráfica tipo ``beeswarm'' análoga a las de la~\autoref{fig:AASIST_global_SHAP}. En esta técnica, cada punto representa una muestra, su posición horizontal indica el valor SHAP asociado y su color refleja el valor original de la característica.

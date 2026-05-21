@@ -11,12 +11,12 @@ En este capítulo, en la sección~\ref{sec:arq_pipeline} explicamos la estructur
 Con el fin de representar su estructura general, se ha diseñado un diagrama de flujo simplificado. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, los modelos se han dividido en dos grupos según el tipo de entrada que utilizan: por un lado, aquellos que operan sobre características extraídas del audio y, por otro, los que trabajan directamente con la forma de onda cruda. En cada grupo se indican tanto los modelos implementados como las técnicas de XAI aplicadas a cada uno de ellos.
 \begin{figure}
     \centering
-	\includegraphics[width=\textwidth]{imagenes/Arquitectura_pipeline.png}
-	\caption{Arquitectura del pipeline.}
+    \includegraphics[width=\textwidth]{imagenes/Arquitectura_pipeline.png}
+    \caption{Arquitectura del pipeline.}
     \label{fig:Arquitectura_pipeline}
 \end{figure}
 
-Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \emph{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
+Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \texttt{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
 
 La primera parte del \textit{notebook} consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección ejecutable independiente, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
 
@@ -90,9 +90,9 @@ Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
 
 \section{AASIST}
 
-Para poder usar el modelo, hemos guardado con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa \textit{sinc-convolution} para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
+Para poder usar el modelo, hemos guardado con la función \texttt{torch.save()}. Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa \textit{sinc-convolution} para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
 
-Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los logit para ambas clases; ``score\_bonafide'', el valor de logits para la clase \textit{bona fide}; ``prob\_bonafide'', la probabilidad de que el audio sea \textit{bona fide} calculada a partir del logit, y ``pred\_clase'', que muestra la clase predicha por el modelo.
+Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: \texttt{logits}, un tensor que contiene los logit para ambas clases; \texttt{score\_bonafide}, el valor de logits para la clase \textit{bona fide}; \texttt{prob\_bonafide}, la probabilidad de que el audio sea \textit{bona fide} calculada a partir del logit, y \texttt{pred\_clase}, que muestra la clase predicha por el modelo.
 
 A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en la subsección~\ref{subsubsec:res_aasist}.
 

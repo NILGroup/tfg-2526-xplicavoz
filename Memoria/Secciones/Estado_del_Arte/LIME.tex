@@ -9,7 +9,7 @@ Una vez obtenidas estas predicciones, LIME calcula la similitud entre cada muest
 
 A continuación, se entrena un modelo interpretable $g$ utilizando las muestras perturbadas y sus correspondientes predicciones, ponderadas según la función de proximidad $\pi_x$. Este modelo sustituto no pretende imitar el comportamiento global del modelo sobre el que se aplica LIME, sino aproximar su funcionamiento únicamente en una región local alrededor de $x$. De esta forma, LIME facilita la interpretación de un modelo complejo, obteniendo el análisis de un modelo más sencillo y comprensible.
 
-La explicación $\xi(x)$ se obtiene resolviendo: 
+La explicación $\xi(x)$ se obtiene resolviendo:
 
 $$
 \xi(x) = \arg\min_{g \in G} \mathcal{L}(f, g, \pi_x) + \Omega(g)
