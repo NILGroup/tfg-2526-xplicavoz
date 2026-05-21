@@ -10,19 +10,19 @@ El MLP se queda fuera de esta discusión debido a que la complejidad de la entra
 
 \subsection*{Modelos que reciben los datos tabulares del audio}
 
-Para explicar por que pasa esto, nos apoyaremos en tres papers: \cite{firc2025deepfake,p2v2025,crossdomain2024}. Estos nos hablan de los problemas que presentan este grupo de modelos con el dataset que estamos empleando.
+Los resultados de estos modelos pueden parecer extraños a primera vista puesto que estos presentan unas métricas perfectas, por ello, para explicarlo, nos apoyaremos en tres papers: \cite{firc2025deepfake,p2v2025,crossdomain2024}. Estos nos hablan de los problemas que presentan este grupo de modelos con el dataset que estamos empleando.
 
 Estos resultados perfectos no se deben a que el problema esté solucionado y estos modelos sean así de eficaces siempre, más bien se debe a una serie de problemas relacionados con su simplicidad y con el entorno en el que los estamos usando.
 
 \subsubsection*{Problemas de generalización}
 
-Los tres papers mencionados coinciden en que los modelos tienen dificultades mostrar buenos resultados ante audios no vistos previamente o audios que se salgan del dominio del dataset con el que fueron entrenados.
+Los tres papers mencionados coinciden en que los modelos tienen dificultades mostrando buenos resultados ante audios no vistos previamente o audios que se salgan del dominio del dataset con el que fueron entrenados.
 
 Esto es causado porque los modelos aprenden patrones específicos del propio dataset que les entrena en lugar de aprender las características típicas de los audios generados.
 
 \subsubsection*{Problemas del dataset}
 
-El párrafo anterior nos introduce al siguiente problema, el dataset que estamos utilizando para entrenar estos modelos.
+El párrafo anterior nos introduce al siguiente problema: el dataset que estamos utilizando para entrenar estos modelos.
 
 El tamaño del dataset está limitando la generalización de los modelos, además de que, en el caso de los audios en español del dataset (todos los modelos de este grupo fueron entrenados con estos) se nota muy fácilmente la diferencia entre los audios reales y los generados haciendo que estemos en un entorno demasiado controlado y distante de uno realista. 
 
@@ -44,14 +44,14 @@ Por otro lado AASIST es un modelo diseñado específicamente para la tarea de de
 
 \subsubsection*{Resultados de las explicaciones}
 
-En cuanto a las explicaciones, el ranking de características que sacan ambos modelos basándose en su influencia es completamente distinto lo cual nos indica que ambos modelos están aprendiendo patrones completamente distintos lo cual nos indica que aquí la arquitectura del modelo si influye en los patrones que este aprende.
+En cuanto a las explicaciones, el ranking de características que obtienen ambos modelos basándose en su influencia es completamente distinto lo cual nos indica que ambos modelos están aprendiendo patrones completamente distintos, enfatizando en la influencia de la arquitectura del modelo en los patrones que este aprende.
 
-En Shap del AASIST podemos ver como la característica más influyente es el RMS lo que indica que está aprendiendo patrones globales de energía mientras que en el Wav2Vec2, la característica más influyente es el Spectral Centroid, lo que indica que está aprendiendo representaciones espectro-temporales.
+Al aplicar Shap a AASIST podemos ver como la característica más influyente es el RMS señalando que está aprendiendo patrones globales de energía mientras que en el Wav2Vec2, la característica más influyente es el Spectral Centroid, mostrando que está aprendiendo representaciones espectro-temporales.
 
 \subsection*{Comparación final}
 
 Como acabamos de ver, los modelos basados en Deep Learning aprenden representaciones más complejas que los modelos más simples, además son menos dependientes del entorno en el que los estamos usando.
 
-Esto se ve claramente en que los modelos del segundo grupo dependen de características distintas dependiendo de su preentrenamiento y su arquitectura mientras que los modelos más simples todos sacaban las mismas características importantes y despreciaban muchas veces las demás.
+Esto se ve claramente en que los modelos de deep learning dependen de características distintas dependiendo de su preentrenamiento y su arquitectura mientras que los modelos más simples obtienen las mismas características importantes y despreciaban muchas veces las demás.
 
-En cuanto a las métricas, el AASIST y el Wav2Vec2 consiguen resultados mucho más creibles y sobre todo generalizables a otros dominios de voces mientras que las métricas perfectas de los modelos del primer grupo nos dan a entender una homogeneidad y una sencillez en el entorno en el que han sido entrenados que no se refleja en entornos más realistas donde lo más probable es que sus resultados en esos dominios sean mucho peores.
+En cuanto a las métricas, el AASIST y el Wav2Vec2 consiguen resultados mucho más creibles y sobre todo generalizables a otros dominios de voces mientras que las métricas perfectas de los modelos más tradicionales nos dan a entender una homogeneidad y una sencillez en el entorno en el que han sido entrenados que no se refleja en entornos más realistas donde lo más probable es que sus resultados en esos dominios sean mucho peores.

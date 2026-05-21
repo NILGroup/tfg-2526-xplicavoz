@@ -4,19 +4,15 @@ Wav2Vec2 es un modelo de aprendizaje profundo end-to-end (el modelo procesa todo
 
 Como parte del entrenamiento, el modelo aprende unidades de habla discreta mediante un gumbel softmax (técnica utilizada en redes neuronales para aproximar el muestreo de distribuciones categóricas discretas de forma diferenciable) para representar las representaciones latentes en la tarea contrastiva.
 
-Tras el preentrenamiento en el habla no etiquetada, el modelo se ajusta con datos etiquetados con una pérdida de Clasificación Temporal Conexionista (CTC\textsuperscript{*}) para ser utilizada en tareas posteriores de reconocimiento de voz.
+Tras el preentrenamiento en el habla no etiquetada, el modelo se ajusta con datos etiquetados con una pérdida de Clasificación Temporal Conexionista (CTC\footnote{CTC es un algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados.}) para ser utilizada en tareas posteriores de reconocimiento de voz.
 
-\noindent \textsuperscript{*}CTC es un algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados
-
-El modelo se compone de un codificador de características convolucional multicapa que toma la entrada cruda de audio y devuelve representaciones latentes de voz para T instantes de tiempo. Luego son pasados a un Transformer\textsuperscript{*} para construir representaciones capturando información de toda la secuencia.
-
-\noindent \textsuperscript{*}Transformer es un modelo de aprendizaje automático usado en procesamiento de lenguaje natural diseñado para entender y generar secuencias de forma eficiente.
+El modelo se compone de un codificador de características convolucional multicapa que toma la entrada cruda de audio y devuelve representaciones latentes de voz para T instantes de tiempo. Luego son pasados a un Transformer\footnote{Transformer es un modelo de aprendizaje automático usado en procesamiento de lenguaje natural diseñado para entender y generar secuencias de forma eficiente.} para construir representaciones capturando información de toda la secuencia.
 
 El codificador de características consiste en muchos bloques convolucionales seguidos de una capa de normalización y una función de activación GELU (Gaussian Error Linear Unit). 
 
 GELU pondera las entradas por su probabilidad bajo una distribución gaussiana suavizando su activación cerca de 0.
 
-También realiza representaciones contextualizadas con Transformers siendo que la salida del codificador se pasa a una red que sigue la arquitectura de un Transformer, y usa una capa convolucional que actua como un embedding posicional relativo.
+También realiza representaciones contextualizadas con Transformers donde la salida del codificador se pasa a una red que sigue la arquitectura de un Transformer, y usa una capa convolucional que actua como un embedding posicional relativo.
 
 Por último, Wav2Vec2 consta de un módulo de cuantización que discretiza la salida del codificador a un conjunto finito de representaciones del habla. Esta cuantización se hace con la técnica de Gumbel Softmax.
 

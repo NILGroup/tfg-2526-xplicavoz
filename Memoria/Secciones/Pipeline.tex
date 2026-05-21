@@ -74,19 +74,27 @@ Por último, se observa cómo DiCE genera tres instancias contrafactuales que in
 
 \section{Wav2Vec2}
 
+Antes de explicar como será el flujo de ejecución del Wav2Vec2 en el pipeline, queremos puntualizar que, el código de XAI aplicado a espectrogramas ha sido modificado para que ya no sea necesario agrupar las bandas de frecuencia en ocho superbandas ya que, aunque hagamos al modelo más susceptible de ``overfitting'', podremos observar una imagen más nítida y detallada de que partes del audio influyen más en la predicción. Dicho esto, comenzamos con la explicación de como usar el modelo Wav2Vec2 dentro del pipeline.
+
 Para poder reutilizar el modelo, es necesario guardar tanto el modelo entrenado como el extractor de características. Para ello, se utiliza el método \texttt{save\_model()} de la clase \texttt{Trainer}, junto con el método \texttt{save\_pretrained()} de \texttt{Wav2Vec2FeatureExtractor}. Ambas clases provienen de la librería \texttt{Transformers}.
 
-Una vez guardados, con la función \texttt{from\_pretrained} de las clases \texttt{Wav2Vec2ForSequenceClassification} y \texttt{Wav2Vec2FeatureExtractor} puedes cargar tanto el modelo como el extractor de características.
+Una vez guardados, con la función \texttt{from\_pretrained} de las clases \textit{Wav2Vec2ForSequenceClassification} y \textit{Wav2Vec2FeatureExtractor} puedes cargar tanto el modelo como el extractor de características.
 
 Tras cargar lo que necesitamos, emplearemos la función \texttt{generar\_predicciones} del archivo \texttt{funciones\_wav2vec2} a la que pasándole el modelo, el extractor y el audio te devolverá tanto la salida del modelo (logits) como su predicción para ese audio (score).
 
-Para generar las explicaciones de ese audio necesitamos usar los 200 audios de nuestro dataframe junto con su label. Con los audios usaremos la función \texttt{preprocesamiento} de \texttt{funciones\_wav2vec2} que nos devolverá los espectrogramas de todos los audios en forma de tensor de \texttt{torch} y agruparemos todos los labels en otro tensor.
+Para generar las explicaciones de ese audio necesitamos usar los 200 audios de nuestro dataframe junto con su label. Con los audios usaremos la función \texttt{preprocesamiento} de \texttt{funciones\_wav2vec2} que nos devolverá los espectrogramas de todos los audios en forma de tensor de \textit{torch} y agruparemos todos los labels en otro tensor.
 
 Ahora que tenemos nuestro X\_train (tensor de los espectrogramas) y nuestro y\_train, podemos usar la función \texttt{build\_surrogate} y posteriormente la función \texttt{fit} de \texttt{torch} para entrenar nuestro surrogate model sobre el que aplicaremos las técnicas de XAI.
 
 Por último, usaremos la función \texttt{mostrar\_graficas} de \texttt{funciones\_wav2vec2} que nos generará la gráfica del espectrograma del audio y las explicaciones del Shap, Integrated Gradients, Lime y Grad Cam.
 
-Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
+En la Figura \ref{fig:Resultados_pipeline_wav2vec2} mostramos como se ven los resultados devueltos al aplicar XAI sobre Wav2Vec2 en el pipeline. A la vista de los resultados, podemos ver como el Shap y el Integrated Gradients son muy parecidos lo cual nos permite afirmar que la predicción depende de patrones distribuidos y no de ruido puntual. Por otro lado, la imagen del Lime es claramente inconsistente que no nos sirve para explicar la clasificación del audio. Por último, la imagen de Grad Cam es relativamente similar a las de Shap e IG pero debido a la simplicidad surrogate model y a la misma naturaleza del Grad Cam, nos acaba resultando en gráficas que parecen coherentes pero que acaban siendo inconsistentes. A la vista de estos resultados podemos concluir que con más datos de entrenamiento, se podría hacer más complejo el surrogate model y se podría conseguir un Lime y un Grad Cam representativos, sin embargo, con lo que tenemos, Shap e Integrated Gradients son las técnicas de XAI más estables para explicar las predicciones.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{imagenes/Resultados_pipeline_wav2vec2.png}
+	\caption{Resultados pipeline wav2vec2.}
+	\label{fig:Resultados_pipeline_wav2vec2}
+\end{figure}
 
 \section{AASIST}
 
