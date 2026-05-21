@@ -24,29 +24,29 @@ La primera parte del \textit{notebook} consta de una celda inicial con los impor
 
 Para empezar, vemos que el modelo, al predecir sobre los nuevos audios en español, los clasifica correctamente. Luego, para ver las explicaciones llamamos a las distintas funciones que habíamos definido. 
 
-SHAP, tanto local como global, nos muestra que las importancias que otorga a los nuevos audios son similares (en valor y en orden) que los que vimos en \ref{res_xai_rf}, como vemos en \ref{fig:pipe_shap_rf_esp_1}, \ref{fig:pipe_shap_rf_esp_2} y \ref{fig:pipe_shap_rf_global}. También hemos probado a visualizar las explicaciones de los audios en inglés y, vemos que el modelo no parece tener \emph{transfer learning} entre idiomas (recordemos que los modelos tabulares se han entrenado con audios en español), ya que las importancias tienden a ser de menor valor y a ser siempre positivas. Esto lo podemos ver en \ref{fig:pipe_shap_rf_eng_1} y \ref{fig:pipe_shap_rf_eng_2}.
+SHAP, tanto local como global, nos muestra que las importancias que otorga a los nuevos audios son similares (en valor y en orden) que los que vimos en la \nameref{res_xai_rf}, como vemos en \nameref{fig:pipe_shap_rf_esp_1}, \nameref{fig:pipe_shap_rf_esp_2} y \nameref{fig:pipe_shap_rf_global}. También hemos probado a visualizar las explicaciones de los audios en inglés y, vemos que el modelo no parece tener \emph{transfer learning} entre idiomas (recordemos que los modelos tabulares se han entrenado con audios en español), ya que las importancias tienden a ser de menor valor y a ser siempre positivas. Esto lo podemos ver en \nameref{fig:pipe_shap_rf_eng_1} y \nameref{fig:pipe_shap_rf_eng_2}.
 
-LIME nos muestra también que la característica más importante es ``spectral flatness'' y, además, mantiene unos umbrales de clasificación similares a los que vimos previamente (ver \ref{fig:pipe_lime_rf}).
+LIME nos muestra también que la característica más importante es ``spectral flatness'' y, además, mantiene unos umbrales de clasificación similares a los que vimos previamente (ver \nameref{fig:pipe_lime_rf}).
 
-DiCE nos da 3 instancias modificadas para que una instancia generada (audio generado que entra) sea clasificado como real, como vemos en \ref{tab:pipe_dice_rf}. Estas modificaciones son muy similares a las que vimos antes, centrándose principalmente en ``spectral flatness''.
+DiCE nos da 3 instancias modificadas para que una instancia generada (audio generado que entra) sea clasificado como real, como vemos en \nameref{tab:pipe_dice_rf}. Estas modificaciones son muy similares a las que vimos antes, centrándose principalmente en \textit{spectral flatness}.
 
 \section{LightGBM}
 
 En primer lugar, vemos que el modelo clasifica correctamente los nuevos audios. Ahora veamos los resultados de las funciones de explicación. 
 
-SHAP, tanto local como global, nos muestra que las importancias son iguales que las que vimos en \ref{res_xai_lgbm}, es decir, clasifica únicamente basándose en ``spectral flatness'', como vemos en \ref{fig:pipe_shap_lgbm_esp_1}, \ref{fig:pipe_shap_lgbm_esp_2} y \ref{fig:pipe_shap_lgbm_global}. Podemos ver sobre los audios en ingles en \ref{fig:pipe_shap_lgbm_eng_1} y \ref{fig:pipe_shap_lgbm_eng_2}, aquí sigue tendiendo a clasificar como real y los valores de las importancias difieren de los audios en español.
+SHAP, tanto local como global, nos muestra que las importancias son iguales que las que vimos en la \nameref{res_xai_lgbm}, es decir, clasifica únicamente basándose en \textit{spectral flatness}, como vemos en \nameref{fig:pipe_shap_lgbm_esp_1}, \nameref{fig:pipe_shap_lgbm_esp_2} y \nameref{fig:pipe_shap_lgbm_global}. Podemos ver sobre los audios en ingles en \nameref{fig:pipe_shap_lgbm_eng_1} y \nameref{fig:pipe_shap_lgbm_eng_2}, aquí sigue tendiendo a clasificar como real y los valores de las importancias difieren de los audios en español.
 
-LIME nos dice, como antes, que la característica más importante es ``spectral flatness'' con un dominio absoluto en la clasificación, como se aprecia en \ref{fig:pipe_lime_lgbm}.
+LIME nos dice, como antes, que la característica más importante es \textit{spectral flatness} con un dominio absoluto en la clasificación, como se aprecia en \nameref{fig:pipe_lime_lgbm}.
 
-DiCE nos da 3 instancias modificadas para que el nuevo audio generado sea clasificado como real, como vemos en \ref{tab:pipe_dice_lgbm}. Dichas modificaciones se centran en modificar el valor de ``spectral flatness''.
+DiCE nos da 3 instancias modificadas para que el nuevo audio generado sea clasificado como real, como vemos en \nameref{tab:pipe_dice_lgbm}. Dichas modificaciones se centran en modificar el valor de \textit{spectral flatness}.
 
 \section{Support Vector Machine}
 
 Antes de ver la explicación de los nuevos audios con SVM, observamos que el modelo los clasifica correctamente.
 
-En SHAP local vemos que las importancias cambian: en el audio generado tienen un peso mayor en ``spectral flatness'', mientras que en el audio real tienen un peso distribuido entre varias características, entre las que ``spectral flatness'' no aparece, como vemos en \ref{fig:pipe_shap_svm_esp_1} y \ref{fig:pipe_shap_svm_esp_2}. Por otro lado, en SHAP global podemos apreciar mejor que los audios clasificados como generados sí toman en cuenta dicha característica (con alto valor), mientras que los clasificados como reales tienen pesos más moderados, como aparece en \ref{fig:pipe_shap_svm_global}. Por último hemos probado a hacer, como antes, la explicación de los audios en inglés y podemos ver que tiene un rendimiento similar al de los modelos anteriores, es decir, pesos moderados y tendencia a clasificar como real. Esto lo encontramos en \ref{fig:pipe_shap_svm_eng_1} y \ref{fig:pipe_shap_svm_eng_2}.
+En SHAP local vemos que las importancias cambian: en el audio generado tienen un peso mayor en \textit{spectral flatness}, mientras que en el audio real tienen un peso distribuido entre varias características, entre las que dicha característica no aparece, como vemos en \nameref{fig:pipe_shap_svm_esp_1} y \nameref{fig:pipe_shap_svm_esp_2}. Por otro lado, en SHAP global podemos apreciar mejor que los audios clasificados como generados sí toman en cuenta dicha característica (con alto valor), mientras que los clasificados como reales tienen pesos más moderados, como aparece en \nameref{fig:pipe_shap_svm_global}. Por último hemos probado a hacer, como antes, la explicación de los audios en inglés y podemos ver que tiene un rendimiento similar al de los modelos anteriores, es decir, pesos moderados y tendencia a clasificar como real. Esto lo encontramos en \nameref{fig:pipe_shap_svm_eng_1} y \nameref{fig:pipe_shap_svm_eng_2}.
 
-LIME nos dice que la característica más importante, en el audio nuevo generado, es ``spectral flatness'' y, además, mantiene unos umbrales de clasificación similares a los que ya habíamos visto (ver \ref{fig:pipe_lime_svm}).
+LIME nos dice que la característica más importante, en el audio nuevo generado, es \textit{spectral flatness} y, además, mantiene unos umbrales de clasificación similares a los que ya habíamos visto (ver \nameref{fig:pipe_lime_svm}).
 
 \section{KNN}
 

@@ -5,7 +5,7 @@ Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son
 
 \subsubsection*{Fundamento conceptual: El hiperplano óptimo}
 
-El objetivo fundamental de una SVM es encontrar un hiperplano que separe las dos clases (en nuestro caso, voces reales y voces generadas por IA) con el máximo margen posible. Para comprender este concepto, es útil visualizar un problema simple en dos dimensiones:
+El objetivo fundamental de una SVM es encontrar un hiperplano que separe las clases (en nuestro caso dos, voces reales y voces generadas por IA) con el máximo margen posible. Para comprender este concepto, es útil visualizar un problema simple en dos dimensiones:
 
 \begin{itemize}
     \item Imaginemos que representamos cada audio como un punto en un plano, donde los ejes son dos características (por ejemplo, el primer formante y el primer MFCC).
@@ -29,9 +29,9 @@ El proceso de entrenamiento de una SVM puede entenderse en los siguientes pasos:
 
 \subsubsection*{El truco del kernel: Separando lo inseparable}
 
-Uno de los mayores desafíos en la clasificación es que las instancias rara vez son linealmente separables en el espacio original de características. Es decir, no existe una línea recta (o hiperplano) que pueda separarlas perfectamente. Para abordar esta limitación, las SVM introducen el concepto de \textbf{kernel} o núcleo.
+Uno de los mayores desafíos en la clasificación es que las instancias rara vez son linealmente separables en el espacio original de características. Es decir, no existe una línea recta (o hiperplano) que pueda separarlas perfectamente. Para abordar esta limitación, las SVM introducen el concepto de \textit{kernel} o núcleo.
 
-El \textit{truco del kernel} (\textit{kernel trick}) funciona de la siguiente manera conceptual:
+El \textit{truco del kernel} funciona de la siguiente manera conceptual:
 
 \begin{itemize}
     \item Los datos originales (no separables linealmente) se transforman implícitamente a un espacio de mayor dimensionalidad mediante una función matemática.
