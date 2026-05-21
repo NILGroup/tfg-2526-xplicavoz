@@ -1,8 +1,8 @@
 \subsection{AASIST}
 \label{subsubsec:eda_aasist}
-AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de ``spoofing'' de audio desarrollado en 2022~\parencite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
+AASIST (Audio Anti-Spoofing Using Integrated Spectro-Temporal graph attention networks) es un modelo de detección de \textit{spoofing} de audio desarrollado en 2022~\parencite{aasist2022}. La principal motivación para el desarrollo de este clasificador surge de que los patrones que sirven para diferenciar audios falsificados de audios bona fide se suelen encontrar en intervalos temporales o espectrales. Por esto, en la práctica se usaban ensembles costosos, desde el punto de vista computacional, donde cada subsistema se centraba en ciertas características. AASIST consigue reemplazar ese enfoque por un único sistema que combina información espectro-temporal buscando robustez ante diversos tipos de ataques.
 
-Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto por ser el más específico para la tarea de audio anti-spoofing, a diferencia de otros con usos fuera de este ámbito. Esta especialización para separar audios ``bona fide'' de muestras falsificadas se refleja tanto en su arquitectura, explicada en el siguiente punto, como en la motivación que llevó a su diseño. 
+Dentro de los modelos utilizados en este trabajo, AASIST destaca frente al resto por ser el más específico para la tarea de audio \textit{anti-spoofing}, a diferencia de otros con usos fuera de este ámbito. Esta especialización para separar audios \textit{bona fide} de muestras falsificadas se refleja tanto en su arquitectura, explicada en el siguiente punto, como en la motivación que llevó a su diseño. 
 \subsection*{Arquitectura y funcionamiento}
 
 \hspace{.7cm}
@@ -12,31 +12,31 @@ El modelo tiene las siguientes fases:
     \item Extracción de características a partir del audio en crudo:
         \begin{itemize}
             \item Se usa un \textbf{encoder} basado en RawNet2 que acaba generando un mapa de características F, $F \in \mathbb{R}^{C \times S \times T}$ siendo C, número de canales, S, número de bins espectrales y T, longitud temporal. Este encoder permite trabajar directamente sobre la forma de onda cruda, sin necesidad de extraer previamente características, y generar representaciones de alto nivel con estructura espacio-temporal.
-            \item Para ello, primero, se pasa el audio por una primera capa \textit{sinc-convolution} con 70 filtros. La diferencia frente al RawNet2 original, es que en AASIST se interpreta la salida de esta capa como una ``imagen'' 2D de 1 canal.
-            \item A continuación, esta primera representación se pasa por seis bloques residuales con \textbf{pre-activación} que van comprimiendo y transformando la información útil para tener una representación lo más compacta posible.
+            \item Para ello, primero, se pasa el audio por una primera capa \textit{sinc-convolution} con 70 filtros. La diferencia frente al RawNet2 original, es que en AASIST se interpreta la salida de esta capa como una imagen 2D de 1 canal.
+            \item A continuación, esta primera representación se pasa por seis bloques residuales con pre-activación que van comprimiendo y transformando la información útil para tener una representación lo más compacta posible.
         \end{itemize}
-    \item Posteriormente, se generan dos \textbf{grafos completos} que modelan, de forma independiente, los dominios temporal y espectral, siendo $G_t$ y $G_s$ respectivamente. A cada grafo, se le aplica ``\textbf{graph pooling}'' para reducir el número de nodos, conservando los más relevantes lo que permite bajar el coste computacional posterior.
+    \item Posteriormente, se generan dos \textbf{grafos completos} que modelan, de forma independiente, los dominios temporal y espectral, siendo $G_t$ y $G_s$ respectivamente. A cada grafo, se le aplica \textit{graph pooling} para reducir el número de nodos, conservando los más relevantes lo que permite bajar el coste computacional posterior.
     Estos nodos son representaciones vectoriales resultantes del mapa de características producido por el encoder y las aristas que los unen representan las relaciones entre estos.
     \item Ambos grafos se combinan estructuralmente en un tercer grafo, $G_{st}$ con $N_t+N_s$ nodos entre los que se generan todas las aristas nuevas posibles en ambas direcciones, manteniendo las aristas de los grafos anteriores.
-    \item Bloque HS-GAL (Heterogeneous Stacking Graph Attention Layer) + ``pooling'': 
+    \item Bloque HS-GAL (Heterogeneous Stacking Graph Attention Layer) + \textit{pooling}: 
         \begin{itemize}
             \item Se aplica \textbf{atención heterogénea} usando uno de los tres vectores de proyección según la relación entre los tipos de los nodos entre los que se hace la relación: temporal-temporal, espectral-espectral o temporal-espectral.
-            \item Un ``\textbf{stack node}'', conectado de forma unidireccional a todos los nodos, que va acumulando la información espectro-temporal entre sucesivas capas HS-GAL.
-            \item Tras cada HS-GAL, se aplica otra vez la técnica ``\textbf{graph pooling}'' con el mismo objetivo anterior.
+            \item Un \textit{stack node}, conectado de forma unidireccional a todos los nodos, que va acumulando la información espectro-temporal entre sucesivas capas HS-GAL.
+            \item Tras cada HS-GAL, se aplica otra vez la técnica \textit{graph pooling} con el mismo objetivo anterior.
         \end{itemize}
     Sobre la combinación del punto 3 para establecer la conectividad entre grafos, se aplica la operación MGO (\textit{Max Graph Operation}) que usa una combinación entre HS-GAL + pooling donde se realiza la verdadera integración entre ambos dominios para que los nodos heterogéneos aprendan cómo deben relacionarse entre sí. 
-    De forma paralela, se procesan dos ramas en las que se ejecutan consecutivamente dos secuencias MGO. Dentro de cada rama, el ``stack node'' se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento, teniendo como resultado un grafo heterogéneo.
-    \item Por último, usando las operaciones ``\textbf{max}'' y ``\textbf{average}'' sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el ``stack node'' para formar la representación final en la capa de salida.
+    De forma paralela, se procesan dos ramas en las que se ejecutan consecutivamente dos secuencias MGO. Dentro de cada rama, el \textit{stack node} se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento, teniendo como resultado un grafo heterogéneo.
+    \item Por último, usando las operaciones \textit{max} y \textit{average} sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el \textit{stack node} para formar la representación final en la capa de salida.
 \end{enumerate}
 
 \subsection*{Innovaciones clave}
 
 \begin{itemize}
-    \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simultáneamente ambos grafos, combinada con un ``stack node'' para ir acumulando información espectro-temporal.
+    \item \textbf{HS-GAL}: una capa de atención, que permite ir integrando simultáneamente ambos grafos, combinada con un \textit{stack node} para ir acumulando información espectro-temporal.
     
-    \item \textbf{MGO}: un método con dos ramas aplicando paralelamente HS-GAL más una fase de ``pooling'', lo que permite que cada secuencia pueda aprender distintos grupos de patrones.
+    \item \textbf{MGO}: un método con dos ramas aplicando paralelamente HS-GAL más una fase de \textit{pooling}, lo que permite que cada secuencia pueda aprender distintos grupos de patrones.
     
-    \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el ``stack node'' con las estadísticas sacadas de las operaciones ``max'' y ``average'' finales.
+    \item \textbf{Nuevo esquema de readout}: permite concatenar la información contenida en el \textit{stack node} con las estadísticas sacadas de las operaciones \textit{max} y \textit{average} finales.
 \end{itemize}
 
 \subsection*{Ventajas específicas para detección de deepfakes}
@@ -44,9 +44,9 @@ El modelo tiene las siguientes fases:
 \begin{itemize}
     \item \textbf{Integración espectro-temporal}: al modelar conjuntamente los grafos temporal y espectral en un grafo heterogéneo, permite encontrar información cruzada que se podría perder si se tratara por separado.
     
-    \item \textbf{Stack node}: esta técnica ``acumulativa'' ayuda a encontrar ``huellas'' de suplantación (spoofing) cuando no están presentes en un solo nodo y se encuentran distribuidas en varios instantes o bandas.
+    \item \textbf{Stack node}: esta técnica acumulativa ayuda a encontrar huellas de suplantación (spoofing) cuando no están presentes en un solo nodo y se encuentran distribuidas en varios instantes o bandas.
     
-    \item \textbf{Readout}: al juntar estadísticas globales (average) con evidencia puntual fuerte (max), facilita la detección de diferentes patrones de ``spoofing''.
+    \item \textbf{Readout}: al juntar estadísticas globales (average) con evidencia puntual fuerte (max), facilita la detección de diferentes patrones de \textit{spoofing}.
 
     \item \textbf{Ramas paralelas}: en MGO, se introducen dos ramas procesando en paralelo, permitiendo captar pistas complementarias.
 \end{itemize}

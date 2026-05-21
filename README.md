@@ -5,7 +5,7 @@ El interés reside en poder detectar voces falsas (spoofed) para poder evitar es
 El pipeline del repositorio se encuentra en la carpeta "Modelos" y se ejecuta mediante el archivo "pipeline.ipynb". Este notebook permite aplicar, al audio especificado como entrada en la segunda celda, todos los modelos desarrollados en este proyecto. Cada uno de ellos, dispone de una sección propias con celdas ejecutables independientes, lo que permite ejecutar cada modelo por separado. Para poder probarlo, existe la carpeta "audios_prueba_pipeline" que contiene audios de ejemplo para poder ejecutar el pipeline.  
 
 En cuanto a la estructuración del repositorio, tenemos 3 carpetas principales:
-- Dataset: tenemos dos archivos ".ipynb", para extraer características de cada audio y gráficas del dataset en su conjunto. Sobre la divisón de subcarpetas tenemos: "Features", para guardar las características del extractor subdivida por idioma; "Generado", con los audios "spoof" del dataset; "Natural", con los audios "bona fide" del dataset.
+- Dataset: tenemos dos archivos ".ipynb", para extraer características de cada audio y gráficas del dataset en su conjunto. Sobre la divisón de subcarpetas tenemos: "Features", para guardar las características del extractor subdivida por idioma; "Generado", con los audios spoof del dataset; "Natural", con los audios bona fide del dataset.
 - Memoria: tenemos organizado por subcarpetas todo lo contenido en memoria.
 - Modelos: para poder ejecutar el pipeline del repositorio tenemos: "pipeline.ipynb", dos archivos ".csv" con los datos para entrenar y dos archivos ".py" con funciones. Además, hay una carpeta con el nombre de cada integrante.
 - Modelos/German:

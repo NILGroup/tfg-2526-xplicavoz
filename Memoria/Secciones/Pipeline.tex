@@ -1,11 +1,11 @@
 \chapter{Pipeline}
 \label{sec:pipeline}
 
-Como cierre del proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo~\textbf{\ref{sec:metodologia}}. Este pipeline tiene como objetivo reunir en un único ``notebook'' todos los modelos desarrollados a lo largo del proyecto. De este modo, facilita la comparación de resultados y explicaciones entre modelos.
+Como cierre del proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo~\ref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único \textit{notebook} todos los modelos desarrollados a lo largo del proyecto. De este modo, facilita la comparación de resultados y explicaciones entre modelos.
 
 Cabe mencionar que el diseño de este pipeline constituye una de las aportaciones prácticas del proyecto, al integrar en una misma estructura modelos de distinta naturaleza y técnicas de explicabilidad complementarias. Esto permite analizar un mismo audio desde múltiples perspectivas, comparando no solo el resultado de clasificación, sino también la forma en que cada modelo justifica su decisión.
 
-En este capítulo, en la sección~\textbf{\ref{sec:arq_pipeline}} explicamos la estructura que hemos seguido para desarrollar el pipeline. Después, hemos dedicado una sección para cada modelo explicando como se ha realizado su integración en el pipelina. Por último, contemplamos la sección final~\textbf{\ref{sec:conc_pipeline}} donde se comentan las conclusiones del capítulo.
+En este capítulo, en la sección~\ref{sec:arq_pipeline} explicamos la estructura que hemos seguido para desarrollar el pipeline. Después, hemos dedicado una sección para cada modelo explicando como se ha realizado su integración en el pipelina. Por último, contemplamos la sección final~\ref{sec:conc_pipeline} donde se comentan las conclusiones del capítulo.
 \section{Arquitectura del pipeline}
 \label{sec:arq_pipeline}
 Con el fin de representar su estructura general, se ha diseñado un diagrama de flujo simplificado. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, los modelos se han dividido en dos grupos según el tipo de entrada que utilizan: por un lado, aquellos que operan sobre características extraídas del audio y, por otro, los que trabajan directamente con la forma de onda cruda. En cada grupo se indican tanto los modelos implementados como las técnicas de XAI aplicadas a cada uno de ellos.
@@ -18,7 +18,7 @@ Con el fin de representar su estructura general, se ha diseñado un diagrama de 
 
 Para poder reutilizar los modelos entrenados durante el proyecto y evitar su reentrenamiento para cada caso, hemos empleado distintas técnicas para guardarlos. Los modelos que se entrenan con datos tabulares se han guardado mediante la librería joblib y su método \emph{to\_pkl()}, el cual guarda los pesos de los modelos y permite cargarlos fácilmente desde otro archivo. Sobre la forma de guardar el resto de modelos, se explicará en el apartado correspondiente a cada modelo.
 
-La primera parte del ``notebook'' consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección ejecutable independiente, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
+La primera parte del \textit{notebook} consta de una celda inicial con los imports necesarios, una segunda celda donde se especifica la ruta del audio que se quiere analizar y una tercera celda en la que se extraen las características del audio mediante la función ``\texttt{extract\_features}'' definida en el archivo funciones.py. A partir de ahí, cada modelo tiene su propia sección ejecutable independiente, en la que se muestra tanto la predicción como las explicaciones obtenidas con las técnicas de XAI asociadas a dicho modelo.
 
 \section{Random Forest}
 
@@ -90,11 +90,11 @@ Resultados: \ref{fig:Resultados_pipeline_wav2vec2}
 
 \section{AASIST}
 
-Para poder usar el modelo, hemos guardado con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa ``sinc-convolution'' para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
+Para poder usar el modelo, hemos guardado con la función torch.save(). Hemos usado esta función porque nos permite, no solo guardar el modelo para calcular la predicción final, sino también guardar la capa \textit{sinc-convolution} para poder aplicar Integrated Gradients sobre ella. Para cargar el modelo, hemos usado la función torch.load() sobre el archivo guardado y la clase model del archivo AASIST.py de la carpeta Modelos/German.
 
-Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los ``logit'' para ambas clases; ``score\_bonafide'', el valor de ``logits'' para la clase ``bona fide''; ``prob\_bonafide'', la probabilidad de que el audio sea ``bona fide'' calculada a partir del ``logit'', y ``pred\_clase'', que muestra la clase predicha por el modelo.
+Una vez cargado, se usan las funciones cargadas del archivo German/funciones\_aasist.py que contiene todas las funciones necesarias para poder aplicar el modelo y las distintas técnicas de XAI. Primero, se ejecuta la función ``\texttt{score\_audio}'' que devuelve los resultados en forma de diccionario con cuatro claves: ``logits'', un tensor que contiene los logit para ambas clases; ``score\_bonafide'', el valor de logits para la clase \textit{bona fide}; ``prob\_bonafide'', la probabilidad de que el audio sea \textit{bona fide} calculada a partir del logit, y ``pred\_clase'', que muestra la clase predicha por el modelo.
 
-A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en la subsección~\textbf{\ref{subsubsec:res_aasist}}.
+A continuación, se ejecuta la función ``\texttt{aplicar\_XAI}'' que muestra las gráficas resultantes de aplicar las técnicas de XAI explicadas en la subsección~\ref{subsubsec:res_aasist}.
 
 \section{Conclusiones}
 \label{sec:conc_pipeline}
