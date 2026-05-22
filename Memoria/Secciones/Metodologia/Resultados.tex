@@ -1,13 +1,13 @@
 j\section{Resultados}
 \label{sec:resultados}
-A continuación, vamos a exponer los resultados que hemos obtenido aplicando, sobre el dataset propio, las distintas técnicas XAI que hemos escogido para cada modelo.
+A continuación, vamos a exponer los resultados que hemos obtenido entrenando los modelos y aplicando las distintas técnicas XAI que hemos escogido para cada modelo.
 \subsection{Modelos de datos tabulares}
 
-En este apartado vamos a agrupar y revisar los resultados de los modelos de datos tabulares, los cuales se mencionan en \ref{subsec:modelos}, sin incluir los resultados de IA explicable. Para comodidad en las tablas, los modelos los hemos acortado por sus siglas y, de ser exactamente iguales los resultados, la tabla de resultados mostrará todos los resultados compactados.
+En este apartado vamos a agrupar y revisar los resultados de los modelos de datos tabulares, los cuales se mencionan en la \autoref{subsec:modelos}, sin incluir los resultados de IA explicable. Para comodidad en las tablas, los modelos los hemos acortado por sus siglas y, de ser exactamente iguales los resultados, la tabla de resultados mostrará todos los resultados compactados.
 
 \subsubsection*{Modelos baseline}
 
-Como vemos en las tablas \ref{tab:metricas_principales_modelos_base} \ref{tab:classification_report_modelos_base} \ref{tab:analisis_errores_modelos_base}, estos modelos clasifican correctamente entre reales y generados. 
+Como vemos en las Tablas \ref{tab:metricas_principales_modelos_base}, \ref{tab:classification_report_modelos_base} y \ref{tab:analisis_errores_modelos_base}, estos modelos clasifican correctamente entre reales y generados. 
 
 \begin{table}
 \centering
@@ -46,7 +46,7 @@ Nº Instancias & 10 & 10 & 20 & 20 & 20 \\
 \centering
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Modelo} & \textbf{Verdaderos Negativos} & \textbf{Verdaderos Positivos} & \textbf{Falsos Positivos} & \textbf{Falsos Negativos} & \textbf{Error tipo I} & \textbf{Error tipo II}\\
+\textbf{Modelo} & \textbf{VN} & \textbf{VP} & \textbf{FP} & \textbf{FN} & \textbf{Error tipo I} & \textbf{Error tipo II}\\
 \midrule
 modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
 \bottomrule
@@ -57,7 +57,7 @@ modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
 
 \subsubsection*{Validación Cruzada Estratificada}
 
-Los resultados revelan que los modelos son estables en los 5 folds y que clasifican bien, como se ve en \ref{tab:cv_modelos_base}.
+Los resultados revelan que los modelos, Random Forest; LightGBM; Support Vector Machine, son estables en los 5 folds y que clasifican bien, como se ve en la Tabla \ref{tab:cv_modelos_base}.
 
 \begin{table}
 \centering
@@ -110,9 +110,9 @@ AUC-ROC & 0.9938 & +/- 0.0250 \\
 
 \subsubsection*{Grid Search}
 
-En primer lugar veamos cuáles son los mejores parámetros del grid que hemos definido en los distintos modelos.
+En primera instancia vamos a comparar los mejores parámetros, los que nos devuelve el Grid Search, con los que hemos definido en los modelos baseline. 
 
-Para Random Forest podemos ver que los parámetros difieren ligeramente a lo que hemos definido en el modelo baseline (ver Tabla \ref{tab:grid_search_rf}). Teniendo que los valores de max\_depth, min\_samples\_split y min\_samples\_leaf han disminuido.
+El Grid Search aplicado a Random Forest nos devuelve $max\_depth=5$ , $min\_samples\_split=2$ y $min\_samples\_leaf=1$. Dichos valores son inferiores a los que habíamos definido (ver Tabla \ref{tab:grid_search_rf}). Esto implica que los árboles son más ``simples'' ya que se reduce la profundidad y las muestras para hacer una división y que deben quedar en las hojas. 
 
 \begin{table}
 \centering
@@ -131,7 +131,7 @@ max\_features & sqrt \\
 \label{tab:grid_search_rf}
 \end{table}
 
-Como se mencionó en \autoref{subsubsec:mod_lgbm}, el Grid Search de LightGBM usaba parámetros distintos. Los resultados podemos verlos en la tabla \ref{tab:grid_search_lgbm}.
+Como se mencionó en la \autoref{subsubsec:mod_lgbm}, el Grid Search para LightGBM usa algunos parámetros distintos (ver Tabla \ref{tab:grid_search_lgbm}). Sobre los parámetros comunes nos fijamos que se ha elegido $num\_leaves=15$ y $learning\_rate=0.01$ , haciendo que los árboles tengan menos hojas y que aprendan más lentamente.
 
 \begin{table}
 \centering
@@ -153,7 +153,7 @@ reg\_lambda & 0 \\
 \label{tab:grid_search_lgbm}
 \end{table}
 
-El Grid Search del modelo SVM puede parecer más simple, pero es interesante ver los valores que devuelve (ver Tabla \ref{tab:grid_search_svm}. En primer lugar el valor de C es el mismo que el que definimos, 1. Por otro lado, gamma ahora vale 0,01, que, como se explicó en \autoref{subsubsec:eda_svm}, un valor bajo hace que los límites de decisión sean más suaves, preveniendo el sobreajuste.
+La búsqueda de hiperparámetros óptimos para SVM nos devuelve $C=1$ y $gamma=0.01$ (ver Tabla \ref{tab:grid_search_svm}). El valor de $C$ está inalterado, pero el de $gamma$ se ha reducido, logrando unos límites de decisión más suaves, preveniendo así el sobreajuste.
 
 \begin{table}
 \centering
@@ -209,61 +209,61 @@ solver & liblinear \\
 
 En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Random Forest.
 
-Como podemos observar en las gráficas \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
+Como podemos observar en las Figuras \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
 
-Como se muestra en la gráfica \ref{fig:shap_rf_global}, la importancia de las características en la explicación global de SHAP concuerda con las que vimos antes, en mismo orden y magnitud. Además, en colores podemos ver mejor, por ejemplo en spectral flatness, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
+Como se muestra en la Figura \ref{fig:shap_rf_global}, efectivamente las variables más importantes son, en orden $spectral flatness$, $mfcc 1$ y $spectral bandwidth$, como veíamos antes. Además, en colores podemos ver mejor, por ejemplo en $spectral flatness$, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
 
-Ya que hemos visto que ``spectral flatness'' es la característica más influyente con diferencia, hemos decidido eliminarla y entrenar un modelo, cuyos resultados podemos ver en las tablas \ref{tab:metricas_principales_rf_sin_specflat}, \ref{tab:classification_report_rf_sin_specflat} y \ref{tab:analisis_errores_rf_sin_specflat}. Aquí vemos que el modelo deja de clasificar correctamente, debido a que, al perder la característica más influyente, el modelo pierde rendimiento en clasificación.
+Ya que hemos visto que $spectral flatness$ es la característica más influyente con diferencia, hemos decidido eliminarla y entrenar un modelo, cuyos resultados podemos ver en las Tablas \ref{tab:metricas_principales_rf_sin_specflat}, \ref{tab:classification_report_rf_sin_specflat} y \ref{tab:analisis_errores_rf_sin_specflat}. Aquí vemos que el modelo deja de clasificar correctamente, debido a que, al perder la característica más influyente, el modelo pierde rendimiento en clasificación.
 
-Tras quitar la característica ``spectral flatness'' del modelo, la explicación que genera la podemos ver en las gráficas \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}. Aquí vemos que otras características adquieren peso, ya que la falta de una característica hace que las importancias se reestructuren. En particular vemos que ``spectral bandwidth'' mantiene una alta importancia, mientras que ``mfcc 1'' la mantiene solo en la predicción de clase negativa.
+Tras quitar la característica $spectral flatness$ del modelo, la explicación que genera la podemos ver en las Figuras \ref{fig:1_shap_rf_local_sin_specflat} y \ref{fig:2_shap_rf_local_sin_specflat}. Aquí vemos que otras características adquieren peso, ya que la falta de una característica hace que las importancias se reestructuren. En particular vemos que $spectral bandwidth$ mantiene una alta importancia, mientras que $mfcc 1$ la mantiene solo en la predicción de clase negativa.
 
-Con la nueva distribución de importancias, hemos decidido quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1''. Los resultados del modelo los encontramos en las tablas \ref{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_rf_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_rf_sin_sflat_mfcc1_sband}. Estos son algo inferiores a los previos, y es consecuente con que al eliminar características, el modelo pierde rendimiento.
+Con la nueva distribución de importancias, hemos decidido quitar, además de $spectral flatness$, $spectral bandwidth$ y $mfcc 1$. Los resultados del modelo los encontramos en las Tablas \ref{tab:metricas_principales_rf_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_rf_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_rf_sin_sflat_mfcc1_sband}. Estos son algo inferiores a los previos, y es consecuente con que al eliminar características, el modelo pierda rendimiento.
 
-Como se puede observar en las gráficas \ref{fig:1_shap_rf_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}, las importancias vuelven a redistribuirse, ganando más en este caso ``silence ratio''. Es interesante ver que ahora la segunda predicción, que hasta ahora predecía como positiva, ahora la predice como negativa (falso negativo), debido a que con las características que tiene no es capaz de clasificarla correctamente.
+Como se puede observar en las Figuras \ref{fig:1_shap_rf_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_rf_local_sin_sflat_mfcc1_sband}, las importancias vuelven a redistribuirse, ganando más en este caso $silence ratio$. Es interesante ver que ahora la segunda predicción, que hasta ahora predecía como positiva, ahora la predice como negativa (falso negativo), debido a que con las características que tiene no es capaz de clasificarla correctamente.
 
-Como vemos en la imagen \ref{fig:lime_rf}, la explicación que genera LIME tiene ``spectral flatness'' como característica insignia, aunque también aparecen, con menor relevancia, ``mfcc 1'' y ``spectral bandwidth''.
+Como vemos en la Figura \ref{fig:lime_rf}, la explicación que genera LIME tiene $spectral flatness$ como característica insignia, aunque también aparecen, con menor relevancia, $mfcc 1$ y $spectral bandwidth$.
 
-Los cambios (counterfactuals) que nos devuelve Dice para Random Forest nos muestran, como ya hemos visto, que ``spectral flatness'' y ``mfcc 1'' son importantes, pues en las tres instancias deberían cambiar de valor, como observamos en la tabla \ref{tab:dice_rf}.
+Los cambios (counterfactuals) que nos devuelve DiCE para Random Forest nos muestran, como ya hemos visto, que $spectral flatness$ y $mfcc 1$ son importantes, pues en las tres instancias deberían cambiar de valor, como observamos en la Tabla \ref{tab:dice_rf}.
 
 \subsection{LightGBM}
 \label{res_xai_lgbm}
 
 En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a LightGBM.
 
-Como se puede ver en las gráficas \ref{fig:1_shap_lgbm_local} y \ref{fig:2_shap_lgbm_local}, el modelo clasifica únicamente con ``spectral flatness''. Esto nos dice que, pese a que antes no observamos un sobreajuste, el modelo realmente lo tiene con esta característica.
+Como se puede ver en las Figuras \ref{fig:1_shap_lgbm_local} y \ref{fig:2_shap_lgbm_local}, el modelo clasifica únicamente con $spectral flatness$. Esto nos dice que, pese a que antes no observamos un sobreajuste, el modelo realmente lo tiene con esta característica.
 
-La importancia de características en la explicación global es congruente con las explicaciones locales: la característica ``spectral flatness'' tiene mucho peso, mientras que las otras tienen peso cercano a 0.
+La importancia de características en la explicación global es congruente con las explicaciones locales: la característica $spectral flatness$ tiene mucho peso, mientras que las otras tienen peso cercano a 0 (ver Figura \ref{fig:shap_lgbm_global}).
 
-Hemos quitado dicha característica para ver cómo se comporta el modelo, lo que podemos ver en las tablas \ref{tab:metricas_principales_lgbm_sin_specflat}, \ref{tab:classification_report_lgbm_sin_specflat} y \ref{tab:analisis_errores_lgbm_sin_specflat}. Como era de esperar al ver el sobreajuste del modelo el rendimiento ha bajado, aunque mantiene valores de predicción muy altos.
+Hemos quitado dicha característica para ver cómo se comporta el modelo, lo que podemos ver en las Tablas \ref{tab:metricas_principales_lgbm_sin_specflat}, \ref{tab:classification_report_lgbm_sin_specflat} y \ref{tab:analisis_errores_lgbm_sin_specflat}. Como era de esperar al ver el sobreajuste del modelo el rendimiento ha bajado, aunque mantiene valores de predicción muy altos.
 
-Para ver ahora la importancia de cada característica veamos las gráficas \ref{fig:1_shap_lgbm_local_sin_specflat} y \ref{fig:2_shap_lgbm_local_sin_specflat}. Podemos ver que en la instancia que clasifica como negativa los pesos se redistribuyen razonablemente bien, mientras que en la instancia que clasifica como positiva encontramos que ``spectral flatness'' recibe casi todo el peso.
+Para ver ahora la importancia de cada característica veamos las Figuras \ref{fig:1_shap_lgbm_local_sin_specflat} y \ref{fig:2_shap_lgbm_local_sin_specflat}. Podemos ver que en la instancia que clasifica como negativa los pesos se redistribuyen razonablemente bien, mientras que en la instancia que clasifica como positiva encontramos que ``spectral flatness'' recibe casi todo el peso.
 
-Los resultados, tras quitar ``spectral flatness'' y ``mfcc 1'', siguen siendo buenos, como vemos en las tablas \ref{tab:metricas_principales_lgbm_sin_sflat_mfcc1}, \ref{tab:classification_report_lgbm_sin_sflat_mfcc1} y \ref{tab:classification_report_lgbm_sin_sflat_mfcc1}. Podemos ver que el rendimiento no ha bajado demasiado pese a quitar dichas características y que mantiene una baja tasa de falsos positivos y falsos negativos.
+Los resultados, tras quitar $spectral flatness$ y $mfcc 1$, siguen siendo buenos, como vemos en las Tablas \ref{tab:metricas_principales_lgbm_sin_sflat_mfcc1}, \ref{tab:classification_report_lgbm_sin_sflat_mfcc1} y \ref{tab:classification_report_lgbm_sin_sflat_mfcc1}. Podemos ver que el rendimiento no ha bajado demasiado pese a quitar dichas características y que mantiene una baja tasa de falsos positivos y falsos negativos.
 
-Encontramos que la característica que más explica ahora es ``spectral bandwidth'', característica que, como ya hemos visto, tiene bastante importancia, como vemos en las gráficas \ref{fig:1_shap_lgbm_local_sin_sflat_mfcc1} y \ref{fig:2_shap_lgbm_local_sin_sflat_mfcc1}. Se ve que la importancia de dicha característica es muy alta, el resto de características no tienen mucho peso en la clasificación.
+Encontramos que la característica que más explica ahora es $spectral bandwidth$, característica que, como ya hemos visto, tiene bastante importancia, como vemos en las Figuras \ref{fig:1_shap_lgbm_local_sin_sflat_mfcc1} y \ref{fig:2_shap_lgbm_local_sin_sflat_mfcc1}. Se ve que la importancia de dicha característica es muy alta, el resto de características no tienen mucho peso en la clasificación.
 
-Como vemos en la imagen \ref{fig:lime_lgbm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar. También encontramos otras que hemos visto antes como ``mfcc 1'' o `` spectral bandwidth'' con pesos relevantes.
+Como vemos en la Figura \ref{fig:lime_lgbm}, la explicación que genera LIME también tiene $spectral flatness$ como principal caracteristica a la hora de clasificar. También encontramos otras que hemos visto antes como $mfcc 1$ o $spectral bandwidth$ con pesos relevantes.
 
-La explicación que genera DiCE para LGBM nos muestra tres instancias con alteraciones de, principalmente, ``spectral flatness'', aunque también se ven modificaciones de ``mfcc 1'' y ``mfcc 5'', como vemos en la tabla \ref{tab:dice_lgbm}.
+La explicación que genera DiCE para LGBM nos muestra tres instancias con alteraciones de, principalmente, $spectral flatness$, aunque también se ven modificaciones de $mfcc 1$ y $mfcc 5$, como vemos en la Tabla \ref{tab:dice_lgbm}.
 
 \subsection{Support Vector Machine}
 \label{res_xai_svm}
 
-En este apartado vamos a mostrar los resultados y comentaremos un poco  al respecto, aunque ahondaremos más en la parte de IA explicable (XAI).
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Support Vector Machines.
 
-Como podemos ver en las gráficas \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
+Como podemos ver en las Figuras \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
 
-Con estas dos instancias no tenemos una clara idea de cuál es la característica más influyente. Como vemos en la gráfica \ref{fig:shap_svm_global}, la más influyente es ``spectral flatness'', como en los casos anteriores. Aunque en este caso no tiene un peso excesivamente alto, pues hay otras como ``spectral bandwidth'' o ``mfcc 1'' que también tienen un peso notable.
+Con estas dos instancias no tenemos una clara idea de cuál es la característica más influyente. Como vemos en la Figura \ref{fig:shap_svm_global}, la más influyente es $spectral flatness$, como en los casos anteriores. Aunque en este caso no tiene un peso excesivamente alto, pues hay otras como $spectral bandwidth$ o $mfcc 1$ que también tienen un peso notable.
 
-Para ver si ``spectral flatness'' tiene una alta dominancia en la clasificación, entrenamos un modelo sin ella, esto se puede ver en las tablas \ref{tab:metricas_principales_svm_sin_specflat}, \ref{tab:classification_report_svm_sin_specflat} y \ref{tab:analisis_errores_svm_sin_specflat}. Como vemos, el modelo sigue clasificando correctamente aún sin dicha característica.
+Para ver si $spectral flatness$ tiene una alta dominancia en la clasificación, entrenamos un modelo sin ella, esto se puede ver en las Tablas \ref{tab:metricas_principales_svm_sin_specflat}, \ref{tab:classification_report_svm_sin_specflat} y \ref{tab:analisis_errores_svm_sin_specflat}. Como vemos, el modelo sigue clasificando correctamente aún sin dicha característica.
 
-Para ver ahora la nueva distribución de importancia de características mostramos las gráficas \ref{fig:1_shap_svm_local_sin_specflat} y \ref{fig:2_shap_svm_local_sin_specflat}. Como se puede observar las importancias siguen estando bien distribuidas, aunque sí vemos que ``spectral bandwidth'' está en la zona de alta importancia en ambas instancias predichas.
+Para ver ahora la nueva distribución de importancia de características mostramos las Figuras \ref{fig:1_shap_svm_local_sin_specflat} y \ref{fig:2_shap_svm_local_sin_specflat}. Como se puede observar las importancias siguen estando bien distribuidas, aunque sí vemos que $spectral bandwidth$ está en la zona de alta importancia en ambas instancias predichas.
 
-Ahora probamos a quitar, además de ``spectral flatness'', ``spectral bandwidth'' y ``mfcc 1'', resultados en las tablas \ref{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_svm_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}. Vemos que el modelo sigue clasificando correctamente.
+Ahora probamos a quitar también $spectral bandwidth$ y $mfcc 1$, resultados en las Tablas \ref{tab:metricas_principales_svm_sin_sflat_mfcc1_sband}, \ref{tab:classification_report_svm_sin_sflat_mfcc1_sband} y \ref{tab:analisis_errores_svm_sin_sflat_mfcc1_sband}. Vemos que el modelo sigue clasificando correctamente.
 
-Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las gráficas \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que ``spectral rolloff'' toma un alto valor, pero no deja a 0 el resto de importancias.
+Queremos ahora ver si las importancias se mantienen distribuidas, lo vemos en las Figuras \ref{fig:1_shap_svm_local_sin_sflat_mfcc1_sband} y \ref{fig:2_shap_svm_local_sin_sflat_mfcc1_sband}. Tenemos que la distribución de importancias se mantiene, aunque en la instancia predicha como positiva tenemos que $spectral rolloff$ toma un alto valor, pero no deja a 0 el resto de importancias.
 
-Como vemos en la imagen \ref{fig:lime_svm}, la explicación que genera LIME también tiene ``spectral flatness'' como principal caracteristica a la hora de clasificar.
+Como vemos en la Figura \ref{fig:lime_svm}, la explicación que genera LIME también tiene $spectral flatness$ como principal caracteristica a la hora de clasificar.
 
 \subsection{KNN}
 \label{res_xai_knn}
