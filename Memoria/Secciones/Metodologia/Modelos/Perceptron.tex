@@ -2,13 +2,11 @@
 
 Los perceptrones multicapa son modelos de redes neuronales empleados para la aproximación de funciones complejas, entre las que se incluyen tareas de clasificación binaria.
 
-\subsubsection*{Justificación del modelo}
-
-El motivo de probar un MLP para esta tarea de clasificación fue, sobre todo, explorar qué posibles opciones tenemos a la hora de abordarla.
+El motivo de probar un MLP (perceptrón multicapa) para esta tarea de clasificación fue, sobre todo, explorar qué posibles opciones tenemos a la hora de abordarla.
 
 La idea inicial fue comprobar qué conseguíamos con los modelos más simples, ya que contamos con un dataset muy reducido.
 
-\subsubsection*{Planificación del trabajo}
+El código realizado para implementar este modelo se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/MLP.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/MLP.ipynb}''
 
 El tratamiento del perceptrón se divide en varias etapas:
 
@@ -18,13 +16,7 @@ El tratamiento del perceptrón se divide en varias etapas:
  \item Obtención y análisis de resultados: En esta fase se analizarán los resultados obtenidos por el modelo.
 \end{enumerate}
 
-\subsubsection*{Preprocesamiento de los datos}
-
-El proceso de tratamiento de datos comienza extrayendo del dataset las características globales de los audios, es decir, los que representan una media. También se obtendrán los espectrogramas de cada audio.
-
-A continuación, emplearemos un MLP y una CNN de PyTorch, que reciben como entrada tensores de datos.
-
-El objetivo de estas dos redes auxiliares es obtener vectores de \textit{embeddings} a partir de los audios.
+El proceso de tratamiento de datos comienza extrayendo del dataset las características globales de los audios, es decir, los que representan una media. También se obtendrán los espectrogramas de cada audio. A continuación, emplearemos un MLP y una CNN(red neuronal convolucional) de PyTorch, que reciben como entrada tensores de datos. El objetivo de estas dos redes auxiliares es obtener vectores de \textit{embeddings} a partir de los audios.
 
 \subsubsection*{Embeddings de los espectrogramas}
 
@@ -101,8 +93,6 @@ Para las características definiremos el siguiente perceptrón multicapa:
 
 Este proceso acabará devolviendo un \textit{embedding} de características de 64 dimensiones.
 
-\subsubsection*{Embedding combinado}
-
 A continuación, se concatenan ambos vectores en un único vector de \textit{embeddings} que combina características y espectrograma. Estos vectores resultantes constituirán los datos de entrada del perceptrón encargado de clasificar los audios.
 
 Por último, se divide el dataset en conjuntos de entrenamiento (80\%) y prueba (20\%).
@@ -144,5 +134,3 @@ En cuanto al entrenamiento, se emplea la siguiente configuración:
  \item Criterion = MSELoss
  \item Optimizer = Adam (Algoritmo empleado para entrenar redes neuronales combinando el momentum y tasas de aprendizajes adaptativas).
 \end{enumerate}
-
-Enlace al notebook: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/MLP.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/MLP.ipynb}''

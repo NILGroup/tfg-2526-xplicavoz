@@ -1,9 +1,13 @@
 \chapter{Conclusiones}
 \label{chap:conclusiones}
 
+% MOTIVACION
+
+% RESUMEN
+
 Tras terminar de revisar todo el proceso, desde la introducción del problema hasta las pruebas con modelos y una pequeña prueba real, se puede apreciar que el tema de esta investigación no es para nada trivial, pues diferentes modelos tienen diferentes resultados. Se pueden ver claras diferencias entre los modelos específicos para la voz frente a los modelos generales (los que entrenan con datos tabulares). Los generales parecen tener cierta predisposición por algunas características, es decir, les otorgan una alta importancia frente al resto de características. Si bien esto puede traducirse en una alta precisión dentro del entorno de entrenamiento, introduce una vulnerabilidad crítica: el riesgo de ``overfitting'' y la falta de robustez ante sutiles variaciones en la señal que resultarían imperceptibles para el oído humano. Por otro lado, los modelos específicos para el procesamiento de audio han demostrado un comportamiento más equilibrado y moderado. Esto no implica un rendimiento inferior, al contrario, sugiere una mayor capacidad de generalización al capturar mejor la naturaleza intrínseca de la voz, lo que los convierte en candidatos más estables y fiables para entornos de producción reales donde la variabilidad del entorno es la norma.  
 
-En la prueba real se han escogido 4 audios, dos en español y dos en inglés, de los cuales uno es real y el otro generado. Se ha podido ver, en forma de simulación en código, cómo sería el análisis de una voz nueva, su clasificación en real o generada, y el uso de métodos que explican la predicción de los modelos. En esta prueba se ha visto que es de vital importancia los audios con los que se entrenan los modelos, puesto que uno que llega para ser clasificado, de ser de distinta calidad (ruido de fondo, claridad de la voz, pausas, etc.), puede generar predicciones equivocadas, por lo que un buen dataset con diversidad de condiciones es necesario para un correcto funcionamiento de los modelos.
+ En esta prueba se ha visto que es de vital importancia los audios con los que se entrenan los modelos, puesto que uno que llega para ser clasificado, de ser de distinta calidad (ruido de fondo, claridad de la voz, pausas, etc.), puede generar predicciones equivocadas, por lo que un buen dataset con diversidad de condiciones es necesario para un correcto funcionamiento de los modelos.
 
 En definitiva, este trabajo no solo alcanza los objetivos planteados, sino que constituye una base sólida y viable para el desarrollo y la aplicación de técnicas de IA explicable sobre de sistemas de detección de ``deepfakes'' de voz, además de abrir la puerta a futuras extensiones de los mismos.
 

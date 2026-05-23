@@ -1,24 +1,14 @@
 \subsection{Wav2Vec2}
 
-El modelo elegido fue Wav2Vec2, un modelo de aprendizaje profundo para el procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente a partir de la señal de audio cruda, sin necesidad de extraer características manualmente.
-
-\subsubsection*{Justificación del modelo}
+El modelo Wav2Vec2 es un modelo de aprendizaje profundo para el procesamiento de voz que permite obtener representaciones acústicas de alta calidad directamente a partir de la señal de audio cruda, sin necesidad de extraer características manualmente.
 
 El propósito de realizar un \textit{fine-tuning} de este modelo para adaptarlo a nuestra tarea se basa en que, al contar con un dataset de audio muy reducido, es necesario partir de un modelo previamente entrenado con grandes volúmenes de datos. Aunque dicho entrenamiento previo no esté orientado a clasificación, permite reutilizar el conocimiento aprendido y adaptar el modelo a nuestra tarea mediante su reentrenamiento.
 
-\subsubsection*{Planificación del trabajo}
+\subsubsection*{Fine-tunning del Wav2Vec2}
 
-El proceso de \textit{fine-tuning} de este modelo se divide en varias etapas:
+El código realizado para implementar este fine-tunning se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}''
 
-\begin{enumerate}
- \item Preprocesamiento de los datos: Conversión de los datos al formato requerido por el modelo.
- \item Configuración y entrenamiento del modelo: Adaptación y reentrenamiento del modelo con los nuevos datos.
- \item Análisis de resultados: Evaluación de los resultados obtenidos.
-\end{enumerate}
-
-Antes de comenzar con el preprocesamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}, \textit{TrainingArguments}, \textit{Wav2Vec2ForSequenceClassification} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de la librería \textit{Pandas}.
-
-\subsubsection*{Preprocesamiento de los datos}
+Antes de comenzar con el preprocesamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}\footnote{Trainer es la librería encargada de ejecutar el bucle de entrenamiento, calcular la pérdida, actualizar los pesos, evaluar el modelo y guardar checkpoints.}, \textit{TrainingArguments}\footnote{TrainingArguments es la librería encargada de la configuración del entrenamiento del modelo, en ella se definen parámetros como el número de épocas, el learning rate...}, \textit{Wav2Vec2ForSequenceClassification}\footnote{Wav2Vec2ForSequenceClassification es la librería encargada de adaptar el Wav2Vec2 a la tarea de clasificación sobre una secuencia de audio.} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}\footnote{Wav2Vec2FeatureExtractor es la librería encargada de preparar el audio antes de introducirlo al modelo.}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de la librería \textit{Pandas}.
 
 Para el preprocesamiento de los audios se definen dos constantes globales: la frecuencia de muestreo (\textit{sampling rate}), fijada en 16000 Hz (ya que el modelo fue entrenado con esta frecuencia), y la duración máxima de los audios, establecida en 10 segundos.
 
@@ -36,57 +26,23 @@ A continuación, los datos se procesan mediante una serie de funciones para adap
  \item Colector de datos: recoge todos los datos del dataframe (valores de entrada y etiquetas) y devuelve un diccionario de esos datos transformados a tensores de PyTorch.
 \end{enumerate}
 
-\subsubsection*{Configuración y entrenamiento del modelo}
-
 En esta fase se emplean las clases restantes de la librería \textit{transformers}, comenzando con \textit{Wav2Vec2ForSequenceClassification}.
 
 Esta clase permite cargar el modelo base Wav2Vec2, configurar el número de salidas y definir la tarea. En nuestro caso, el modelo se configura para clasificación binaria (\textit{single-label classification}) con dos salidas.
 
 Para el entrenamiento de este modelo se han usado los 200 audios del dataset (100 en español y 100 en inglés) divididos como se mencionó anteriormente (80-10-10). Dado que son pocos audios para efectuar esta tarea, optamos por congelar el extractor de características para evitar el sobreajuste de los filtros del modelo.
 
-A continuación, se definen las métricas de evaluación. En este caso, debido al posterior postprocesado de las salidas, se emplean la precisión (\textit{accuracy}), el \textit{F1-score} y el área bajo la curva ROC (ROC-AUC).
-
-Posteriormente, se utiliza la clase \textit{TrainingArguments} para configurar el entrenamiento del modelo:
-
-\begin{itemize}
- \item \texttt{output\_dir = ./wav2vec2-deepfake}: Carpeta que guarda los checkpoints, logs y el mejor modelo.
- \item \texttt{eval\_strategy = steps}: Evaluación cada x pasos.
- \item \texttt{save\_strategy = steps}: Guardado cada x pasos.
- \item \texttt{logging\_steps = 50}: Cada 50 pasos calcula el loss, la tasa de aprendizaje y las métricas si toca evaluar.
- \item \texttt{save\_steps = 500}: Evalúa cada 500 pasos.
- \item \texttt{eval\_steps = 500}: Guarda cada 500 pasos.
- \item \texttt{learning\_rate = 1e-5}: Tasa de aprendizaje. Es tan baja ya que se trata de una tarea de fine-tuning.
- \item \texttt{per\_device\_train\_batch\_size = 4}: Batch-size del entrenamiento.
- \item \texttt{per\_device\_eval\_batch\_size = 4}: Batch-size de la evaluación.
- \item \texttt{gradient\_accumulation\_steps = 2}: Acumula gradientes durante 2 pasos antes de actualizar los pesos.
- \item \texttt{num\_train\_epochs = 5}: Épocas de entrenamiento.
- \item \texttt{fp16 = True}: Precisión de 16 bits para optimizar memoria y mejorar la velocidad de entrenamiento.
- \item \texttt{metric\_for\_best\_model = auc}: Métrica que determinará cuál es el mejor modelo.
- \item \texttt{load\_best\_model\_at\_end = True}: Carga el modelo con mejor métrica AUC.
- \item \texttt{report\_to = none}: Desactiva la integración con herramientas externas.
-\end{itemize}
-
-Por último, se utiliza la clase \textit{Trainer} para ensamblar todo el pipeline y definir el proceso de entrenamiento:
-
-\begin{itemize}
- \item \texttt{model = model}
- \item \texttt{args = training\_args}
- \item \texttt{train\_dataset = train\_dataset["train"]}
- \item \texttt{eval\_dataset = train\_dataset["eval"]}
- \item \texttt{data\_collator = data\_collator}
- \item \texttt{processing\_class = feature\_extractor}
- \item \texttt{compute\_metrics = compute\_metrics}
-\end{itemize}
+Posteriormente, se utiliza la clase \textit{TrainingArguments} para configurar el entrenamiento del modelo. Por último, se utiliza la clase \textit{Trainer} para ensamblar todo el pipeline y definir el proceso de entrenamiento.
 
 Una vez configurados todos los componentes, se procede a iniciar el entrenamiento del modelo.
 
-Enlace al notebook: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}{notebook}''
-
 \subsubsection*{Implementación de modelos de XAI para la interpretabilidad del modelo Wav2Vec2 fine-tuneado}
+
+El código realizado para implementar esta tarea se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}''
 
 Ahora que tenemos el resultado del modelo (el Wav2Vec2 fine-tuneado), vamos a explicar que características y que parte del espectrograma de Mel del audio son las más influyentes.
 
-Sin embargo ahora nos encontramos con el problema principal de este modelo que es que como entrada recibe un embedding, entonces, no podemos aplicar técnicas de XAI directamente al modelo. Otro problema que tenemos es que el código que tenemos de extracción de características saca muchísimas características y de ciertas características no solo saca un valor escalar sino que también saca un vector con sus valores en cada instante.
+Sin embargo ahora nos encontramos con el problema principal de este modelo que es que como entrada recibe un embedding, entonces, no podemos aplicar técnicas de XAI directamente al modelo. Otro problema que tenemos es que el código que tenemos de extracción de características saca muchísimas características y de ciertas características no solo extrae un valor escalar sino que también saca un vector con sus valores en cada instante.
 
 Para solucionar estos problemas hemos realizado dos preprocesamientos. La primera es que agruparemos los atributos del dataset en cinco grupos en función de sus características y lo que representan. Con esto nos quedan las siguientes agrupaciones:
 
@@ -99,13 +55,11 @@ Para solucionar estos problemas hemos realizado dos preprocesamientos. La primer
  
  \item Formantes:  f1 mean, f2 mean, f3 mean. Este grupo son las características que describen la estructura vocal.
  
- \item MFCC: MFCC mean del 1 al 13. Este grupo de características capturan patrones del espectro del audio.
+ \item MFCC: mfcc mean del 1 al 13. Este grupo de características capturan patrones del espectro del audio.
 \end{enumerate}
 
-El segundo preprocesamiento que se ha hecho ha sido desarrollar modelos surrogate que imiten el comportamiento del modelo. Para esto hemos implementado seis modelos distintos. Los cinco primeros modelos serán regresiones Ridge (añadir referencia) de la clase \textit{sklearn}. Usamos esta regresión en lugar de una regresión lineal o una regresión logística ya que con los pocos datos del conjunto de entrenamiento, es seguro que el modelo va sufrir de sobreajuste y esta regresión ataja este problema.
+El segundo preprocesamiento que se ha hecho ha sido desarrollar modelos surrogate que imiten el comportamiento del modelo. Para esto hemos implementado seis modelos distintos. Los cinco primeros modelos serán regresiones Ridge~\ref{subsubsec:eda_reg_rid} de la clase \textit{sklearn}. Usamos esta regresión en lugar de una regresión lineal o una regresión logística ya que con los pocos datos del conjunto de entrenamiento, es seguro que el modelo va sufrir de sobreajuste y esta regresión ataja este problema penalizando los coeficientes grandes del modelo de regresión permitiendo mejorar la generalización frente a audios nuevos y reduciendo la sensibilidad al ruido.
 
 Ahora pasamos al sexto surrogate model, una CNN muy simple que recibirá como entrada los espectrogramas de mel de los audios en forma de tensores de \textit{pytorch}. Esta se compone solo de una capa convolucional y una capa de pooling. Además se simplificarán los espectrogramas agrupando todas las bandas de frecuencia en 8 superbandas. Esto se hace para evitar que se produzca un sobreajuste ya que tenemos muy pocos audios.
 
-Sobre este surrogate model aplicaremos Shap, Lime, Integrated gradients y Grad cam.
-
-Enlace al notebook: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}{notebook}''
+Sobre este surrogate model aplicaremos Shap, Lime, Integrated Gradients y Grad Cam.
