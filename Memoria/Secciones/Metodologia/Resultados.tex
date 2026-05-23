@@ -207,7 +207,7 @@ solver & liblinear \\
 \subsection{Random Forest}
 \label{res_xai_rf}
 
-En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Random Forest.
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Random Forest. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/XAI.ipynb}}.
 
 Como podemos observar en las Figuras \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
 
@@ -228,7 +228,7 @@ Los cambios (counterfactuals) que nos devuelve DiCE para Random Forest nos muest
 \subsection{LightGBM}
 \label{res_xai_lgbm}
 
-En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a LightGBM.
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a LightGBM. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/XAI.ipynb}}.
 
 Como se puede ver en las Figuras \ref{fig:1_shap_lgbm_local} y \ref{fig:2_shap_lgbm_local}, el modelo clasifica únicamente con $spectral flatness$. Esto nos dice que, pese a que antes no observamos un sobreajuste, el modelo realmente lo tiene con esta característica.
 
@@ -249,7 +249,7 @@ La explicación que genera DiCE para LGBM nos muestra tres instancias con altera
 \subsection{Support Vector Machine}
 \label{res_xai_svm}
 
-En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Support Vector Machines.
+En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Support Vector Machines. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/XAI.ipynb}}.
 
 Como podemos ver en las Figuras \ref{fig:1_shap_svm_local} y \ref{fig:2_shap_svm_local}, la importancia de las características está bastante bien distribuida. No hay ninguna que supere a las demás por una gran diferencia.
 
