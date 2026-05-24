@@ -112,7 +112,7 @@ AUC-ROC & 0.9938 & +/- 0.0250 \\
 
 En primera instancia vamos a comparar los mejores parámetros, los que nos devuelve el Grid Search, con los que hemos definido en los modelos baseline. 
 
-El Grid Search aplicado a Random Forest nos devuelve $max\_depth=5$ , $min\_samples\_split=2$ y $min\_samples\_leaf=1$. Dichos valores son inferiores a los que habíamos definido (ver Tabla \ref{tab:grid_search_rf}). Esto implica que los árboles son más ``simples'' ya que se reduce la profundidad y las muestras para hacer una división y que deben quedar en las hojas. 
+El Grid Search aplicado a Random Forest nos devuelve $max\_depth=5$ , $min\_samples\_split=2$ y $min\_samples\_leaf=1$. Dichos valores son inferiores a los que habíamos definido (ver Tabla \ref{tab:grid_search_rf}). Esto implica que los árboles son más ``simples'', ya que se reduce la profundidad y las muestras para hacer una división y que deben quedar en las hojas. 
 
 \begin{table}
 \centering
@@ -209,9 +209,9 @@ solver & liblinear \\
 
 En este apartado vamos a mostrar los resultados sobre los métodos de explicación aplicados a Random Forest. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/XAI.ipynb}}.
 
-Como podemos observar en las Figuras \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
+Como podemos observar en las Figuras \ref{fig:1_shap_rf_local} y \ref{fig:2_shap_rf_local}, las cuatro características más influyentes en una predicción son las mismas ($spectral flatness$, $mfcc 1$, $spectral bandwidth$, $spectral rolloff$) y en el mismo orden. Además encontramos que tienen valores similares en un ambos sentidos de la explicación, pero con signo opuesto.
 
-Como se muestra en la Figura \ref{fig:shap_rf_global}, efectivamente las variables más importantes son, en orden $spectral flatness$, $mfcc 1$ y $spectral bandwidth$, como veíamos antes. Además, en colores podemos ver mejor, por ejemplo en $spectral flatness$, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
+Como se muestra en la Figura \ref{fig:shap_rf_global}, efectivamente las variables más importantes son, en orden, $spectral flatness$, $mfcc 1$ y $spectral bandwidth$, como veíamos antes. Además, en colores podemos ver mejor, por ejemplo en $spectral flatness$, que si el valor para una instancia es bajo (azul), su peso es positivo, mientras que si es alto (rojo) su peso es negativo. 
 
 Ya que hemos visto que $spectral flatness$ es la característica más influyente con diferencia, hemos decidido eliminarla y entrenar un modelo, cuyos resultados podemos ver en las Tablas \ref{tab:metricas_principales_rf_sin_specflat}, \ref{tab:classification_report_rf_sin_specflat} y \ref{tab:analisis_errores_rf_sin_specflat}. Aquí vemos que el modelo deja de clasificar correctamente, debido a que, al perder la característica más influyente, el modelo pierde rendimiento en clasificación.
 
