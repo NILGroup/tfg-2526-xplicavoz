@@ -37,22 +37,30 @@
 \frontmatter
 
 \begin{resumen}
-En este proyecto se aborda el problema de la suplantación de voz humana mediante IA empleando modelos de clasificación de voz y técnicas de IA explicable (XAI) para hacer sus resultados más interpretables.
+En este proyecto se aborda el problema de la suplantación de voz humana mediante IA empleando modelos de clasificación de voz y técnicas de IA Explicable (XAI) para hacer sus resultados más interpretables.
 
 Para ello investigamos sobre los diferentes datasets públicos con voces generadas por IA y sobre las distintas características que presenta la voz humana y qué efectos tienen en la voz. Sobre los datos, aplicaremos modelos de clasificación de diversas naturalezas y complejidades que serán explicados gracias a modelos agnósticos (SHAP, LIME, etc.) que toman casi cualquier modelo y generan explicaciones locales y globales sobre las predicciones de los mismos. También exploraremos la viabilidad de algunos modelos ante-hoc como Protopnet y Sincnet.
 
 En lo referente a las pruebas, se ha utilizado un subconjunto del dataset ODSS, del que hemos escogido pares de voces reales y generadas tanto en inglés como en español. Con estos datos, evaluaremos el rendimiento de los modelos a la hora de clasificar los audios.
 
-Por último se construyó un método que combina los modelos estudiados anteriormente. El método ejecuta los modelos entrenados, y los modelos de XAI, de forma que a partir de un audio de voz, se puede determinar si ha sido generado por IA o es una voz real.
+Por último se construyó un método que combina los modelos estudiados anteriormente. El método ejecuta los modelos entrenados, y los modelos de XAI, de forma que a partir de un audio, se puede determinar si ha sido generado por IA o es una voz real.
 
 Enlace al repositorio: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz}{https://github.com/NILGroup/tfg-2526-xplicavoz}''
     
-\palabrasClave{voz generada; modelos de clasificación; inteligencia artificial explicable; características de la voz generada por IA}    
+\palabrasClave{voz generada; modelos de clasificación; inteligencia artificial explicable; características de la voz}    
     
 \end{resumen}
 
 \begin{abstract}
-    TODO abstract en ingles
+This project addresses the problem of AI-based human voice spoofing by employing voice classification models and eXplainable AI (XAI) techniques to make its results more interpretable.
+
+To do this, we researched different public datasets containing AI-generated voices, as well as the various characteristics of human voice and the effects they have on voice production. Regarding the data, we will apply classification models of different natures and complexities, which will be explained using agnostic models (SHAP, LIME, etc.) that can take almost any model and generate local and global explanations for their predictions. We will also explore the feasibility of some ante-hoc models such as Protopnet and Sincnet.
+
+Regarding the tests, a subset of dataset ODSS has been used, from which we have picked real and spoofed voices in pairs, both in English and Spanish. With this data we will assess the performance of the models in classifying audios.
+
+Finally, a pipeline that combines the models previously studied was built. This pipeline executes the pre-trained models, as well as the XAI models, in order to determine whether an audio is AI-generated or it's a real human voice.
+
+\keywords{generated voice; classifying models; explainable artificial intelligence; voice characteristics}
 \end{abstract}
 
 % Para tener índice (compilar 2 veces, a veces se traba)

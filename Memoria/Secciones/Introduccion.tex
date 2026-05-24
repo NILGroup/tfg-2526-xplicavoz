@@ -35,3 +35,49 @@ Con el fin de mitigar riesgos, evaluar el progreso y corregir posibles desviacio
 \end{itemize}
 
 El trabajo, en orden cronológico consistió en el estudio del estado del arte de IA y XAI para clasificación de voces (capítulo \ref{sec:estado_del_arte}). Después trabajamos en el entrenamiento y desarrollo de distintos modelos de IA y XAI (capítulo \ref{sec:metodologia}) para acabar combinándolos todos en un mismo método (capítulo \ref{sec:pipeline}). Por último, analizando los resultados de los capítulos anteriores, redactamos las conclusiones finales del proyecto (capítulo  \ref{chap:conclusiones}).
+
+\chapter*{Introduction}
+
+\section*{Motivation and context}
+In the last years, society has witnessed a significant increase in the use of Artificial Intelligence (AI) for forging maliciously other people's identities through voice cloning, also known as deepfake. This technological evolution has reached a critical point where distinguishing between a human audio and a synthetic one is almost indiscernible for the human ear. As told in~\parencite{Barrington2025, Nadine2025}, recent studies show that, while detecting 100\% generated audios (i.e. completely synthetic voice, without cloning another one) it is easy for an average user, the accuracy in classifying real voices from high quality clones barely hovers around 60\%.
+
+This vulnerability means a latent threat in strategic sectors such as cybersecurity, jorunalism, or the legal field. On the other hand, deepfake-detection techniques have not progressed at the same speed as the generation techniques, which results in a proliferation of scams and missinformation. For this reason, it is no longer possible to rely solely on human capabilities to differenciate the authenticity of a voice, which makes the development of robust technological tools an urgent social need.
+
+The importance of distinguishing between a real and a fake voice has specially grown in the forensic sciences, since it is vital, in response to a criminal act, being able to identify correctly the different parties involved. This is explained in~\parencite{Peña2024}, where forensic phonetics and criminalistics are linked for, among other things, deciding whether two voices belong to the same person or not. This problem holds great importance because one's voice can be altered by patologies, either temporarily or permanently, or vary depending on the language they are speaking. Socioeconomic factors and eating habits also come into play. All of these elements influence the voice, and it is essential to consider them in forensic investigations to correctly identify the guilty party.
+
+\section*{Definition of the problem}
+The performance of classifying models is not the only determining factor in this investigation. Nowadays, Deep Learning models have turned into ``black boxes'', opaque systems where how predictions are generated is not understood. This lack of transparency leads to reliability issues regarding said decisions, especially in critical fields such as medicine or engineering, where human lifes might be at risk.
+
+In order to solve this problem eXplainable AI (XAI) has emerged, which take those black-box models and provides an explanation in which data characteristics impact more to the model's decission. In this investigation, we adress the problem of both maximizing the discrimination capacity between real and generated audios and providing the system with a coherent human interpretation through the application of XAI.
+
+\section*{Objetives}
+The main objective of this work is to develop a comprehensive framework for the detection of synthetically generated audio, prioritizing not only the efficiency and accuracy of the classification, but also the transparency and interpretability of the results. To this end, the following specific objectives are proposed:
+
+\begin{itemize}
+    \item \textbf{Review of the state of the art and research of models:} Conduct a comprehensive study to identify the most promising classification architectures (from traditional methods to deep learning) and explainability methods (XAI) in speech processing.
+    
+    \item \textbf{Dataset search and feature extraction:} Find or, failing that, design a balanced data corpus containing samples of both real and cloned voice, also extracting the acoustic and spectral variables that determine the training of the models.
+    
+    \item \textbf{Preliminary evaluation and experimentation of models and explanability techniques:} Develop preliminary unit and experimental tests with the different algorithmic approaches and XAI tools selected to analyze their theoretical feasibility, adjust basic hyperparameters and check their initial interpretability.
+    
+    	\item \textbf{Analysis of the results obtained:} Critically evaluate the overall performance of the integrated system using quantitative ranking metrics.
+    	
+    	\item \textbf{Implementation and integration of the complete pipeline:} Design and build a unified system that seamlessly integrates the components of preprocessing, feature extraction, classification, and explanation generation into a single workflow.
+\end{itemize}
+
+\section*{Planning}
+To ensure the proper development of the project and the achievement of the objectives within the established academic timeframe, a systematic management methodology based on continuous communication has been adopted.
+
+In order to mitigate risks, evaluate progress and correct possible deviations in the development of the project, the following work dynamics have been established:
+
+\begin{itemize} 
+	\item \textbf{Bi-weekly follow-up meetings:} Bi-weekly meetings have been systematically scheduled with the project mentors. These sessions include presentations on the current state of development, discussions of technical obstacles encountered (such as limitations in datasets or convergence problems in models), and validation of proposed solutions.
+    
+    \item \textbf{Management and registration of minutes:} Following each meeting, minutes are drawn up recording the tutors' comments and corrections, the agreements reached, and the assignment of specific tasks for the next two weeks. This record serves as a log and change control for the TFG.
+    
+    \item \textbf{Herramientas de colaboración y entornos de desarrollo:} Para el desarrollo del código y del pipeline de audio/XAI se utiliza un repositorio privado en GitHub gestionado desde el entorno de desarrollo Visual Studio Code, lo que permite un control de versiones estricto. Por su parte, la redacción de la presente memoria en LaTeX se realiza mediante el editor TextMaker. Asimismo, las anotaciones de las reuniones se gestionan a través de documentos compartidos en Google Drive.
+    
+    \item \textbf{Collaboration tools and development environments:} The audio/XAI code and pipeline were developed using a private GitHub repository managed from the Visual Studio Code development environment, allowing for strict version control. This report was written in LaTeX using the TextMaker editor. Meeting notes were managed through shared Google Drive documents.
+\end{itemize}
+
+The work, in chronological order, consisted of a study of the state of the art of AI and XAI for voice classification (chapter \ref{sec:estado_del_arte}). Next, we worked on the training and development of different AI and XAI models (chapter \ref{sec:metodologia}) to ultimately combine them all into a single method (chapter \ref{sec:pipeline}). Finally, analyzing the results of the previous chapters, we wrote the final conclusions of the project (chapter  \ref{chap:conclusiones}).

@@ -1,7 +1,7 @@
 \section{Trabajo futuro}
 
 El trabajo desarrollado establece una base sólida para la detección de \textit{deepfakes} de audio mediante el uso de distintos métodos de IA y técnicas XAI.
-Actualmente, el producto final del trabajo consiste en un pipeline que permite aplicar, sobre un audio de entrada, todos los modelos de clasificación y explicación estudiados en el capítulo de metodología. Este pipeline genera como salida los resultados obtenidos por los distintos modelos de IA, combinados con gráficas resultantes de aplicar XAI sobre dichos resultados.
+Actualmente, el producto final del trabajo consiste en un pipeline que permite aplicar, sobre un audio de entrada, todos los modelos de clasificación y explicación estudiados en el capítulo~\ref{sec:metodologia}. Este pipeline genera como salida los resultados obtenidos por los distintos modelos de IA, combinados con gráficas resultantes de aplicar XAI sobre dichos resultados.
 
 Aunque estas representaciones permiten observar qué factores han influido en la decisión de los modelos, su interpretación requiere de ciertos conocimientos técnicos y la explicación no siempre resulta suficientemente directa. Por ello, como trabajo futuro se propone el desarrollo de un explicador que actúe como una última capa entre los valores calculados por las técnicas XAI aplicadas en el pipeline y el resultado final mostrado.
 La idea principal sería transformar el sistema actual, centrado en la visualización, en un enfoque basado en la interpretabilidad asistida. Es decir, el sistema no se limitaría a presentar gráficas, sino que también ofrecería explicaciones más fácilmente interpretables sobre la decisión final y sobre las evidencias que apoyan esta clasificación.
@@ -22,3 +22,28 @@ Este tipo de explicador podría indicar qué alteración mínima hace que los mo
 Sin embargo, esta propuesta contiene limitaciones que deben considerarse. En primer lugar, es necesario garantizar la fidelidad de las explicaciones respecto al comportamiento real de los modelos. En segundo lugar, se debe asegurar la trazabilidad, es decir, cada afirmación generada por el explicador se debe poder relacionar con una salida concreta del pipeline. En tercer lugar, los contrafactuales deben ser realistas y no consistir en modificaciones alejadas de la coherencia del dominio del audio.
 
 En definitiva, el desarrollo de un módulo explicador mejoraría el alcance del sistema desarrollado, pasando de un pipeline capaz de detectar y mostrar evidencias en forma de gráficas a una herramienta capaz de justificar sus resultados de forma más clara e interpretable. Esta evolución contribuiría a mejorar la transparencia del proceso de clasificación, facilitaría el análisis de los audios y aumentaría la utilidad del sistema en contextos donde no solo se quiera conocer la clasificación de un audio, sino también comprender qué evidencias han llevado a tomar dicha decisión.
+
+\section{Future Work}
+
+The work developed establishes a solid foundation for the detection of audio deepfakes through the use of different AI methods and XAI techniques.
+Currently, the final outcome of the work consists of a pipeline that makes it possible to apply, to an input audio, all the classification and explanation models studied in chapter~\ref{sec:metodologia}. This pipeline produces as output the results obtained by the different AI models, combined with graphs resulting from the application of XAI to those results.
+
+Although these representations make it possible to observe which factors have influenced the models' decisions, their interpretation requires a certain level of technical knowledge, and the explanation is not always sufficiently direct. Therefore, as future work, the development of an explainer is proposed, acting as a final layer between the values computed by the XAI techniques applied in the pipeline and the final result shown.
+The main idea would be to transform the current system, which is focused on visualization, into an approach based on assisted interpretability. That is, the system would not be limited to presenting graphs, but would also provide more easily interpretable explanations regarding the final decision and the evidence supporting this classification.
+
+Furthermore, two types of explainers are suggested, which could be complementary to one another. The first would be based on \textbf{large language models, or LLMs}. The objective of this first explainer would be to convert technical outputs into more comprehensible and synthesized textual explanations. This approach presents several advantages. First, it would allow non-expert users to understand the reason behind the final classification. Second, it would facilitate comparison between the results of the different models.
+Third, it would make it possible to generate automatic reports summarizing the main evidence used for the classification of the audio.
+
+The second type of proposed explainer would be based on \textbf{counterfactuals}. Whereas XAI techniques mainly answer which parts or features have influenced the final decision, counterfactuals answer a different question: what would need to change in the audio for its classification to be different?
+This type of explanation is especially interesting because it also makes it possible to analyze the sensitivity of the models to specific modifications of the input.
+
+This type of explainer could indicate the minimum alteration that causes the models to change the original classification of the audio. Depending on the type of modification, three possibilities are considered:
+\begin{itemize}
+    \item \textbf{Counterfactuals based on temporal segments}: the system could modify, hide, or replace specific segments of the audio and observe how the predictions change.
+    \item \textbf{Counterfactuals based on spectrograms}: this approach would operate in the same way as the previous one, but by performing modifications on the spectral representation of the audio.
+    \item \textbf{Counterfactuals based on acoustic features}: the explainer would modify acoustic features such as MFCCs or pitch, with the aim of determining whether the models' outputs are altered.
+\end{itemize}
+
+However, this proposal contains limitations that must be considered. First, it is necessary to guarantee the fidelity of the explanations with respect to the actual behavior of the models. Second, traceability must be ensured; that is, each statement generated by the explainer must be linkable to a specific output of the pipeline. Third, counterfactuals must be realistic and must not consist of modifications that fall outside the coherence of the audio domain.
+
+In conclusion, the development of an explainer module would improve the scope of the developed system, shifting from a pipeline capable of detecting and displaying evidence in the form of graphs to a tool capable of justifying its results in a clearer and more interpretable manner. This evolution would contribute to improving the transparency of the classification process, facilitate the analysis of audio recordings, and increase the usefulness of the system in contexts where the aim is not only to know the classification of an audio recording, but also to understand what evidence led to that decision.
