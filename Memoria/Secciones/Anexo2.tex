@@ -352,76 +352,6 @@ Counter factual 3 & -0.75138 & -2.12114 & 1 \\
     \label{fig:lr_lime}
 \end{figure}
 
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_global.png}
-    \caption{Importancia global de las características mediante SHAP para el pipeline con KNN.}
-    \label{fig:pipe_knn_shap_global}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_local_1.png}
-    \caption{Explicación local de SHAP (Instancia 1) para el pipeline con KNN.}
-    \label{fig:pipe_knn_shap_local_1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_local_2.png}
-    \caption{Explicación local de SHAP (Instancia 2) para el pipeline con KNN.}
-    \label{fig:pipe_knn_shap_local_2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_lime_1.png}
-    \caption{Explicación local de LIME (Instancia 1) para el pipeline con KNN.}
-    \label{fig:pipe_knn_lime_1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_lime_2.png}
-    \caption{Explicación local de LIME (Instancia 2) para el pipeline con KNN.}
-    \label{fig:pipe_knn_lime_2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_local_1.png}
-    \caption{Explicación local de SHAP (Instancia 1) para el pipeline con Regresión Logística.}
-    \label{fig:pipe_lr_shap_local_1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_local_2.png}
-    \caption{Explicación local de SHAP (Instancia 2) para el pipeline con Regresión Logística.}
-    \label{fig:pipe_lr_shap_local_2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_lime_1.png}
-    \caption{Explicación local de LIME (Instancia 1) para el pipeline con Regresión Logística.}
-    \label{fig:pipe_lr_lime_1}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_lime_2.png}
-    \caption{Explicación local de LIME (Instancia 2) para el pipeline con Regresión Logística.}
-    \label{fig:pipe_lr_lime_2}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_global.png}
-    \caption{Importancia global de las características mediante SHAP para el pipeline con Regresión Logística.}
-    \label{fig:pipe_lr_shap_global}
-\end{figure}
-
 \begin{table}
 \centering
 \begin{tabular}{lccccccc}
@@ -450,34 +380,4 @@ Counter factual 3 & 1.17738 &  & -1.04455 &  & -0.58018 &  & 1 \\
 \end{tabular}
 \caption{Counter factuals generados por DiCE para Regresión Logística}
 \label{tab:lr_dice}
-\end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Instancia} & \textbf{spectral bandwidth} & \textbf{spectral flatness} & \textbf{skewness} & \textbf{Etiqueta} \\
-\midrule
-Counter factual 1 &  & -0.62539 &  & 1 \\
-Counter factual 2 &  & -0.24537 & -0.40878 & 1 \\
-Counter factual 3 & 1.84513 &  &  & 1 \\
-\bottomrule
-\end{tabular}
-\caption{Counter factuals generados por DiCE para el pipeline con KNN}
-\label{tab:pipe_dice_knn}
-\end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Instancia} & \textbf{spectral flatness} & \textbf{Etiqueta} \\
-\midrule
-Counter factual 1 & -1.05593 & 1 \\
-Counter factual 2 & -1.04345 & 1 \\
-Counter factual 3 & -0.95711 & 1 \\
-\bottomrule
-\end{tabular}
-\caption{Counter factuals generados por DiCE para el pipeline con Regresión Logística}
-\label{tab:pipe_dice_lr}
 \end{table}

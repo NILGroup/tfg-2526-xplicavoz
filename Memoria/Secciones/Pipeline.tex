@@ -50,29 +50,137 @@ En SHAP local vemos que las importancias cambian: en el audio generado tienen un
 
 LIME nos dice que la característica más importante, en el audio nuevo generado, es $spectral flatness$ y, además, mantiene unos umbrales de clasificación similares a los que ya habíamos visto (ver la Figura \ref{fig:pipe_lime_svm}).
 
-\section{KNN}
+\section{K-Nearest Neighbors (KNN)}
 
-Este modelo, a diferencia de otros, requiere que los datos de entrada estén normalizados, por lo que se guardaron tanto el modelo y su ``scaler'' en formato pkl para poder usarlos en el pipeline y así realizar las predicciones. 
+A diferencia de otras arquitecturas, este modelo requiere estrictamente que los datos de entrada se encuentren normalizados debido a su dependencia del cálculo de distancias geométricas. Por este motivo, tanto el modelo entrenado como su respectivo escalador (\textit{scaler}) se exportaron en formato \texttt{.pkl} para su posterior integración en el \textit{pipeline} de inferencia. Al ejecutar las predicciones sobre el conjunto de prueba, se observa que los dos audios en español son clasificados como muestras generadas artificialmente. Este comportamiento difiere del rendimiento perfecto ($100\%$) registrado durante la fase de validación del modelo, lo que motivó un análisis profundo mediante técnicas de interpretabilidad.
 
-En las prediccines podemos ver como los dos auidos españoles son clasificados como generados, lo cual no cuadra con los datos del modelo del 100\% de acierto.
+El análisis mediante SHAP global refleja que el clasificador KNN asigna una importancia crítica a la característica \textit{spectral flatness} (ver \autoref{fig:pipe_knn_shap_global}), lo cual exhibe una consistencia absoluta con las métricas obtenidas en la fase metodológica previa.
 
-Al comprobar los resultados de los métodos de ia explicable vemos que la técnica de explicabilidad SHAP global refleja que KNN asigna una alta importancia a la característica ``spectral flatness'', un patrón consistente con los resultados obtenidos en la fase de metodología (ver \ref{fig:pipe_knn_shap_global}). Pero al evaluar localmente con shap cada muestra vemos que la que detecta como generada correctamente la característica más predominante es el ``spectral flatness'', lo que corrobora lo visto anteriormente en los resultados, sin embargo, cuando vemos la imagen de la muestra que clasifica como generada erróneamente nos damos cuenta que la característica que más influye no es el ``spectral flatness'' si no que lo son el ``silence ratio'' y el ``mfcc 1 mean'' (ver \ref{fig:pipe_knn_shap_local_1} y \ref{fig:pipe_knn_shap_local_2}) y por ello no actúa cómo actuaba con los otros audios.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_global.png}
+    \caption{Importancia global de las características mediante SHAP para el pipeline con KNN.}
+    \label{fig:pipe_knn_shap_global}
+\end{figure}
 
-Esto mismo se puede ver reflejado en las gráficas de lime \ref{fig:pipe_knn_lime_1} y \ref{fig:pipe_knn_lime_2}. 
+Al evaluar el comportamiento local del modelo mediante SHAP para cada muestra individual, se identifican dos dinámicas contrapuestas en el mecanismo de decisión:
+\begin{itemize}
+    \item \textbf{Predicción correcta (Verdadero Positivo):} En la muestra correctamente identificada como sintética, la característica con mayor peso predictivo es el \textit{spectral flatness}. Esto ratifica de manera local el criterio de decisión global del modelo.
+    \item \textbf{Predicción incorrecta (Falso Positivo):} En el caso de la muestra clasificada erróneamente, se rompe la consistencia del modelo. El impacto del \textit{spectral flatness} pasa a un segundo plano, y la predicción es impulsada anómalamente por los valores de \textit{silence ratio} y \textit{mfcc 1 mean} (ver \autoref{fig:pipe_knn_shap_local_1} y \autoref{fig:pipe_knn_shap_local_2}). Este desvío explica el fallo del clasificador ante estas muestras específicas.
+\end{itemize}
 
-Por último, vemos como Dice genera 3 instancias contrafactuales que indican qué alteraciones mínimas en las características analizadas transformarían la clasificación de un audio generado a uno real. Como se aprecia en la \autoref{tab:pipe_dice_knn}, estas modificaciones se concentran de manera prioritaria en ajustar los valores de ``spectral flatness''.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_local_1.png}
+    \caption{Explicación local de SHAP (Instancia 1) para el pipeline con KNN.}
+    \label{fig:pipe_knn_shap_local_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_shap_local_2.png}
+    \caption{Explicación local de SHAP (Instancia 2) para el pipeline con KNN.}
+    \label{fig:pipe_knn_shap_local_2}
+\end{figure}
+
+Las desviaciones locales y el peso de las características descritos en el análisis SHAP se ven validados de forma consistente por las aproximaciones lineales locales obtenidas a través de las gráficas de LIME (\autoref{fig:pipe_knn_lime_1} y \autoref{fig:pipe_knn_lime_2}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_lime_1.png}
+    \caption{Explicación local de LIME (Instancia 1) para el pipeline con KNN.}
+    \label{fig:pipe_knn_lime_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_knn_lime_2.png}
+    \caption{Explicación local de LIME (Instancia 2) para el pipeline con KNN.}
+    \label{fig:pipe_knn_lime_2}
+\end{figure}
+
+Finalmente, se empleó la herramienta DiCE para generar tres instancias contrafactuales que determinan las modificaciones mínimas necesarias en el vector de características para revertir la clasificación de "generado" a "real". Como se detalla en la \autoref{tab:pipe_dice_knn}, dichas alteraciones se concentran de manera prioritaria en la manipulación de los valores de \textit{spectral flatness}. Esto confirma que, a pesar de las anomalías locales causadas por el silencio o el primer coeficiente MFCC en los falsos positivos, el \textit{spectral flatness} sigue constituyendo el eje fundamental sobre el que pivota la frontera de decisión del algoritmo KNN.
+
+\begin{table}
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Instancia} & \textbf{spectral bandwidth} & \textbf{spectral flatness} & \textbf{skewness} & \textbf{Etiqueta} \\
+\midrule
+Counter factual 1 &  & -0.62539 &  & 1 \\
+Counter factual 2 &  & -0.24537 & -0.40878 & 1 \\
+Counter factual 3 & 1.84513 &  &  & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Counter factuals generados por DiCE para el pipeline con KNN}
+\label{tab:pipe_dice_knn}
+\end{table}
 
 \section{Regresión Logística}
 
-Este modelo, al igual que en KNN y a diferencia de otros, requiere que los datos de entrada estén normalizados, así que se guardaron el modelo y su ``scaler'' en formato pkl para poder usarlos en el pipeline y así realizar las predicciones. 
+Al igual que el clasificador KNN, este modelo requiere que los datos de entrada se encuentren normalizados. Por ello, tanto el modelo entrenado como su respectivo escalador (\textit{scaler}) se almacenaron en formato \texttt{.pkl} para garantizar su correcta integración dentro del \textit{pipeline} de inferencia. Al ejecutar las predicciones, se repite el patrón observado en KNN: los dos audios en español son clasificados erróneamente como muestras generadas artificialmente.
 
-Al resliazar las predicciones vemos como, al igual que en knn, los dos audios españoles los clasifica como generados.
+El análisis mediante SHAP global revela que la Regresión Logística otorga una relevancia prioritaria a la característica \textit{spectral flatness}, guardando una consistencia absoluta con los criterios de decisión del modelo KNN (ver \autoref{fig:pipe_lr_shap_global}). 
 
-Al comprobar los resultados de los métodos de ia explicable vemos que la técnica de explicabilidad SHAP global refleja que la Regresión Logística asigna una alta importancia a la característica ``spectral flatness'',exactamente igual que ocurría en el knn (ver \ref{fig:pipe_lr_shap_global}). Por otro lado al evaluar localmente con shap cada muestra vemos que en la que detecta como generada correctamente la característica más predominante es el ``spectral flatness'', lo que corrobora lo visto anteriormente en los resultados. Sin embargo, cuando vemos la imagen de la muestra que clasifica como generada erróneamente nos damos cuenta de que, al igual que pasaba en KNN, la característica que más influye no es el ``spectral flatness'' sino que lo son el ``silence ratio'' y el ``mfcc 1 mean'' con valores más altos que los vistos en knn, aún así vemos que en este modelo aparece la ``kurosis'' intentando decantar la balanza para el otro lado por encima del ``spectral flatness'' de nuevo (ver \ref{fig:pipe_lr_shap_local_1} y \ref{fig:pipe_lr_shap_local_2}).
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_global.png}
+    \caption{Importancia global de las características mediante SHAP para el pipeline con Regresión Logística.}
+    \label{fig:pipe_lr_shap_global}
+\end{figure}
 
-Esto mismo se puede ver reflejado en las gráficas de lime \ref{fig:pipe_lr_lime_1} y \ref{fig:pipe_lr_lime_2}. 
+En el ámbito local, la evaluación de las muestras ofrece dos escenarios diferenciados:
+\begin{itemize}
+    \item \textbf{Predicción correcta (Verdadero Positivo):} El análisis SHAP confirma que la clasificación se fundamenta correctamente en la predominancia del \textit{spectral flatness}, lo que corrobora los hallazgos del análisis global.
+    \item \textbf{Predicción incorrecta (Falso Positivo):} En la muestra clasificada erróneamente como sintética, la influencia del \textit{spectral flatness} disminuye. En su lugar, el error es impulsado principalmente por métricas elevadas de \textit{silence ratio} y \textit{mfcc 1 mean}, con magnitudes incluso superiores a las registradas en KNN. No obstante, en este modelo emerge la \textit{kurtosis} como un factor contrapuesto que intenta inclinar la predicción hacia la clase real, superando el impacto del \textit{spectral flatness} (ver \autoref{fig:pipe_lr_shap_local_1} y \autoref{fig:pipe_lr_shap_local_2}).
+\end{itemize}
 
-Por último, se observa cómo DiCE genera tres instancias contrafactuales que indican las alteraciones mínimas requeridas en las características analizadas para transformar la clasificación de un audio generado a uno real. Como se aprecia en la \autoref{tab:pipe_dice_lr}, estas modificaciones se concentran de manera prioritaria en ajustar los valores de ``spectral flatness'', siendo en este modelo la única característica capaz de alterar la predicción final.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_local_1.png}
+    \caption{Explicación local de SHAP (Instancia 1) para el pipeline con Regresión Logística.}
+    \label{fig:pipe_lr_shap_local_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_shap_local_2.png}
+    \caption{Explicación local de SHAP (Instancia 2) para el pipeline con Regresión Logística.}
+    \label{fig:pipe_lr_shap_local_2}
+\end{figure}
+
+El comportamiento predictivo y las dependencias de características descritas anteriormente se ven validados y respaldados por los resultados locales obtenidos en las gráficas de LIME (\autoref{fig:pipe_lr_lime_1} y \autoref{fig:pipe_lr_lime_2}).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_lime_1.png}
+    \caption{Explicación local de LIME (Instancia 1) para el pipeline con Regresión Logística.}
+    \label{fig:pipe_lr_lime_1}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/pipe_lr_lime_2.png}
+    \caption{Explicación local de LIME (Instancia 2) para el pipeline con Regresión Logística.}
+    \label{fig:pipe_lr_lime_2}
+\end{figure}
+
+Por último, se empleó la herramienta DiCE para generar tres instancias contrafactuales que ilustran las alteraciones mínimas necesarias en el vector de características para revertir la clasificación de un audio de "generado" a "real". Como se detalla en la \autoref{tab:pipe_dice_lr}, estas modificaciones se concentran de manera exclusiva en el ajuste de los valores de \textit{spectral flatness}. Esto demuestra que, para la Regresión Logística en este caso específico, dicha métrica actúa como la única variable con la sensibilidad matemática suficiente para alterar el umbral de decisión final.
+
+\begin{table}
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Instancia} & \textbf{spectral flatness} & \textbf{Etiqueta} \\
+\midrule
+Counter factual 1 & -1.05593 & 1 \\
+Counter factual 2 & -1.04345 & 1 \\
+Counter factual 3 & -0.95711 & 1 \\
+\bottomrule
+\end{tabular}
+\caption{Counter factuals generados por DiCE para el pipeline con Regresión Logística}
+\label{tab:pipe_dice_lr}
+\end{table}
 
 \section{Wav2Vec2}
 

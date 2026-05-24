@@ -272,20 +272,20 @@ En este apartado se presentan los resultados obtenidos para el modelo KNN (K-Nea
 
 Al analizar las explicaciones locales provistas por SHAP en la gráfica \ref{fig:knn_shap_local}, se observa que la importancia de las variables se centra en una en concreto en el ``spectral flatness'' seguido del ``mfcc 1 mean''. Además, al observar la perspectiva global en la gráfica \ref{fig:knn_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'' que está muy por encima.
 
-Por otro lado, tal como se aprecia en la imagen \ref{fig:knn_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por Shap, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+Por otro lado, tal como se aprecia en la imagen \ref{fig:knn_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
 
-Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCe (ver tabla \ref{tab:knn_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral flatness'',	``skewness'' y algunas características más o ``spectral bandwith'', ``rms'' y ``mfcc 12 mean'', para alternar la predicción del modelo entre clases.
+Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver tabla \ref{tab:knn_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral flatness'',	``skewness'' y algunas características más o ``spectral bandwith'', ``rms'' y ``mfcc 12 mean'', para alternar la predicción del modelo entre clases.
 
 \subsection{Regresión Logística}
 \label{res_xai_lr}
 
 En este apartado se presentan los resultados obtenidos para el modelo de Regresión Logística, enfocando el análisis tanto en las métricas de rendimiento globales como en su interpretación a través de técnicas de IA explicable.
 
-Al analizar las explicaciones locales provistas por SHAP en la gráfica \ref{fig:lr_shap_local}, se observa que la importancia de las variables se centra en una en concreto en el ``spectral flatness'' seguido del ``rms''. Además, al observar la perspectiva global en la gráfica \ref{fig:lr_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante al igual que en knn, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'', que es superior a las demás.
+Al analizar las explicaciones locales provistas por SHAP en la gráfica \ref{fig:lr_shap_local}, se observa que la importancia de las variables se centra en una en concreto:  el ``spectral flatness'', seguido del ``rms''. Además, al observar la perspectiva global en la gráfica \ref{fig:lr_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante al igual que en KNN, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'', que es superior a las demás.
 
-Por otro lado, tal como se aprecia en la imagen \ref{fig:lr_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por Shap, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+Por otro lado, tal como se aprecia en la imagen \ref{fig:lr_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
 
-Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCe (ver tabla \ref{tab:lr_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral bandwidth'' y ``spectral rolloff'' o ``spectral flatness'' y alguna más, coincidiendo en los 3 casos la modificación de la característica ``mfcc 12 mean'' para alternar la predicción del modelo entre clases.
+Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver tabla \ref{tab:lr_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral bandwidth'' y ``spectral rolloff'' o ``spectral flatness'' y alguna más, coincidiendo en los 3 casos la modificación de la característica ``mfcc 12 mean'' para alternar la predicción del modelo entre clases.
 
 \subsection{AASIST}
 \label{subsubsec:res_aasist}

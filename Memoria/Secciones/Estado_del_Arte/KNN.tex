@@ -1,10 +1,10 @@
-\subsection{K-Nearest Neighbors (k-NN)}
+\subsection{K-Nearest Neighbors (KNN)}
 \label{subsubsec:eda_knn}
 
-El algoritmo de los K-Vecinos más Cercanos (k-NN) es un método de aprendizaje supervisado basado en instancias. A diferencia de otros modelos, k-NN no construye un modelo explícito durante el entrenamiento, sino que almacena todas las instancias de entrenamiento para realizar la clasificación en el momento de la consulta.
+El algoritmo de los K-Vecinos más Cercanos (KNN) es un método de aprendizaje supervisado basado en instancias. A diferencia de otros modelos, KNN no construye un modelo explícito durante el entrenamiento, sino que almacena todas las instancias de entrenamiento para realizar la clasificación en el momento de la consulta~\parencite{Lu2023}.
 
 \subsubsection*{Arquitectura y funcionamiento}
-El principio de k-NN es la proximidad: asume que las muestras de audio con características acústicas similares pertenecerán a la misma categoría.
+El principio de KNN es la proximidad: asume que las muestras de audio con características acústicas similares pertenecerán a la misma categoría.
 \begin{enumerate}
     \item \textbf{Cálculo de distancia:} Cuando se presenta una nueva muestra de audio, el algoritmo calcula la distancia (generalmente la distancia euclidiana) entre esa muestra y todas las demás del conjunto de entrenamiento.
     \item \textbf{Selección de vecinos:} Se seleccionan los $k$ ejemplares más cercanos (donde $k$ es un número entero definido por el usuario).
@@ -17,6 +17,6 @@ La elección de $k$ es crítica: un valor muy pequeño (ej. $k=1$) hace que el m
 \subsubsection*{Ventajas específicas para detección de deepfakes}
 \begin{itemize}
     \item \textbf{Sin suposiciones sobre los datos:} No asume que las características del audio sigan una distribución lineal, lo que le permite capturar patrones complejos en la distribución de artefactos sintéticos.
-    \item \textbf{Eficacia con características bien definidas:} Si la extracción de características logra separar bien las clases, k-NN es extremadamente preciso.
+    \item \textbf{Eficacia con características bien definidas:} Si la extracción de características logra separar bien las clases, KNN es extremadamente preciso.
     \item \textbf{Aprendizaje incremental:} Es fácil añadir nuevos ejemplos de ataques de audio sintético al sistema sin necesidad de reentrenar todo el modelo.
 \end{itemize}
