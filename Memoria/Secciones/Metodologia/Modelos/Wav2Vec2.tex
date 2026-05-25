@@ -6,7 +6,7 @@ El propósito de realizar un \textit{fine-tuning} de este modelo para adaptarlo 
 
 \subsubsection*{Fine-tunning del Wav2Vec2}
 
-El código realizado para implementar este fine-tunning se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}''
+El enlace al código se encuentra en el pie de página:\footnote{El código realizado para implementar este fine-tunning se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/fine-tunning-Wav2Vec.ipynb}''}
 
 Antes de comenzar con el preprocesamiento de los datos, es necesario considerar las librerías empleadas. Este modelo se utiliza a través de la librería \textit{transformers}, de la cual también se importan las clases \textit{Trainer}\footnote{Trainer es la librería encargada de ejecutar el bucle de entrenamiento, calcular la pérdida, actualizar los pesos, evaluar el modelo y guardar checkpoints.}, \textit{TrainingArguments}\footnote{TrainingArguments es la librería encargada de la configuración del entrenamiento del modelo, en ella se definen parámetros como el número de épocas, el learning rate...}, \textit{Wav2Vec2ForSequenceClassification}\footnote{Wav2Vec2ForSequenceClassification es la librería encargada de adaptar el Wav2Vec2 a la tarea de clasificación sobre una secuencia de audio.} y, especialmente relevante en esta etapa, \textit{Wav2Vec2FeatureExtractor}\footnote{Wav2Vec2FeatureExtractor es la librería encargada de preparar el audio antes de introducirlo al modelo.}. Asimismo, se emplea la librería \textit{Datasets}, que no debe confundirse con las estructuras de datos de la librería \textit{Pandas}.
 
@@ -38,7 +38,7 @@ Una vez configurados todos los componentes, se procede a iniciar el entrenamient
 
 \subsubsection*{Implementación de modelos de XAI para la interpretabilidad del modelo Wav2Vec2 fine-tuneado}
 
-El código realizado para implementar esta tarea se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}''
+El enlace al código se encuentra en el pie de página:\footnote{El código realizado para implementar esta tarea se encuentra en: ``\href{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Ivan/XAI.ipynb}''}
 
 Ahora que tenemos el resultado del modelo (el Wav2Vec2 fine-tuneado), vamos a explicar que características y que parte del espectrograma de Mel del audio son las más influyentes.
 
