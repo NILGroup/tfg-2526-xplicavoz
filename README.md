@@ -27,6 +27,18 @@ En cuanto a la estructuración del repositorio, tenemos 3 carpetas principales:
     - MLP.ipynb: Modelo que aplica embeddings tanto a los datos tabulares como a los espectrogramas y los pasa por un MLP. 
     - XAI.ipynb: Código en el que se le aplican técnicas de XAI al modelo wav2vec2 fine-tuneado.
 
+- Modelos/Rafa:
+    - Protopnet.ipynb: Código desarrollado para la implementación, entrenamiento y análisis del modelo ProtoPNet adaptado a datos tabulares.
+    - Sincnet.ipynb: Código desarrollado para la configuración, entrenamiento y evaluación experimental de la arquitectura convolucional SincNet.
+    - funciones_rafa.py: Archivo de código fuente que centraliza las funciones auxiliares desarrolladas en los cuadernos para su reutilización tanto en los experimentos como en el pipeline definitivo.
+    - ia_explicable.ipynb: Código dedicado a la aplicación, evaluación y análisis de las técnicas de IA explicable (SHAP, LIME y DiCE) sobre los modelos KNN y Regresión Logística.
+    - knn.ipynb: Código empleado para el entrenamiento inicial, validación cruzada estratificada y evaluación del clasificador base K-Nearest Neighbors.
+    - modelo_knn.pkl: Archivo que contiene el modelo KNN entrenado y serializado para su recuperación directa desde el pipeline de inferencia.
+    - modelo_lr.pkl: Archivo que contiene el modelo de Regresión Logística entrenado y serializado para su recuperación directa desde el pipeline de inferencia.
+    - regresion_logistica.ipynb: Código empleado para el entrenamiento inicial, validación cruzada estratificada y evaluación del clasificador base de Regresión Logística.
+    - scaler_knn.pkl: Archivo que almacena el objeto de normalización (scaler) ajustado para el modelo KNN, garantizando el correcto escalado de características en el pipeline.
+    - scaler_lr.pkl: Archivo que almacena el objeto de normalización (scaler) ajustado para el modelo de Regresión Logística, garantizando el correcto escalado de características en el pipeline.
+
 # Autores
 - Jorge Aured Zarzoso
 - Germán Bravo Quintián
