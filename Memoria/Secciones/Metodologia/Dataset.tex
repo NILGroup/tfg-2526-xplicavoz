@@ -6,9 +6,9 @@ Para encontrar un dataset público que tuviera voces tanto reales como clonadas 
 \begin{enumerate}
 	\item HABLA~\parencite{TamayoFlorez2023}: Este dataset cuenta con una gran cantidad de audios tanto reales, como generados (con técnicas como TTS, \textit{Text-to-speech}) y voces clonadas (con técnicas como Cycle-GAN). Lo hemos descartado ya que solo tiene voces en español.
 	\item audioMNIST~\parencite{Becker2024}: Este dataset cuenta con 30 mil audios de los números del 0 al 9 en inglés. Lo hemos descartado porque todos los audios son voces reales, por lo que no nos sirve para nuestra tarea.
-	\item ASVSpoof2021~\parencite{asvspoof2021_zenodo}: Este dataset forma parte de una serie de desafios internacionales organizados por la comunidad de verificación automática de audio cuyo objetivo es evaluar y mejorar los sistemas capaces de detectar voz manipulada. El dataset se compone de tres grupos de audio, todos ellos con voz real y generada mezclada, logical access con grabaciones transmitidas mediante canales de voz con efectos de codificación y transmisión, physical access con grabaciones de voz auténticas y ataques de reproducción en espacios físicos reales y speech deepfake con grabaciones generadas sintéticamente y comprimidas de formas distintas. Este dataset lo hemos descartado por no contar con pares de audio aunque se pueden rescatar algunos audios en inglés sobre todo para probar los modelos que probemos más adelante.
+	\item ASVSpoof2021~\parencite{asvspoof2021_zenodo}: Este dataset forma parte de una serie de desafios internacionales organizados por la comunidad de verificación automática de audio cuyo objetivo es evaluar y mejorar los sistemas capaces de detectar voz manipulada. El dataset se compone de tres grupos de audio, todos ellos con voz real y generada mezclada, logical access con grabaciones transmitidas mediante canales de voz con efectos de codificación y transmisión, physical access con grabaciones de voz auténticas y ataques de reproducción en espacios físicos reales y speech deepfake con grabaciones generadas sintéticamente y comprimidas de formas distintas. Este dataset lo hemos descartado por no contar con pares de audios reales y generados.
 	\item Mozilla Common Voice: Este dataset contenía voces de personas reales en varios idiomas, lo cual daba muchas posibilidades, pero no tenía las respectivas voces generadas por IA por lo que decidimos descartarlo para buscar otro dataset más acorde a lo que necesitábamos.
-	\item Wavefake~\parencite{wavefakeKaggle}: Este dataset de Kaggle cuenta con gran cantidad de audios generados. Como tal, nos sirvió para probar el primer prototipo de extracción de características y buscar librerías como librosa o speechRecognition. Este dataset, al no tener los audios reales, no nos sirve para luego desarrollar los modelos.     % poner cita
+	\item Wavefake~\parencite{wavefakeKaggle}: Este dataset de Kaggle cuenta con gran cantidad de audios generados. Como tal, nos sirvió para probar el primer prototipo de extracción de características y buscar librerías como librosa o speechRecognition. Este dataset, al no tener los audios reales, no nos sirve para luego desarrollar los modelos.
 	\item In-the-wild:~\parencite{2022In-the-Wild}: Este dataset busca condiciones realistas recopilando audios reales y falsos desde fuentes públicas como redes sociales y plataformas relacionadas. Cuenta con 38 horas de audios en inglés repartidas más o menos equitativa entre reales y falsos.
 \end{enumerate}
 
@@ -16,11 +16,11 @@ Finalmente, el dataset por el que nos decantamos fue ODSS~\parencite{2023ODSS}. 
 
 \subsection*{Análisis del dataset}
 
-De este subconjunto de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los mfcc's que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
+De este subconjunto de audios extraídos sacaremos todas sus características que explicaremos más adelante junto con su espectrograma, su duración, su categoría (natural o generado) y el audio. Esto hace un total de 47 columnas por cada audio ya que de características como las formantes y los MFCCs que no solo se saca su valor promedio sino que también se sacará su distribución a lo largo del audio. Un resumen de los tipos de datos que encontramos en nuestro dataset sería:
 
 \begin{itemize}
   \item \textbf{Datos tabulares}: La mayoría de los datos sobre las características del audio.
-  \item \textbf{Series temporales}: Muestran la evolución de las formantes o los mfcc's a lo largo del audio.
+  \item \textbf{Series temporales}: Muestran la evolución de las formantes o los MFCCs a lo largo del audio.
   \item \textbf{Datos de audio}: Se corresponde con el archivo de audio (en la práctica es la ruta al archivo de audio).
   \item \textbf{Datos de texto}: Se corresponde con las transcripciones de los audios.
 \end{itemize}
