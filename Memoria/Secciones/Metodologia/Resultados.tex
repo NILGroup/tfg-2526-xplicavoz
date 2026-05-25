@@ -7,78 +7,17 @@ En este apartado vamos a agrupar y revisar los resultados de los modelos de dato
 
 \subsubsection*{Modelos baseline}
 
-Como vemos en las Tablas \ref{tab:metricas_principales_modelos_base}, \ref{tab:classification_report_modelos_base} y \ref{tab:analisis_errores_modelos_base}, estos modelos clasifican correctamente entre reales y generados. 
-
-\begin{table}
-\centering
-\begin{tabular}{lcccccc}
-\toprule
-\textbf{Modelo} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUC-ROC} & \textbf{MCC}\\
-\midrule
-RF & 1 & 1 & 1 & 1 & 1 & 1\\
-LGBM & 1 & 1 & 1 & 1 & 1 & 1\\
-SVM & 1 & 1 & 1 & 1 & 1 & 1\\
-KNN & 1 & 1 & 1 & 1 & 1 & 1\\
-RL & 1 & 1 & 1 & 1 & 1 & 1\\
-\bottomrule
-\end{tabular}
-\caption{Métricas principales de los modelos baseline de datos tabulares}
-\label{tab:metricas_principales_modelos_base}
-\end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{lccccc}
-\toprule
-\textbf{Métrica-modelo} & \textbf{Real (1)} & \textbf{IA (0)} & \textbf{accuracy} & \textbf{macro avg} & \textbf{weighted avg}\\
-\midrule
-Precisión & 1 & 1 &  & 1 & 1 \\
-Recall & 1 & 1 &  & 1 & 1 \\
-F1 & 1 & 1 & 1 & 1 & 1 \\
-Nº Instancias & 10 & 10 & 20 & 20 & 20 \\
-\bottomrule
-\end{tabular}
-\caption{Classification report de los modelos baseline de datos tabulares}
-\label{tab:classification_report_modelos_base}
-\end{table}
-
-\begin{table}
-\centering
-\begin{tabular}{lcccccc}
-\toprule
-\textbf{Modelo} & \textbf{VN} & \textbf{VP} & \textbf{FP} & \textbf{FN} & \textbf{Error tipo I} & \textbf{Error tipo II}\\
-\midrule
-modelos & 10 & 10 & 0 & 0 & 0\% & 0\% \\
-\bottomrule
-\end{tabular}
-\caption{Análisis de errores de los modelos baseline de datos tabulares}
-\label{tab:analisis_errores_modelos_base}
-\end{table}
+La evaluación inicial de los modelos \textit{baseline} entrenados con datos tabulares arrojó un rendimiento perfecto sobre el conjunto de test independiente. Los cinco clasificadores evaluados —Random Forest (RF), LightGBM (LGBM), Support Vector Machine (SVM), K-Nearest Neighbors (KNN) y Regresión Logística (RL)— alcanzaron un valor óptimo de $1.00$ ($100\%$) en todas sus métricas principales, incluyendo \textit{Accuracy}, \textit{Precision}, \textit{Recall}, \textit{F1-Score}, AUC-ROC y el coeficiente de correlación de Matthews (MCC). La matriz de confusión asociada confirmó la ausencia absoluta de falsos positivos y falsos negativos (errores de Tipo I y Tipo II) sobre las 20 instancias evaluadas (10 muestras de clase Real y 10 de clase IA). Si bien estos resultados demuestran una alta capacidad de discriminación inicial, sugieren un escenario de alta separabilidad lineal dentro del conjunto de datos que motivó una evaluación más rigurosa mediante validación cruzada.
 
 \subsubsection*{Validación Cruzada Estratificada}
 
-Los resultados revelan que los modelos, Random Forest; LightGBM; Support Vector Machine, son estables en los 5 folds y que clasifican bien, como se ve en la \autoref{tab:cv_modelos_base}.
+Para garantizar la estabilidad y capacidad de generalización de las arquitecturas, se aplicó un proceso de validación cruzada estratificada con 5 \textit{folds}. Los modelos basados en ensamblados y fronteras complejas (Random Forest, LightGBM y SVM) exhibieron una estabilidad absoluta, replicando de forma unánime un promedio de métricas de $1.00$ con una desviación típica de $\pm 0$ en todas las particiones evaluadas.
 
-\begin{table}
-\centering
-\begin{tabular}{lcc}
-\toprule
-\textbf{Métrica} & \textbf{Media} & \textbf{Desviación típica}\\
-\midrule
-Accuracy & 1 & +/- 0 \\
-F1-Score & 1 & +/- 0 \\
-AUC-ROC & 1 & +/- 0 \\ 
-\bottomrule
-\end{tabular}
-\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
-\label{tab:cv_modelos_base}
-\end{table}
+Sin embargo, los modelos de K-Nearest Neighbors (KNN) y Regresión Logística (RL) no obtuvieron medidas perfectas en esta fase de evaluación previa al ajuste de hiperparámetros. Este comportamiento puede deberse a que, en determinadas particiones o combinaciones aleatorias del conjunto de datos, se concentraron en el grupo de validación aquellos audios cuyas características morfológicas y espectrales resultan intrínsecamente más difíciles de diferenciar para algoritmos basados en distancias geométricas o separabilidad puramente lineal. 
 
-Sin embargo, los modelos de K-Nearest Neighbors (KNN) y Regresión Logística (RL) no obtuvieron medidas perfectas en esta fase de evaluación previa al ajuste de hiperparámetros. 
+El desglose detallado del rendimiento obtenido mediante la validación cruzada estratificada se presenta en la \autoref{tab:cv_knn} para el algoritmo KNN y en la \autoref{tab:cv_rl} para el caso de la Regresión Logística.
 
-Este comportamiento puede deberse a que, en determinadas particiones o combinaciones aleatorias del conjunto de datos, se concentraron en el grupo de validación aquellos audios cuyas características morfológicas y espectrales resultan intrínsecamente más difíciles de diferenciar para algoritmos basados en distancias geométricas o separabilidad puramente lineal. El desglose detallado del rendimiento obtenido por cada fold y sus promedios ponderados se puede observar en la Tabla \ref{tab:cv_knn} para el caso de KNN y en la Tabla \ref{tab:cv_rl} para el de Regresión Logística.
-
-\begin{table}
+\begin{table}[h!]
 \centering
 \begin{tabular}{lcc}
 \toprule
@@ -89,11 +28,11 @@ F1-Score & 0.8877 & +/- 0.1012 \\
 AUC-ROC & 0.9422 & +/- 0.1076 \\ 
 \bottomrule
 \end{tabular}
-\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
+\caption{Resultados de Validación Cruzada (5 folds) para el modelo KNN baseline.}
 \label{tab:cv_knn}
 \end{table}
 
-\begin{table}
+\begin{table}[h!]
 \centering
 \begin{tabular}{lcc}
 \toprule
@@ -104,7 +43,7 @@ F1-Score & 0.9647 & +/- 0.1412 \\
 AUC-ROC & 0.9938 & +/- 0.0250 \\ 
 \bottomrule
 \end{tabular}
-\caption{Resultados de Validación Cruzada con 5 folds de los modelos baseline de datos tabulares}
+\caption{Resultados de Validación Cruzada (5 folds) para el modelo de Regresión Logística baseline.}
 \label{tab:cv_rl}
 \end{table}
 
@@ -268,24 +207,100 @@ Como vemos en la Figura \ref{fig:lime_svm}, la explicación que genera LIME tamb
 \subsection{KNN}
 \label{res_xai_knn}
 
-En este apartado se presentan los resultados obtenidos para el modelo KNN (K-Nearest Neighbors), enfocando el análisis tanto en las métricas de rendimiento globales como en su interpretación a través de técnicas de IA explicable.
+En este apartado se presentan los resultados obtenidos para el modelo KNN (K-Nearest Neighbors), enfocando el análisis en su interpretación a través de técnicas de IA explicable.
 
-Al analizar las explicaciones locales provistas por SHAP en la gráfica \ref{fig:knn_shap_local}, se observa que la importancia de las variables se centra en una en concreto en el ``spectral flatness'' seguido del ``mfcc 1 mean''. Además, al observar la perspectiva global en la gráfica \ref{fig:knn_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'' que está muy por encima.
+Al analizar las explicaciones locales provistas por SHAP en la \autoref{fig:knn_shap_local}, se observa que la importancia de las variables se centra en una en concreto en el ``spectral flatness'' seguido del ``mfcc 1 mean''. Además, al observar la perspectiva global en la \autoref{fig:knn_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'' que está muy por encima.
 
-Por otro lado, tal como se aprecia en la imagen \ref{fig:knn_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/knn_shap_local.png}
+    \caption{Explicación local de SHAP para el modelo KNN.}
+    \label{fig:knn_shap_local}
+\end{figure}
 
-Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver tabla \ref{tab:knn_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral flatness'',	``skewness'' y algunas características más o ``spectral bandwith'', ``rms'' y ``mfcc 12 mean'', para alternar la predicción del modelo entre clases.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/knn_shap_global.png}
+    \caption{Importancia global de las características mediante SHAP para el modelo KNN.}
+    \label{fig:knn_shap_global}
+\end{figure}
+
+Por otro lado, tal como se aprecia en la \autoref{fig:knn_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/knn_lime.png}
+    \caption{Explicación local generada por LIME para el modelo KNN.}
+    \label{fig:knn_lime}
+\end{figure}
+
+Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver \autoref{tab:knn_dice}) permite identificar los cambios mínimos requeridos en los atributos mediante la modificación simultánea de múltiples variables, bien combinando parámetros como ``spectral flatness'' y ``skewness'' junto con un conjunto de descriptores complementarios, o bien ajustando métricas como ``spectral bandwidth'', ``rms'' y ``mfcc 12 mean'' para alternar la predicción del modelo entre clases.
+
+\begin{table}[h!]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Instancia} & \textbf{spectral flatness} & \textbf{mfcc 7 mean} & \textbf{mfcc 8 mean} & \textbf{mfcc 12 mean} & \textbf{skewness} & \textbf{Etiqueta} \\
+\midrule
+Contrafáctico 1 & -0.73109 & -1.87186 & -1.76405 & -1.54021 & -0.08304 & 1 (Real) \\
+Contrafáctico 2 & --       & --       & --       & -2.93504 & --       & 1 (Real) \\
+Contrafáctico 3 & -0.62483 & --       & --       & -0.98231 & -0.63265 & 1 (Real) \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Contrafácticos principales generados por DiCE para el modelo KNN.}
+\label{tab:knn_dice}
+\end{table}
 
 \subsection{Regresión Logística}
 \label{res_xai_lr}
 
-En este apartado se presentan los resultados obtenidos para el modelo de Regresión Logística, enfocando el análisis tanto en las métricas de rendimiento globales como en su interpretación a través de técnicas de IA explicable.
+En este apartado se presentan los resultados obtenidos para el modelo de Regresión Logística, enfocando el análisis en su interpretación a través de técnicas de IA explicable.
 
-Al analizar las explicaciones locales provistas por SHAP en la gráfica \ref{fig:lr_shap_local}, se observa que la importancia de las variables se centra en una en concreto:  el ``spectral flatness'', seguido del ``rms''. Además, al observar la perspectiva global en la gráfica \ref{fig:lr_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante al igual que en KNN, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'', que es superior a las demás.
+Al analizar las explicaciones locales provistas por SHAP en la \autoref{fig:lr_shap_local}, se observa que la importancia de las variables se centra en una en concreto:  el ``spectral flatness'', seguido del ``rms''. Además, al observar la perspectiva global en la \autoref{fig:lr_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante al igual que en KNN, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'', que es superior a las demás.
 
-Por otro lado, tal como se aprecia en la imagen \ref{fig:lr_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/lr_shap_local.png}
+    \caption{Explicación local de SHAP para el modelo de Regresión Logística.}
+    \label{fig:lr_shap_local}
+\end{figure}
 
-Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver tabla \ref{tab:lr_dice}) permite identificar los cambios mínimos requeridos en los atributos modificando varias características a la vez como ``spectral bandwidth'' y ``spectral rolloff'' o ``spectral flatness'' y alguna más, coincidiendo en los 3 casos la modificación de la característica ``mfcc 12 mean'' para alternar la predicción del modelo entre clases.
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/lr_shap_global.png}
+    \caption{Importancia global de las características mediante SHAP para el modelo de Regresión Logística.}
+    \label{fig:lr_shap_global}
+\end{figure}
+
+Por otro lado, tal como se aprecia en la \autoref{fig:lr_lime}, la explicación local generada mediante LIME corrobora este comportamiento definido por SHAP, señalando nuevamente a ``spectral flatness'' como la característica principal que guía la decisión del clasificador.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{imagenes/lr_lime.png}
+    \caption{Explicación local generada por LIME para el modelo de Regresión Logística.}
+    \label{fig:lr_lime}
+\end{figure}
+
+Finalmente, complementando este análisis, el estudio de contrafacticos mediante DiCE (ver \autoref{tab:lr_dice}) permite identificar los cambios mínimos requeridos en los atributos mediante la modificación simultánea de múltiples variables como ``spectral bandwidth'', ``spectral rolloff'' o ``spectral flatness'', junto con otros descriptores acústicos secundarios, coincidiendo en los tres escenarios la alteración del coeficiente ``mfcc 12 mean'' para revertir la predicción del modelo entre clases.
+
+\begin{table}[h!]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Instancia} & \textbf{spectral bandwidth} & \textbf{spectral rolloff} & \textbf{spectral flatness} & \textbf{mfcc 12 mean} & \textbf{kurtosis} & \textbf{Etiqueta} \\
+\midrule
+Contrafáctico 1 & --       & --       & -1.14511 & -0.98900 & 1.34467 & 1 (Real) \\
+Contrafáctico 2 & 2.22696  & 2.44032  & --       & -3.07425 & --       & 1 (Real) \\
+Contrafáctico 3 & 1.17738  & --       & -1.04455 & -0.58018 & --       & 1 (Real) \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Contrafácticos principales generados por DiCE para el modelo de Regresión Logística.}
+\label{tab:lr_dice}
+\end{table}
 
 \subsection{AASIST}
 \label{subsubsec:res_aasist}
@@ -618,24 +633,7 @@ En este apartado se exponen y analizan los resultados prácticos del modelo Prot
 
 \subsubsection*{Dinámica de Entrenamiento y Evolución de Pérdidas}
 
-La arquitectura se configuró siguiendo las dimensiones del codificador de 64 neuronas ocultas y el banco parametrizado de 10 prototipos equitativos. Como se observa en la evolución del entrenamiento a lo largo de las 100 épocas programadas (ver Tabla \ref{tab:evolucion_loss_protopnet}), las pérdidas de penalización geométrica $\lambda_{R1} \cdot R_1$ y $\lambda_{R2} \cdot R_2$ disminuyeron de forma coordinada con la entropía cruzada, demostrando que las restricciones forzaron con éxito el agrupamiento compacto de las categorías dentro del espacio latente común de 32 dimensiones.
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lcccc}
-\toprule
-\textbf{Época} & \textbf{Pérdida Total} & \textbf{Entropía Cruzada ($L_{CE}$)} & \textbf{Cluster Loss ($R_1$)} & \textbf{Separation Loss ($R_2$)} \\
-\midrule
-20/100  & 2.2493 & 0.6909 & 8.9038 & 6.6810 \\
-40/100  & 1.9231 & 0.6788 & 7.9014 & 4.5408 \\
-60/100  & 1.7107 & 0.6636 & 7.1358 & 3.3350 \\
-80/100  & 1.5805 & 0.6466 & 6.4507 & 2.8879 \\
-100/100 & 1.4659 & 0.6323 & 5.6120 & 2.7245 \\
-\bottomrule
-\end{tabular}
-\caption{Evolución de los componentes de la función de pérdida durante el entrenamiento de ProtoPNet.}
-\label{tab:evolucion_loss_protopnet}
-\end{table}
+La convergencia del modelo se evaluó a partir del comportamiento de sus funciones de pérdida compuestas a lo largo del proceso de optimización. Como se detalla en la \autoref{tab:evolucion_loss_protopnet}, se observa un decrecimiento simultáneo y monótono de todos los componentes de la pérdida. La reducción progresiva de las penalizaciones geométricas de \textit{Cluster Loss} ($R_1$) y \textit{Separation Loss} ($R_2$) confirma que el optimizador logró constreñir con éxito el espacio latente. Este comportamiento demuestra que las restricciones obligaron a los 10 prototipos a agruparse densamente en regiones contiguas y representativas de sus respectivas categorías (*Bonafide* y *Spoof*), minimizando la dispersión sin perjudicar la entropía cruzada.
 
 \subsubsection*{Análisis del Rendimiento}
 
@@ -682,7 +680,7 @@ Aprovechando el mecanismo de similitud exponencial decreciente expuesto en la co
     \label{tab:explicacion_m12}
     \end{table}
 
-    \item \textbf{Muestra \#0 (Etiqueta Real: FAKE):} El modelo clasifica la instancia de forma correcta como \textbf{FAKE} con una confianza del $52.83\%$. En este escenario, la activación se concentra casi exclusivamente en un único prototipo representativo de su clase: el \textbf{Prototipo 4}, que registra una similitud dominante de $0.4701$ y una distancia muy estrecha de $0.7549$. Los restantes prototipos (tanto de la clase FAKE como de la clase REAL) muestran una relevancia residual insignificante, con valores de similitud inferiores a $0.0763$, demostrando cómo el modelo es capaz de realizar activaciones locales sumamente focalizadas en un único caso prototípico conocido para identificar audios falsificados.
+    \item \textbf{Muestra \#0 (Etiqueta Real: FAKE):} El modelo clasifica la instancia de forma correcta como \textbf{FAKE} con una confianza del $52.83\%$. En este escenario, la activación se concentra casi exclusivamente en un único prototipo representativo de su clase: el \textbf{Prototipo 4}, que registra una similitud dominante de $0.4701$ y una distancia muy estrecha de $0.7549$. Los restantes prototipos (tanto de la clase FAKE como de la clase REAL) muestran una relevancia residual insignificante, con valores de similitud inferiores a $0.0763$, demostrando que el modelo puede basar su decisión en la similitud con un único ejemplo real conocido, aislando el impacto del resto de los prototipos para identificar el audio falso.
 \end{enumerate}
 
 \subsection{SincNet}
@@ -692,7 +690,7 @@ En este apartado se detallan y analizan los resultados prácticos obtenidos medi
 
 \subsubsection*{Resultados de la Arquitectura y Dinámica de Entrenamiento}
 
-Para la ejecución del experimento empírico con el dataset en español ($100$ audios distribuidos simétricamente), se adaptó la primera capa convolucional parametrizada a $80$ canales de salida, un filtro de tamaño $101$ y frecuencias iniciales distribuidas entre $30$~Hz y $8000$~Hz bajo una ventana de Hamming \cite{cite: Sincnet.ipynb}. El clasificador final se configuró con un bloque lineal intermedio de $128$ neuronas y técnicas de regularización mediante \textit{Dropout} al $30\%$ antes de mapear la salida definitiva \cite{cite: Sincnet.ipynb}. El proceso de optimización real se llevó a cabo durante $50$ épocas utilizando la pérdida por entropía cruzada analizada en la sección experimental del modelo.
+Al ejecutar el entrenamiento de la arquitectura SincNet bajo las especificaciones detalladas en la metodología, el modelo mostró un comportamiento altamente inestable desde los ciclos iniciales. A pesar de las restricciones matemáticas orientadas a reducir el espacio de parámetros, el entrenamiento desde cero con un volumen acotado de muestras provocó una degradación rápida de los gradientes. Inmediatamente después de la primera época, la función de pérdida por entropía cruzada divergió por completo devolviendo valores indeterminados (\textit{NaN}), lo que provocó un estancamiento absoluto de la precisión en el conjunto de entrenamiento en el $50.00\%$.
 
 \subsubsection*{Análisis del Rendimiento}
 

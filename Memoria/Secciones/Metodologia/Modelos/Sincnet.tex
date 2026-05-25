@@ -9,22 +9,22 @@ Se seleccionó SincNet debido a su capacidad para extraer características acús
 
 \subsubsection*{Configuración de la arquitectura}
 
-La arquitectura implementada en PyTorch procesa los vectores tabulares de características de entrada mediante una adaptación lineal que emula el comportamiento de los filtros SincNet, estructurándose de la siguiente forma:
+La arquitectura implementada en PyTorch procesa las características de entrada mediante una capa convolucional adaptada, estructurándose de la siguiente forma:
 
 \begin{itemize}
-    \item \textbf{Capa de Convolución Sinc (\textit{SincConv})}: Es el núcleo del modelo. Recibe las 29 dimensiones de entrada y aplica una capa lineal parametrizada de 64 filtros de paso de banda. En lugar de aprender de forma libre todos los pesos de la convolución, el modelo solo aprende las frecuencias de corte inferior y superior para cada filtro. La respuesta en frecuencia se define matemáticamente mediante la diferencia de dos funciones sinc:
+    \item \textbf{Capa de Convolución Sinc (\textit{SincConv})}: Es el núcleo del modelo. Recibe las 29 dimensiones de entrada y aplica una capa parametrizada de \textbf{80 filtros de paso de banda} con un tamaño de filtro (\textit{kernel size}) fijado en $101$. En lugar de aprender de forma libre todos los pesos de la convolución, el modelo solo optimiza las frecuencias de corte inferior y superior para cada filtro, cuyas bandas iniciales se distribuyen de manera uniforme entre $30$~Hz y $8000$~Hz bajo una ventana de Hamming. La respuesta en frecuencia se define matemáticamente mediante la diferencia de dos funciones sinc:
     $$g(n, f_1, f_2) = 2f_2 \text{sinc}(2\pi f_2 n) - 2f_1 \text{sinc}(2\pi f_1 n)$$
     Esto obliga a la red a enfocarse exclusivamente en sintonizar anchos de banda específicos que resulten relevantes para discriminar entre audios auténticos y clonados.
-    \item \textbf{Bloque de Extracción Latente}: Tras la capa Sinc, la señal pasa por una función de activación no lineal \textit{ReLU} y se proyecta a través de una segunda capa densa hacia un espacio latente de menor dimensionalidad ($\text{latent\_dim} = 32$).
-    \item \textbf{Clasificador}: Una capa lineal de salida que mapea las 32 características latentes hacia las 2 clases objetivo (\textit{Bonafide} frente a \textit{Spoof}).
+    \item \textbf{Bloque de Extracción Latente}: Tras la capa Sinc, la señal pasa por una función de activación no lineal \textit{ReLU} y se proyecta a través de una capa densa intermedia de \textbf{128 neuronas}, incorporando una regularización mediante \textit{Dropout} al $30\%$ para mitigar el sobreajuste.
+    \item \textbf{Clasificador}: Una capa lineal de salida final (\texttt{nn.Linear}) que mapea las características latentes hacia las 2 clases objetivo (\textit{Bonafide} frente a \textit{Spoof}).
 \end{itemize}
 
 \subsubsection*{Configuración experimental y entrenamiento}
 
-El proceso de partición y preparación de datos mantuvo la coherencia metodológica del proyecto:
+El proceso de preparación y la estrategia de optimización se fijaron bajo los siguientes criterios:
 
 \begin{itemize}
-    \item \textbf{División y Escalado}: El dataset se dividió de forma estratificada en entrenamiento (80\%) y prueba (20\%). Las características se normalizaron mediante \texttt{StandardScaler} para garantizar que las magnitudes de los vectores de entrada no distorsionaran el cálculo de los pesos y las frecuencias en la capa Sinc.
-    \item \textbf{Estrategia de Entrenamiento}: El modelo se optimizó utilizando el algoritmo \textit{Adam} con una tasa de aprendizaje ($\text{learning\_rate}$) de 0.001 a lo largo de 100 épocas.
-    \item \textbf{Función de Pérdida}: Al verificar que el ratio de balanceo entre las clases del dataset era simétrico ($1.00\times$), se empleó la función de pérdida de entropía cruzada estándar (\texttt{nn.CrossEntropyLoss}) sin necesidad de incorporar pesos de penalización adicionales por desequilibrio de categorías.
+    \item \textbf{División y Escalado}: El dataset en español ($100$ audios distribuidos de manera simétrica) se dividió de forma estratificada en entrenamiento (80\%) y prueba (20\%). Las características se normalizaron mediante \texttt{StandardScaler} para garantizar que las magnitudes no distorsionaran el gradiente.
+    \item \textbf{Estrategia de Entrenamiento}: El modelo se optimizó utilizando el algoritmo \textit{Adam} con una tasa de aprendizaje ($\text{learning\_rate}$) de $0.001$ a lo largo de un ciclo máximo de \textbf{50 épocas}.
+    \item \textbf{Función de Pérdida}: Al verificar que el ratio de balanceo entre las clases del dataset era simétrico ($1.00\times$), se empleó la función de pérdida de entropía cruzada estándar (\texttt{nn.CrossEntropyLoss}).
 \end{itemize}
