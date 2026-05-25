@@ -39,6 +39,16 @@ En cuanto a la estructuración del repositorio, tenemos 3 carpetas principales:
     - scaler_knn.pkl: Archivo que almacena el objeto de normalización (scaler) ajustado para el modelo KNN, garantizando el correcto escalado de características en el pipeline.
     - scaler_lr.pkl: Archivo que almacena el objeto de normalización (scaler) ajustado para el modelo de Regresión Logística, garantizando el correcto escalado de características en el pipeline.
 
+- Modelos/Jorge:
+    - funciones.py: Script con algunas funciones que se repiten a lo largo de los notebooks, así se pueden usar en cualquiera de manera unificada y sin funciones duplicadas.
+    - LightGBM.ipynb: Notebook donde se define el modelo LightGBM, se hace el entrenamiento, validación cruzada y grid search.
+    - modelo_LightGBM.pkl: Archivo que guarda el modelo entrenado de LightGBM para poder cargarlo desde otros archivos.
+    - Random_Forest.ipynb: Notebook donde se desarrolla el modelo Random Forest, se entrena, y se hace validación cruzada y grid search.
+    - modelo_Random_Forest.pkl: Archivo que guarda el modelo entrenado de Random Forest para poder cargarlo desde otros archivos.
+    - SVM.ipynb: Notebook donde se utiliza el modelo SVM, se entrena dicho modelo y se hace validación cruzada y grid search.
+    - modelo_SVM.pkl: Archivo que guarda el modelo entrenado de Support Vector Machines para poder cargarlo desde otros archivos.
+    - XAI.ipynb: Notebook en el que se hacen las pruebas de XAI (SHAP, LIME, DiCE) para los modelos Ranfom Forest, LightGBM y SVM.
+
 # Autores
 - Jorge Aured Zarzoso
 - Germán Bravo Quintián
