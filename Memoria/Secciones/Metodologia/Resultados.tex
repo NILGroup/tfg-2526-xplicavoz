@@ -207,7 +207,7 @@ Como vemos en la Figura \ref{fig:lime_svm}, la explicación que genera LIME tamb
 \subsection{KNN}
 \label{res_xai_knn}
 
-En este apartado se presentan los resultados obtenidos para el modelo KNN (K-Nearest Neighbors), enfocando el análisis en su interpretación a través de técnicas de IA explicable.
+En este apartado se presentan los resultados obtenidos para el modelo KNN (K-Nearest Neighbors), enfocando el análisis en su interpretación a través de técnicas de IA explicable. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Rafa/ia_explicable.ipynb}}.
 
 Al analizar las explicaciones locales provistas por SHAP en la \autoref{fig:knn_shap_local}, se observa que la importancia de las variables se centra en una en concreto en el ``spectral flatness'' seguido del ``mfcc 1 mean''. Además, al observar la perspectiva global en la \autoref{fig:knn_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'' que está muy por encima.
 
@@ -256,7 +256,7 @@ Contrafáctico 3 & -0.62483 & --       & --       & -0.98231 & -0.63265 & 1 (Rea
 \subsection{Regresión Logística}
 \label{res_xai_lr}
 
-En este apartado se presentan los resultados obtenidos para el modelo de Regresión Logística, enfocando el análisis en su interpretación a través de técnicas de IA explicable.
+En este apartado se presentan los resultados obtenidos para el modelo de Regresión Logística, enfocando el análisis en su interpretación a través de técnicas de IA explicable. Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Rafa/ia_explicable.ipynb}}.
 
 Al analizar las explicaciones locales provistas por SHAP en la \autoref{fig:lr_shap_local}, se observa que la importancia de las variables se centra en una en concreto:  el ``spectral flatness'', seguido del ``rms''. Además, al observar la perspectiva global en la \autoref{fig:lr_shap_global}, se confirma que el atributo más influyente es ``spectral flatness'', no obstante al igual que en KNN, otras características como ``mfcc 1 mean'' y ``spectral bandwidth'' también muestran un impacto notable en el proceso de clasificación aunque sin llegar al nivel del ``spectral flatness'', que es superior a las demás.
 
@@ -629,7 +629,7 @@ Como conclusiones podemos observar que a la vista de los modelos de explicación
 \subsection{ProtoPNet}
 \label{subsec:res_protopnet}
 
-En este apartado se exponen y analizan los resultados prácticos del modelo ProtoPNet adaptado para datos tabulares, cuyo funcionamiento y justificación teórica de interpretabilidad intrínseca han sido detallados en la metodología (\autoref{subsubsec:mod_protopnet}).
+En este apartado se exponen y analizan los resultados prácticos del modelo ProtoPNet adaptado para datos tabulares, cuyo funcionamiento y justificación teórica de interpretabilidad intrínseca han sido detallados en la metodología (\autoref{subsubsec:mod_protopnet}). Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Rafa/Protopnet.ipynb}}.
 
 \subsubsection*{Dinámica de Entrenamiento y Evolución de Pérdidas}
 
@@ -686,7 +686,7 @@ Aprovechando el mecanismo de similitud exponencial decreciente expuesto en la co
 \subsection{SincNet}
 \label{subsec:res_sincnet}
 
-En este apartado se detallan y analizan los resultados prácticos obtenidos mediante la arquitectura SincNet, cuyos fundamentos matemáticos, justificación y bloques de extracción latente han sido descritos detalladamente en el bloque de metodología (\autoref{subsubsec:mod_sincnet}).
+En este apartado se detallan y analizan los resultados prácticos obtenidos mediante la arquitectura SincNet, cuyos fundamentos matemáticos, justificación y bloques de extracción latente han sido descritos detalladamente en el bloque de metodología (\autoref{subsubsec:mod_sincnet}). Se puede consultar el código en el enlace del pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Rafa/Sincnet.ipynb}}.
 
 \subsubsection*{Resultados de la Arquitectura y Dinámica de Entrenamiento}
 
