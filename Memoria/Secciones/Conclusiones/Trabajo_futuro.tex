@@ -1,7 +1,7 @@
 \section{Trabajo futuro}
 
 El trabajo desarrollado establece una base sólida para la detección de \textit{deepfakes} de audio mediante el uso de distintos métodos de IA y técnicas XAI.
-Actualmente, el producto final del trabajo consiste en un pipeline que permite aplicar, sobre un audio de entrada, todos los modelos de clasificación y explicación estudiados en el capítulo~\ref{sec:metodologia}. Este pipeline genera como salida los resultados obtenidos por los distintos modelos de IA, combinados con gráficas resultantes de aplicar XAI sobre dichos resultados.
+Actualmente, el producto final del trabajo consiste en un pipeline que permite aplicar, sobre un audio de entrada, todos los modelos de clasificación y explicación estudiados en el~\autoref{chap:metodologia}. Este pipeline genera como salida los resultados obtenidos por los distintos modelos de IA, combinados con gráficas resultantes de aplicar XAI sobre dichos resultados.
 
 Aunque estas representaciones permiten observar qué factores han influido en la decisión de los modelos, su interpretación requiere de ciertos conocimientos técnicos y la explicación no siempre resulta suficientemente directa. Por ello, como trabajo futuro se propone el desarrollo de un explicador que actúe como una última capa entre los valores calculados por las técnicas XAI aplicadas en el pipeline y el resultado final mostrado.
 La idea principal sería transformar el sistema actual, centrado en la visualización, en un enfoque basado en la interpretabilidad asistida. Es decir, el sistema no se limitaría a presentar gráficas, sino que también ofrecería explicaciones más fácilmente interpretables sobre la decisión final y sobre las evidencias que apoyan esta clasificación.
