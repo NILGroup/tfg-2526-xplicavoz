@@ -57,10 +57,10 @@ Los kernels más comúnmente utilizados son:
 
 \subsubsection*{Hiperparámetros}
 
-Vamos a ver cuáles son los hiperparámetros más importantes en los SVM ~\cite{sklearn_svm}.
+Veamos cuáles son los hiperparámetros más influyentes en los SVM ~\cite{sklearn_svm}.
 
 \begin{itemize}
-    \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de overfitting).
+    \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de sobreajuste).
     
     \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente. La elección del kernel determina fundamentalmente la capacidad del modelo para encontrar patrones complejos.
     
@@ -70,17 +70,19 @@ Vamos a ver cuáles son los hiperparámetros más importantes en los SVM ~\cite{
     
     \item \textbf{coef0}: Este parámetro es relevante para los kernels polinomial y sigmoide, donde actúa como un término independiente en la función del kernel. En el kernel polinomial, coef0 controla cuánto influyen los términos de menor grado respecto a los de mayor grado; en el sigmoide, ayuda a definir la forma de la función de activación. Aunque no es tan crítico como C o gamma, puede necesitar ajuste para optimizar el rendimiento del modelo.
     
-    \item \textbf{probability}: Este parámetro booleano determina si el modelo SVM debe calibrarse para proporcionar estimaciones de probabilidad junto con las predicciones de clase. Activarlo (True) permite obtener la probabilidad de pertenencia a cada clase mediante validación cruzada interna, lo cual es útil para interpretar la confianza del modelo. Sin embargo, este proceso aumenta significativamente el tiempo de entrenamiento y puede afectar ligeramente la precisión de las clasificaciones.
+    \item \textbf{probability}: Este parámetro $booleano$ determina si el modelo SVM debe calibrarse para proporcionar estimaciones de probabilidad junto con las predicciones de clase. Activarlo ($True$) permite obtener la probabilidad de pertenencia a cada clase mediante validación cruzada interna, lo cual es útil para interpretar la confianza del modelo. Sin embargo, este proceso aumenta significativamente el tiempo de entrenamiento y puede afectar ligeramente la precisión de las clasificaciones.
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
+
+Repasemos algunas de las ventajas que presentan los SVM para la detección de $deepfakes$.
 
 \begin{itemize}
     \item \textbf{Fundamento teórico sólido}: A diferencia de otros métodos heurísticos, SVM está basada en la teoría de optimización convexa, lo que garantiza que la solución encontrada es óptima (máximo margen global).
     
     \item \textbf{Eficaz en espacios de alta dimensión}: Las características de audio pueden generar vectores de gran dimensionalidad (decenas o cientos de coeficientes). SVM maneja bien esta situación sin colapsar por la maldición de la dimensionalidad.
     
-    \item \textbf{Robustez ante overfitting}: La maximización del margen proporciona una regularización natural que mejora la generalización, crucial cuando se trabaja con datasets limitados de voces deepfake.
+    \item \textbf{Robustez ante overfitting}: La maximización del margen proporciona una regularización natural que mejora la generalización, crucial cuando se trabaja con datasets limitados de voces $deepfake$.
     
     \item \textbf{Versatilidad mediante kernels}: La capacidad de elegir diferentes kernels permite adaptar el modelo a la estructura no lineal de los datos de audio sin necesidad de transformaciones manuales.
     

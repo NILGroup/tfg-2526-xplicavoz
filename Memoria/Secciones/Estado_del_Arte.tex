@@ -1,11 +1,11 @@
 \chapter{Estado del arte}
 \label{sec:estado_del_arte}
 
-En este capítulo, se presenta el marco teórico que sirve de base para el desarrollo del proyecto. En primer lugar, en la sección~\ref{subsec:modelos_clasificacion}, se contemplan los distintos modelos seleccionados para la tarea de clasificación de los audios. En este bloque, se explica teóricamente tanto su arquitectura como las principales innovaciones, propiedades o ventajas específicas que consideramos relevantes para la detección de audio falsificado.
+En este capítulo, se presenta el marco teórico que sirve de base para el desarrollo del proyecto. En primer lugar, en la \autoref{subsec:modelos_clasificacion}, se contemplan los distintos modelos seleccionados para la tarea de clasificación de los audios. En este bloque, se explica teóricamente tanto su arquitectura como las principales innovaciones, propiedades o ventajas específicas que consideramos relevantes para la detección de audios falsificados.
 
-Asimismo, también se contempla una sección~\ref{subsec:modelos_explicacion}, donde se exponen los fundamentos teóricos de los distintos modelos de XAI que consideramos de interés para este trabajo. Para la elección de los modelos XAI, se ha buscado diversidad en diversos aspectos, como el alcance de la explicación, el grado de adaptabilidad a diferentes modelos o el momento del proceso de aprendizaje donde se incorpora la explicabilidad.
+Asimismo, también se contempla una \autoref{subsec:modelos_explicacion}, donde se exponen los fundamentos teóricos de los distintos modelos de XAI que consideramos de interés para este trabajo. Para la elección de los modelos XAI, se ha buscado diversidad en diversos aspectos, como el alcance de la explicación, el grado de adaptabilidad a diferentes modelos o el momento del proceso de aprendizaje donde se incorpora la explicabilidad.
 
-Por último, se resumen las conclusiones del capítulo en la sección~\ref{sec:conc_eda}.
+Por último, se resumen las conclusiones del capítulo en la \autoref{sec:conc_eda}.
 
 En conjunto, esta capítulo permite identificar las herramientas más importantes del proyecto y fundamentar las decisiones metodológicas desarrolladas en capítulos posteriores.
 
@@ -14,7 +14,7 @@ En conjunto, esta capítulo permite identificar las herramientas más importante
 
 La detección de audio deepfake se fundamenta en la capacidad de los algoritmos para discriminar entre patrones biométricos naturales y artefactos generados sintéticamente. Dado que los métodos de falsificación varían en complejidad desde técnicas de concatenación simple hasta modelos de difusión avanzados, es necesario abordar el problema mediante diversos enfoques de aprendizaje automático.
 
-A continuación se describen los modelos de clasificación que se usan actualmente para este estudio de audios fake, abarcando desde algoritmos estadísticos clásicos y modelos basados en árboles, hasta arquitecturas de aprendizaje profundo más complejas.
+A continuación se describen los modelos de clasificación que se usan actualmente para este estudio de audios fake, abarcando desde algoritmos estadísticos clásicos y modelos basados en árboles, hasta arquitecturas de Aprendizaje Profundo más complejas.
 
 \input{Secciones/Estado_del_Arte/PerceptronMulticapa.tex}
 
@@ -34,30 +34,30 @@ A continuación se describen los modelos de clasificación que se usan actualmen
 
 \input{Secciones/Estado_del_Arte/KNN.tex}
 
-Como hemos visto, se ha presentado un espectro diverso de clasificadores que permiten abordar la detección de spoofing desde diferentes ángulos. Los modelos lineales y de vecinos cercanos, como la Regresión Logística y k-NN, ofrecen una base sólida y eficiente para el análisis de características acústicas predefinidas. Por otro lado, métodos como Random Forest y LightGBM incrementan la robustez del sistema ante datos ruidosos y relaciones no lineales.
+Como hemos visto, se ha presentado un espectro diverso de clasificadores que permiten abordar la detección de $spoofing$ desde diferentes ángulos. Los modelos lineales y de vecinos cercanos, como la Regresión Logística y k-NN, ofrecen una base sólida y eficiente para el análisis de características acústicas predefinidas. Por otro lado, métodos como Random Forest y LightGBM incrementan la robustez del sistema ante datos ruidosos y relaciones no lineales.
 
 Por último, modelos como Wav2Vec2 y AASIST procesan la señal de audio cruda y modelar relaciones espectro-temporales mediante grafos y mecanismos de atención. La combinación de estos enfoques permite no solo alcanzar altas tasas de precisión, sino también adaptarnos según la disponibilidad de recursos computacionales. Esta base taxonómica de modelos constituye el núcleo operativo sobre el cual se aplicarán posteriormente las técnicas de explicabilidad.
 
 \section{Modelos de explicación}
 \label{subsec:modelos_explicacion}
 
-La adopción de modelos de aprendizaje profundo ha permitido alcanzar una precisión sin precedentes en la detección de audio sintético. Sin embargo, estos sistemas operan frecuentemente como cajas negras, lo que dificulta su aplicación en ámbitos críticos como en forense o ciberseguridad. La Inteligencia Artificial Explicable (XAI) surge como la solución técnica para dotar a estos modelos de transparencia, permitiendo a los expertos entender el porqué de cada clasificación.
+La adopción de modelos de Aprendizaje Profundo ha permitido alcanzar una precisión sin precedentes en la detección de audio sintético. Sin embargo, estos sistemas operan frecuentemente como cajas negras, lo que dificulta su aplicación en ámbitos críticos como en forense o ciberseguridad. La Inteligencia Artificial Explicable (XAI) surge como la solución técnica para dotar a estos modelos de transparencia, permitiendo a los expertos entender el porqué de cada clasificación.
 
 A continuación, se describen las técnicas de explicabilidad que hemos contemplado para este proyecto, organizados según el siguiente enfoque técnico:
 
 \begin{itemize}
     \item \textbf{Métodos de Atribución y Perturbación}: Se analizan técnicas post-hoc, es decir, que no dependen del modelo al que se aplican, como SHAP y LIME, que permiten identificar qué características acústicas individuales son determinantes para el modelo; métodos basados en perturbaciones, como Occlusion y RISE, que miden la importancia de regiones modificando de forma controlada la entrada; y métodos basados en gradientes, como Grad-CAM e Integrated Gradients, fundamentales para visualizar la relevancia en el plano tiempo-frecuencia.
 
-    \item \textbf{Razonamiento Contrafáctico:} Los modelos contrafactuales generan ejemplos alternativos a una muestra original que permiten entender la frotera de decisión del modelo estudiado (¿qué cambios harían que este audio fake pareciera real?). Como ejemplo de este tipo de enfoque, se explora el modelo DiCE que es uno de los más representativos para datos tabulares.
+    \item \textbf{Razonamiento Contrafáctico:} Los modelos contrafactuales generan ejemplos alternativos a una muestra original que permiten entender la frontera de decisión del modelo estudiado (¿qué cambios harían que este audio falso pareciera real?). Como ejemplo de este tipo de enfoque, se explora el modelo DiCE que es uno de los más representativos para datos tabulares.
 
     \item \textbf{Modelos Interpretables por Diseño:} Se profundiza en arquitecturas cuya transparencia es intrínseca, como SincNet, que utiliza filtros con significado físico, y ProtoPNet, que basa su decisión en la comparación con prototipos o ejemplos conocidos.
 \end{itemize}
 
 Además de esa clasificación, en interpretabilidad, los métodos suelen clasificarse según qué alcance tiene la explicación, a qué conjuntos de modelos se pueden aplicar y en qué momento aparece la interpretabilidad dentro del proceso de aprendizaje.
 Por un lado, pueden distinguirse según el alcance de la explicación en métodos \textbf{locales}, \textbf{globales} o de \textbf{cohortes}: los locales explican una predicción concreta para una muestra individual; los globales describen el comportamiento del modelo sobre el conjunto total de datos; y los explicadores por cohortes analizan el comportamiento del modelo sobre un subconjunto de muestras que comparten cierta característica.
-Por otro lado, según a qué modelos se aplican, existen métodos \textit{model-agnostic}, que pueden aplicarse a cualquier modelo porque solo necesitan acceder a sus entradas y salidas; métodos \textit{model-specific}, diseñados para modelos concretos; y métodos \textit{model-class-specific}, aplicables a una familia de modelos que comparten una estructura común, como árboles, redes neuronales o modelos lineales.
+Por otro lado, según a qué modelos se aplican, existen métodos \textit{model-agnostic}, que pueden aplicarse a cualquier modelo porque solo necesitan acceder a sus entradas y salidas; métodos \textit{model-specific}, diseñados para modelos concretos; y métodos \textit{model-class-specific}, aplicables a una familia de modelos que comparten una estructura común, como Árboles de Decisión, Redes Neuronales o modelos lineales.
 Por último, también pueden clasificarse en \textit{ante-hoc} y \textit{post-hoc}: los métodos \textit{ante-hoc} son aquellos en los que la interpretabilidad viene incorporada en el diseño del propio modelo, mientras que los \textit{post-hoc} generan explicaciones una vez entrenado el modelo, sin necesidad de que este sea interpretable desde un primer momento.
-\hspace{.7cm}
+
 \input{Secciones/Estado_del_Arte/SHAP.tex}
 
 \input{Secciones/Estado_del_Arte/LIME.tex}
@@ -83,6 +83,6 @@ Una vez revisados los modelos de clasificación considerados en este trabajo, pu
 
 De manera paralela, el bloque dedicado a explicabilidad muestra que la interpretación de modelos en detección de \textit{deepfakes} de audio tampoco puede reducirse a una única estrategia. Las técnicas post-hoc, como SHAP, LIME, Grad-CAM, Integrated Gradients, Occlusion o RISE, permiten analizar el comportamiento de modelos complejos una vez entrenados, identificando qué regiones, variables o patrones han resultado más influyentes en la decisión. Frente a ellas, enfoques ante-hoc o intrínsecamente interpretables, como SincNet o ProtoPNet, incorporan la explicabilidad en la propia arquitectura del modelo. Asimismo, herramientas como DiCE añaden el análisis del ámbito contrafactual, permitiendo estudiar qué cambios mínimos en la entrada podrían modificar la predicción.
 
-En conjunto, ambos bloques, clasificación y explicabilidad, constituyen la base sobre la que se desarrolla el proyecto. En este sentido, los modelos de clasificación y las técnicas XAI no deben entenderse como bloques independientes, sino como componentes complementarios de un mismo sistema de análisis. Mientras que los primeros aportan distintas capacidades predictivas y distintos niveles de adaptación al problema, los segundos permiten interpretar y justificar en que evidencias técnicas se basan estas predicciones.
+En conjunto, ambos bloques, clasificación y explicabilidad, constituyen la base sobre la que se desarrolla el proyecto. En este sentido, los modelos de clasificación y las técnicas XAI no deben entenderse como bloques independientes, sino como componentes complementarios de un mismo sistema de análisis. Mientras que los primeros aportan distintas capacidades predictivas y distintos niveles de adaptación al problema, los segundos permiten interpretar y justificar en qué evidencias técnicas se basan estas predicciones.
 
 A partir de este marco teórico, en el siguiente capítulo se explica el desarrollo práctico del trabajo, incluyendo tanto la metodología seguida como el análisis de los resultados obtenidos. También se concreta la aportación propia del proyecto, como una propuesta orientada a adaptar, combinar y analizar distintas técnicas de IA y XAI para avanzar en la tarea de detección de \textit{spoof}. Esta tarea se realiza con el objetivo, no únicamente de construir un clasificador capaz de distinguir entre audios naturales y generados, sino también disponer de mecanismos que permitan comprender a nivel humano que características o patrones han determinado la clasificación.

@@ -5,7 +5,7 @@ Random Forest es un algoritmo de aprendizaje automático basado en la combinaci�
 
 \subsubsection*{Arquitectura y funcionamiento}
 
-El algoritmo construye un ``bosque'' de árboles de decisión donde cada árbol se entrena de forma ligeramente diferente, introduciendo aleatoriedad controlada en dos niveles:
+El algoritmo construye un ``bosque'' (conjunto) de árboles de decisión donde cada árbol se entrena de forma ligeramente diferente, introduciendo aleatoriedad controlada en dos niveles:
 
 \begin{itemize}
     \item \textbf{Bootstrap aggregating (bagging)}: Cada árbol se entrena con una muestra aleatoria del conjunto de datos original, permitiendo repeticiones. Esto significa que algunos ejemplos aparecen varias veces en el entrenamiento de un árbol, mientras que otros (alrededor de un tercio) quedan fuera (\textit{out-of-bag}) y sirven para validación interna.
@@ -31,23 +31,25 @@ Vamos a hablar de los hiperparámetros que tiene Random Forest y para qué sirve
 \begin{itemize}
 	\item \textbf{n\_estimators}: Define la cantidad de árboles de decisión que conforman el bosque aleatorio. A medida que aumentamos este número, el modelo tiende a mejorar su rendimiento porque se promedian más predicciones individuales, lo que reduce la varianza y el riesgo de sobreajuste. Sin embargo, a partir de cierto punto (generalmente entre 100 y 500 árboles) los beneficios se vuelven marginales, mientras que el tiempo de entrenamiento y predicción sigue incrementándose linealmente, por lo que es recomendable encontrar un equilibrio entre rendimiento y eficiencia computacional.
 	
-	\item \textbf{max\_depth}: Controla la profundidad máxima que pueden alcanzar los árboles individuales dentro del bosque. Si no se establece un límite (None), los árboles crecerán hasta que todas las hojas sean puras o contengan el mínimo de muestras permitido, lo que puede llevar a un sobreajuste en datos de entrenamiento. Por el contrario, valores pequeños limitan la complejidad del modelo, actuando como una forma de regularización que previene el sobreajuste pero podría aumentar el sesgo si la profundidad es demasiado restrictiva.
+	\item \textbf{max\_depth}: Controla la profundidad máxima que pueden alcanzar los árboles individuales dentro del bosque. Si no se establece un límite ($None$), los árboles crecerán hasta que todas las hojas sean puras o contengan el mínimo de muestras permitido, lo que puede llevar a un sobreajuste en datos de entrenamiento. Por el contrario, valores pequeños limitan la complejidad del modelo, actuando como una forma de regularización que previene el sobreajuste pero podría aumentar el sesgo si la profundidad es demasiado restrictiva.
 	
 	\item \textbf{min\_samples\_split}: Determina el número mínimo de muestras requeridas para dividir un nodo interno durante la construcción del árbol. Valores más altos hacen que el árbol sea más conservador al crear nuevas ramas, ya que necesita más evidencia (muestras) para justificar una división. Esto ayuda a prevenir el sobreajuste al evitar que el modelo aprenda patrones demasiado específicos de grupos pequeños de datos, aunque valores excesivamente altos podrían impedir que el modelo capture patrones importantes.
 	
-	\item \textbf{max\_features}: Especifica cuántas características debe considerar cada árbol al buscar la mejor división en cada nodo. Al limitar las características disponibles, se fuerza a los árboles a ser más diversos entre sí, lo que reduce la correlación entre ellos y mejora la capacidad de generalización del conjunto. Para clasificación, el valor recomendado suele ser la raíz cuadrada del número total de características (sqrt), mientras que para regresión se suele usar un tercio del total. Valores más pequeños aumentan la aleatoriedad y la diversidad, mientras que valores más grandes hacen que los árboles sean más similares entre sí.
+	\item \textbf{max\_features}: Especifica cuántas características debe considerar cada árbol al buscar la mejor división en cada nodo. Al limitar las características disponibles, se fuerza a los árboles a ser más diversos entre sí, lo que reduce la correlación entre ellos y mejora la capacidad de generalización del conjunto. Para clasificación, el valor recomendado suele ser la raíz cuadrada del número total de características ($sqrt$), mientras que para regresión se suele usar un tercio del total. Valores más pequeños aumentan la aleatoriedad y la diversidad, mientras que valores más grandes hacen que los árboles sean más similares entre sí.
 	
-	\item \textbf{max\_samples}: Cuando se utiliza muestreo bootstrap (que es el comportamiento por defecto), este parámetro controla el tamaño de la muestra aleatoria que se toma del conjunto de datos original para entrenar cada árbol. Valores inferiores a 1.0 (por ejemplo, 0.7) significan que cada árbol se entrena solo con el 70\% de los datos, lo que aumenta la diversidad entre los árboles y fortalece la capacidad de generalización del bosque. Este parámetro es especialmente útil cuando se trabaja con conjuntos de datos muy grandes o cuando se sospecha que los árboles individuales están demasiado correlacionados.
+	\item \textbf{max\_samples}: Cuando se utiliza muestreo $bootstrap$ (que es el comportamiento por defecto), este parámetro controla el tamaño de la muestra aleatoria que se toma del conjunto de datos original para entrenar cada árbol. Valores inferiores a 1.0 (por ejemplo, 0.7) significan que cada árbol se entrena solo con el 70\% de los datos, lo que aumenta la diversidad entre los árboles y fortalece la capacidad de generalización del bosque. Este parámetro es especialmente útil cuando se trabaja con conjuntos de datos muy grandes o cuando se sospecha que los árboles individuales están demasiado correlacionados.
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
 
+Vamos a ver cuáles son algunas de las ventajas de los Random Forest.
+
 \begin{itemize}
     \item \textbf{Robustez ante ruido}: Las características de audio pueden contener variaciones por condiciones de grabación; Random Forest maneja bien estos datos ruidosos.
     
-    \item \textbf{No requiere normalización}: A diferencia de redes neuronales o SVM, no es necesario escalar las características, lo que simplifica el pipeline.
+    \item \textbf{No requiere normalización}: A diferencia de Redes Neuronales o SVM, no es necesario escalar las características, lo que simplifica el pipeline.
     
-    \item \textbf{Resistencia al sobreajuste}: La combinación de bagging y aleatoriedad evita que el modelo memorice el conjunto de entrenamiento.
+    \item \textbf{Resistencia al sobreajuste}: La combinación de $bagging$ y aleatoriedad evita que el modelo memorice el conjunto de entrenamiento.
 \end{itemize}
 
 \begin{figure}
