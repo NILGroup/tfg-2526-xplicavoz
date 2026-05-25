@@ -633,7 +633,7 @@ En este apartado se exponen y analizan los resultados prácticos del modelo Prot
 
 \subsubsection*{Dinámica de Entrenamiento y Evolución de Pérdidas}
 
-La convergencia del modelo se evaluó a partir del comportamiento de sus funciones de pérdida compuestas a lo largo del proceso de optimización. Como se detalla en la \autoref{tab:evolucion_loss_protopnet}, se observa un decrecimiento simultáneo y monótono de todos los componentes de la pérdida. La reducción progresiva de las penalizaciones geométricas de \textit{Cluster Loss} ($R_1$) y \textit{Separation Loss} ($R_2$) confirma que el optimizador logró constreñir con éxito el espacio latente. Este comportamiento demuestra que las restricciones obligaron a los 10 prototipos a agruparse densamente en regiones contiguas y representativas de sus respectivas categorías (*Bonafide* y *Spoof*), minimizando la dispersión sin perjudicar la entropía cruzada.
+La convergencia del modelo se evaluó a partir del comportamiento de sus funciones de pérdida compuestas a lo largo del proceso de optimización. Durante las épocas programadas, se observó un decrecimiento simultáneo y monótono de todos los componentes de la pérdida. La reducción progresiva de las penalizaciones geométricas de \textit{Cluster Loss} ($R_1$) y \textit{Separation Loss} ($R_2$) confirma que el optimizador logró constreñir con éxito el espacio latente. Este comportamiento demuestra que las restricciones obligaron a los 10 prototipos a agruparse densamente en regiones contiguas y representativas de sus respectivas categorías (\textit{Bonafide} y \textit{Spoof}), minimizando la dispersión sin perjudicar la entropía cruzada.
 
 \subsubsection*{Análisis del Rendimiento}
 

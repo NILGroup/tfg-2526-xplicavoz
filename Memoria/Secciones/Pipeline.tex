@@ -1,13 +1,13 @@
 \chapter{Pipeline}
 \label{sec:pipeline}
 
-Como cierre del proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el capítulo~\ref{sec:metodologia}. Este pipeline tiene como objetivo reunir en un único \textit{notebook} todos los modelos desarrollados a lo largo del proyecto. De este modo, facilita la comparación de resultados y explicaciones entre modelos.
+Como cierre del proyecto, se ha desarrollado un pipeline capaz de aplicar, al audio recibido como entrada, todos los modelos de IA y XAI explicados en el~\autoref{chap:metodologia}. Este pipeline tiene como objetivo reunir en un único \textit{notebook} todos los modelos desarrollados a lo largo del proyecto. De este modo, facilita la comparación de resultados y explicaciones entre modelos.
 
 Para esta prueba se han escogido 4 audios, dos en español y dos en inglés, de los cuales uno es real y el otro generado. Se ha podido ver, en forma de simulación en código, cómo sería el análisis de una voz nueva, su clasificación en real o generada, y el uso de métodos que explican la predicción de los modelos.
 
 Cabe mencionar que el diseño de este pipeline constituye una de las aportaciones prácticas del proyecto, al integrar en una misma estructura modelos de distinta naturaleza y técnicas de explicabilidad complementarias. Esto permite analizar un mismo audio desde múltiples perspectivas, comparando no solo el resultado de clasificación, sino también la forma en que cada modelo justifica su decisión.
 
-En este capítulo, en la sección~\ref{sec:arq_pipeline} explicamos la estructura que hemos seguido para desarrollar el pipeline. Después, hemos dedicado una sección para cada modelo explicando como se ha realizado su integración en el pipelina. Por último, contemplamos la sección final~\ref{sec:conc_pipeline} donde se comentan las conclusiones del capítulo.
+En este capítulo, en la~\autoref{sec:arq_pipeline} explicamos la estructura que hemos seguido para desarrollar el pipeline. Después, hemos dedicado una sección para cada modelo explicando como se ha realizado su integración en el pipelina. Por último, contemplamos la sección final~\autoref{sec:conc_pipeline} donde se comentan las conclusiones del capítulo.
 \section{Arquitectura del pipeline}
 \label{sec:arq_pipeline}
 Con el fin de representar su estructura general, se ha diseñado un diagrama de flujo simplificado. Como se puede observar en la \autoref{fig:Arquitectura_pipeline}, los modelos se han dividido en dos grupos según el tipo de entrada que utilizan: por un lado, aquellos que operan sobre características extraídas del audio y, por otro, los que trabajan directamente con la forma de onda cruda. En cada grupo se indican tanto los modelos implementados como las técnicas de XAI aplicadas a cada uno de ellos.
