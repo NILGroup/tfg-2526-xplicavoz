@@ -24,12 +24,12 @@ Las matrices de confusión toman esos cuatro valores y los distribuyen en: eje $
 
 \subsubsection*{Métricas usadas}
 
-Veamos entonces con lo que ya sabemos qué métricas usamos y qué miden.
+Veamos entonces con lo que ya sabemos qué métricas usamos y qué miden:
 
 \begin{itemize}
 	\item \textbf{Exactitud (\textit{accuracy})}: Mide la proporción total de predicciones correctas (tanto positivas como negativas) sobre el total de casos. Es útil cuando las clases están balanceadas, pero puede ser engañosa si hay un desbalance (ej. 95\% de una clase y 5\% de otra, predecir siempre la mayoritaria daría un 95\% de accuracy). Su fórmula es: $\frac{VP + VN}{VP + VN + FP + FN}$. Lo usamos en Random Forest, LightGBM, SVM, Wav2Vec2, KNN, Regresión Logística y AASIST.
 	
-	\item \textbf{Precisión}: Mide la relación de las clases predichas como positivas frente al total de valores reales positivos. Es una métrica que se enfoca en controlar los Falsos Positivos (FP). Es útil cuando el costo de un FP es alto (por ejemplo, marcar un correo legítimo como spam). Su fórmula es: $\frac{VP}{VP + FP}$. Podría calcularse la precisión para la clase negativa también. Lo usamos en Random Forest, LightGBM, SVM, KNN, Regresión Logística y AASIST.
+	\item \textbf{Precisión}: Mide la proporción de predicciones correctas sobre el total de casos evaluados. Es una métrica que se enfoca en controlar los Falsos Positivos (FP). Es útil cuando el costo de un FP es alto (por ejemplo, marcar un correo legítimo como spam). Su fórmula es: $\frac{VP}{VP + FP}$. Podría calcularse la precisión para la clase negativa también. Lo usamos en Random Forest, LightGBM, SVM, KNN, Regresión Logística y AASIST.
 	
 	\item \textbf{Exhaustividad (\textit{recall})}: Mide la cantidad de valores positivos que el modelo logró predecir correctamente. Es una métrica que se enfoca en minimizar los Falsos Negativos (FN). Es útil cuando el costo de un FN es alto (por ejemplo, no detectar una enfermedad grave). Su fórmula es: $\frac{VP}{VP + FN}$. Podría calcularse el recall de la clase negativa también. Lo usamos en Random Forest, LightGBM, SVM, KNN, Regresión Logística y AASIST.
 	
