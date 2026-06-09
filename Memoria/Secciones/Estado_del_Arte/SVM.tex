@@ -3,19 +3,9 @@
 
 Las Máquinas de Vectores de Soporte (\textit{Support Vector Machines}, SVM) son un conjunto de algoritmos de aprendizaje supervisado desarrollados por Vladimir Vapnik y su equipo en AT\&T Bell Laboratories durante la década de 1990 ~\parencite{1995svm}. Originalmente diseñadas para clasificación binaria, las SVM se han convertido en uno de los métodos más robustos y teóricamente fundamentados del aprendizaje automático.
 
-\subsubsection*{Fundamento conceptual: El hiperplano óptimo}
+\subsubsection*{Fundamento y funcionamiento}
 
-El objetivo fundamental de una SVM es encontrar un hiperplano que separe las clases (en nuestro caso dos, voces reales y voces generadas por IA) con el máximo margen posible. Para comprender este concepto, es útil visualizar un problema simple en dos dimensiones:
-
-\begin{itemize}
-    \item Imaginemos que representamos cada audio como un punto en un plano, donde los ejes son dos características (por ejemplo, el primer formante y el primer MFCC).
-    \item Las voces reales se agrupan en una región del plano y las generadas por IA en otra.
-    \item Un hiperplano en dos dimensiones es simplemente una línea recta que intenta separar ambos grupos.
-\end{itemize}
-
-La clave de SVM reside en que no cualquier línea divisoria es válida: el algoritmo busca aquella que maximiza la distancia (margen) entre la línea y los puntos más cercanos de cada clase. Estos puntos críticos, que ``sostienen'' el margen, reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), de donde el algoritmo toma su nombre.
-
-\subsubsection*{Funcionamiento del algoritmo}
+El objetivo fundamental de una SVM es encontrar un hiperplano que separe las clases (en nuestro caso dos, voces reales y voces generadas por IA) con el máximo margen posible. La clave de reside en que no cualquier línea divisoria es válida: el algoritmo busca aquella que maximiza la distancia entre la línea y los puntos más cercanos de cada clase. Estos puntos críticos, que ``sostienen'' el margen, reciben el nombre de \textbf{vectores de soporte} (\textit{support vectors}), de donde el algoritmo toma su nombre.
 
 El proceso de entrenamiento de una SVM puede entenderse en los siguientes pasos:
 
@@ -57,25 +47,21 @@ Los kernels más comúnmente utilizados son:
 
 \subsubsection*{Hiperparámetros}
 
-Veamos cuáles son los hiperparámetros más influyentes en los SVM ~\cite{sklearn_svm}.
+Veamos cuáles son los hiperparámetros más influyentes en los SVM:
 
 \begin{itemize}
-    \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento. Un valor bajo de C busca un margen grande aunque se cometan algunos errores (modelo más generalista). Un valor alto de C penaliza fuertemente los errores, ajustándose más a los datos de entrenamiento (riesgo de sobreajuste).
+    \item \textbf{C}: Controla el equilibrio entre tener un margen amplio y clasificar correctamente los puntos de entrenamiento.
     
-    \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente. La elección del kernel determina fundamentalmente la capacidad del modelo para encontrar patrones complejos.
+    \item \textbf{kernel}: Es la función que transforma los datos a un espacio de mayor dimensión donde puedan ser separables linealmente.
     
-    \item \textbf{gamma \(\gamma\)}: Específico de kernels no lineales (RBF, sigmoide o polinomial). Define cuánta influencia tiene un solo punto de entrenamiento: valores bajos significan que cada punto tiene un alcance amplio, produciendo límites de decisión más suaves y generales; valores altos hacen que cada punto influya solo en su vecindario cercano, lo que puede generar límites muy ajustados a los datos de entrenamiento pero con alto riesgo de sobreajuste.
+    \item \textbf{gamma \(\gamma\)}: Específico de kernels no lineales (RBF, sigmoide o polinomial). Define cuánta influencia tiene un solo punto de entrenamiento.
     
-    \item \textbf{degree}: Cuando se utiliza el kernel polinomial, este parámetro especifica el grado del polinomio usado para transformar los datos. Un grado mayor permite capturar relaciones más complejas y no lineales, pero también aumenta el riesgo de sobreajuste y el costo computacional. Normalmente se utilizan grados bajos (2, 3 o 4) porque valores muy altos tienden a producir modelos inestables y difíciles de generalizar.
-    
-    \item \textbf{coef0}: Este parámetro es relevante para los kernels polinomial y sigmoide, donde actúa como un término independiente en la función del kernel. En el kernel polinomial, coef0 controla cuánto influyen los términos de menor grado respecto a los de mayor grado; en el sigmoide, ayuda a definir la forma de la función de activación. Aunque no es tan crítico como C o gamma, puede necesitar ajuste para optimizar el rendimiento del modelo.
-    
-    \item \textbf{probability}: Este parámetro $booleano$ determina si el modelo SVM debe calibrarse para proporcionar estimaciones de probabilidad junto con las predicciones de clase. Activarlo ($True$) permite obtener la probabilidad de pertenencia a cada clase mediante validación cruzada interna, lo cual es útil para interpretar la confianza del modelo. Sin embargo, este proceso aumenta significativamente el tiempo de entrenamiento y puede afectar ligeramente la precisión de las clasificaciones.
+    \item \textbf{probability}: Este parámetro $booleano$ determina si el modelo SVM debe calibrarse para proporcionar estimaciones de probabilidad junto con las predicciones de clase.
 \end{itemize}
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
 
-Repasemos algunas de las ventajas que presentan los SVM para la detección de $deepfakes$.
+Repasemos algunas de las ventajas que presentan los SVM para la detección de $deepfakes$:
 
 \begin{itemize}
     \item \textbf{Fundamento teórico sólido}: A diferencia de otros métodos heurísticos, SVM está basada en la teoría de optimización convexa, lo que garantiza que la solución encontrada es óptima (máximo margen global).
@@ -85,6 +71,4 @@ Repasemos algunas de las ventajas que presentan los SVM para la detección de $d
     \item \textbf{Robustez ante overfitting}: La maximización del margen proporciona una regularización natural que mejora la generalización, crucial cuando se trabaja con datasets limitados de voces $deepfake$.
     
     \item \textbf{Versatilidad mediante kernels}: La capacidad de elegir diferentes kernels permite adaptar el modelo a la estructura no lineal de los datos de audio sin necesidad de transformaciones manuales.
-    
-    \item \textbf{Interpretabilidad limitada pero útil}: Aunque no tan interpretable como los árboles de decisión, el análisis de los vectores de soporte puede revelar qué audios son más representativos o ambiguos en la frontera de decisión.
 \end{itemize}

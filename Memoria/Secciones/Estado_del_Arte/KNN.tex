@@ -15,8 +15,11 @@ El principio de KNN es la proximidad: asume que las muestras de audio con caract
 La elección de $k$ es crítica: un valor muy pequeño (ej. $k=1$) hace que el modelo sea sensible al ruido en el audio, mientras que un valor muy grande puede suavizar demasiado las fronteras de decisión.
 
 \subsubsection*{Ventajas específicas para detección de deepfakes}
+
+Vamos a ver cuáles son las ventajas de KNN para la detección de $deepfakes$:
+
 \begin{itemize}
-    \item \textbf{Sin suposiciones sobre los datos:} No asume que las características del audio sigan una distribución lineal, lo que le permite capturar patrones complejos en la distribución de artefactos sintéticos.
+    \item \textbf{Sin suposiciones sobre los datos:} No asume que las características del audio sigan una distribución lineal, lo que le permite capturar patrones complejos en la distribución de artefactos sintéticos:
     \item \textbf{Eficacia con características bien definidas:} Si la extracción de características logra separar bien las clases, KNN es extremadamente preciso.
     \item \textbf{Aprendizaje incremental:} Es fácil añadir nuevos ejemplos de ataques de audio sintético al sistema sin necesidad de reentrenar todo el modelo.
 \end{itemize}
