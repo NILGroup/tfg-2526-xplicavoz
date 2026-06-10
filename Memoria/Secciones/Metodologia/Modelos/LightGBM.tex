@@ -5,7 +5,7 @@ Como hemos visto en la \autoref{subsubsec:eda_lgbm}, a diferencia de Random Fore
 
 \subsubsection*{Justificación del modelo}
 
-Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea de detección de deepfakes de audio, como pueden ser su eficiencia computacional para grandes volúmenes de datos o su regulación integrada con los parámetros L1 y L2. Presentamos un enlace al código de esta Sección en el pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/LightGBM.ipynb}}.
+Hemos usado LightGBM debido a que presenta ventajas significativas para la tarea de detección de $deepfakes$ de audio, como pueden ser su eficiencia computacional para grandes volúmenes de datos o su regulación integrada con los parámetros L1 y L2. Presentamos un enlace al código de esta Sección en el pie de página~\footnote{Enlace al notebook: \url{https://github.com/NILGroup/tfg-2526-xplicavoz/blob/main/Modelos/Jorge/LightGBM.ipynb}}.
 
 \subsubsection*{Configuración experimental}
 
@@ -34,8 +34,8 @@ El parámetro \texttt{is\_unbalance=True} activa la compensación automática pa
 Tras ello, entrenamos el modelo con los parámetros base, los datos de entrenamiento sin escalar, un set de validación, y los siguientes parámetros:
 
 \begin{itemize}
-	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán. En este caso, 1000 es el límite superior, pero el early\_stopping puede detener el proceso antes si no hay mejoras. Este úlitmo permite prevenir el sobreajuste, ahorrar tiempo computacional y determinar automáticamente el número óptimo de iteraciones.
-	\item \textbf{callbacks}: funciones que se ejecutan durante el entrenamiento para controlar el proceso. En este caso mostramos información del entrenamiento cada 100 iteraciones y paramos si no mejora por 50 iteraciones.
+	\item \textbf{num\_boost\_round}: Es el número máximo de iteraciones (árboles) que se entrenarán.
+	\item \textbf{$callbacks$}: funciones que se ejecutan durante el entrenamiento para controlar el proceso. En este caso mostramos información del entrenamiento cada 100 iteraciones y paramos si no mejora por 50 iteraciones.
 \end{itemize}
 
 \subsubsection*{Validación cruzada estratificada}
@@ -44,7 +44,7 @@ Para LightGBM se utilizó la interfaz compatible con scikit-learn (\texttt{LGBMC
 
 \subsubsection*{Optimización de hiperparámetros}
 
-LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en hiperparámetros distintos de los definidos en el modelo baseline, ya que LightGBM cuenta con multitud de hiperparámetros y queremos probar nuevos en vez de usar los mencionados antes. A continuación podemos ver el ``grid'' que hemos definido para la búsqueda:
+LightGBM cuenta con un conjunto de hiperparámetros específicos, diferentes a los de Random Forest. La búsqueda se centró en hiperparámetros distintos de los definidos en el modelo baseline, ya que LightGBM cuenta con multitud de hiperparámetros y queremos probar nuevos en vez de usar los mencionados antes. A continuación podemos ver el $grid$ que hemos definido para la búsqueda:
 
 \begin{itemize}
 	\item \textbf{num\_leaves}: Probamos 15, 31 y 63.

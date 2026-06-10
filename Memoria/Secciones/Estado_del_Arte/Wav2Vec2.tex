@@ -25,7 +25,7 @@ El proceso de preentrenamiento se divide en cuatro etapas:
 
 Por último, la función de pérdida utiliza la similitud del coseno entre las representaciones contextualizadas y las representaciones discretizadas.
 
-Tras el preentrenamiento, el modelo puede adaptarse a tareas específicas mediante aprendizaje supervisado. Para la tarea $Deepfake detection$ se utiliza la función de pérdida CTC(Clasificación Temporal Conexionista)\footnote{CTC es un algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados.}a la que se le aplica una versión de SpecAugment (técnica de aumento de datos diseñada específicamente para el reconocimiento automático de voz) para evitar sobreajuste.
+Tras el preentrenamiento, el modelo puede adaptarse a tareas específicas mediante aprendizaje supervisado. Para la tarea de detección de $deepfakes$ se utiliza la función de pérdida CTC(Clasificación Temporal Conexionista)\footnote{CTC es un algoritmo y función de pérdida utilizado en redes neuronales profundas para entrenar modelos de aprendizaje automático en tareas de modelado de secuencias cuando los datos de entrada y salida no están alineados.}a la que se le aplica una versión de SpecAugment (técnica de aumento de datos diseñada específicamente para el reconocimiento automático de voz) para evitar sobreajuste.
 
 \subsection*{Innovaciones clave}
 

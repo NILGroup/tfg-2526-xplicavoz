@@ -11,9 +11,7 @@ Se seleccionó la Regresión Logística como uno de los clasificadores base debi
 
 El proceso experimental para el modelo de Regresión Logística se estructuró en tres fases diferenciadas: (1) escalado de datos y establecimiento de un modelo baseline, (2) validación cruzada estratificada para medir la consistencia del algoritmo base, y (3) optimización de hiperparámetros mediante una búsqueda sistemática en rejilla.
 
-\subsubsection*{División de datos y escalado}
-
-El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) aplicando un muestreo estratificado para conservar la misma proporción de clases en ambos subconjuntos. Esta distribución es crucial para asegurar que las evaluaciones no se vean sesgadas debido al desbalance entre las muestras de voz real y las sintéticas.
+\subsubsection*{Escalado}
 
 Dado que la Regresión Logística calcula una combinación lineal de las características y es sensible a la escala de las variables (especialmente cuando se aplican técnicas de regularización), se empleó una estandarización mediante \texttt{StandardScaler}. El escalador se ajustó exclusivamente con los datos de entrenamiento y se aplicó posteriormente a ambos conjuntos.
 

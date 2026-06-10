@@ -12,8 +12,6 @@ Antes de comenzar con el preprocesamiento de los datos, es necesario considerar 
 
 Para el preprocesamiento de los audios se definen dos constantes globales: la frecuencia de muestreo (\textit{sampling rate}), fijada en 16000 Hz (ya que el modelo fue entrenado con esta frecuencia), y la duración máxima de los audios, establecida en 10 segundos.
 
-El \textit{dataframe} utilizado consta de dos columnas: una con las rutas a los audios y otra con las etiquetas correspondientes. Este conjunto de 200 audios, que incluye muestras tanto en español como en inglés, se divide en tres subconjuntos: entrenamiento (80\%), validación (10\%) y prueba (10\%).
-
 Posteriormente, se cargan los audios y se convierten las etiquetas al tipo \textit{long}, que es el formato esperado por el modelo.
 
 A continuación, los datos se procesan mediante una serie de funciones para adaptarlos a los requisitos del modelo:

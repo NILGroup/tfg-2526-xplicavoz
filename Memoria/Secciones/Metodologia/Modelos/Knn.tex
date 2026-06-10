@@ -11,9 +11,7 @@ Se seleccionó KNN como uno de los clasificadores base debido a su simplicidad c
 
 El proceso experimental para el modelo KNN se estructuró en tres fases: (1) establecimiento de un modelo baseline junto con el escalado de características, (2) validación cruzada para evaluar la robustez de la configuración inicial, (3) optimización de hiperparámetros mediante búsqueda sistemática en rejilla.
 
-\subsubsection*{División de datos y escalado}
-
-El conjunto de datos se particionó en entrenamiento (80\%) y prueba (20\%) utilizando muestreo estratificado para mantener la proporción de clases en ambos conjuntos. Esta estratificación es crucial cuando existe desbalance entre voces reales y generadas.
+\subsubsection*{Escalado}
 
 Debido a la alta sensibilidad de KNN a la magnitud de las variables (ya que las características con rangos mayores dominarían el cálculo de las distancias), se aplicó una estandarización mediante \texttt{StandardScaler}. El escalador se ajustó exclusivamente con el conjunto de entrenamiento y se utilizó para transformar ambos subconjuntos.
 
