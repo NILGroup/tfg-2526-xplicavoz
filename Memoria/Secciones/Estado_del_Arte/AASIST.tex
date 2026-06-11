@@ -23,8 +23,9 @@ El modelo tiene las siguientes fases:
             \item Un \textit{stack node}, conectado de forma unidireccional a todos los nodos, que va acumulando la información espectro-temporal entre sucesivas capas HS-GAL.
             \item Tras cada HS-GAL, se aplica otra vez la técnica \textit{graph pooling} con el mismo objetivo anterior.
         \end{itemize}
-    Sobre la combinación del punto 3 para establecer la conectividad entre grafos, se aplica la operación MGO (\textit{Max Graph Operation}) que usa una combinación entre HS-GAL + pooling donde se realiza la verdadera integración entre ambos dominios para que los nodos heterogéneos aprendan cómo deben relacionarse entre sí.
-    De forma paralela, se procesan dos ramas en las que se ejecutan consecutivamente dos secuencias MGO. Dentro de cada rama, el \textit{stack node} se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento, teniendo como resultado un grafo heterogéneo.
+    Sobre la combinación del punto 3 para establecer la conectividad entre grafos, el grafo heterogéneo se introduce en el bloque MGO (\textit{Max Graph Operation}), formado por dos ramas paralelas. En cada rama independiente se aplican consecutivamente dos capas HS-GAL, cada una seguida de una operación \textit{graph pooling}. En esta etapa es donde se realiza la verdadera integración entre ambos dominios para que los nodos heterogéneos aprendan cómo deben relacionarse entre sí.
+    
+    Dentro de cada rama, el \textit{stack node} se propaga de la primera HS-GAL a la segunda. Finalmente, se combinan las salidas de ambas ramas usando un máximo elemento a elemento, teniendo como resultado un grafo heterogéneo.
     \item Por último, usando las operaciones \textit{max} y \textit{average} sobre los nodos que originalmente formaban parte del grafo espectral y del grafo temporal, se generan 4 vectores que se concatenan con el \textit{stack node} para formar la representación final en la capa de salida.
 \end{enumerate}
 
